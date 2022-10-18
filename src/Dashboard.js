@@ -1,7 +1,10 @@
 import React from 'react'
+import Telemetry from './Telemetry'
 
-export default function Dashboard() {
+export default function Dashboard({telemetry}) {
   return (
-    <div>Dashboard</div>
+    telemetry.map(telemetry => {
+        return <Telemetry key={telemetry.id} telemetry={telemetry}/>
+    })
   )
 }
