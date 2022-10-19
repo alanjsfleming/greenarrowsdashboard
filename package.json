@@ -1,7 +1,7 @@
 {
   "name": "greenarrowsdashboard",
   "version": "0.1.0",
-  "homepage":"https://alanjsfleming.github.io/greenarrowsdashboard",
+  "homepage": "https://alanjsfleming.github.io/greenarrowsdashboard",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
