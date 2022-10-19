@@ -1,12 +1,15 @@
 {
   "files": {
-    "main.js": "/greenarrowsdashboard/static/js/main.47b5313a.js",
-    "static/js/787.6cd7c33a.chunk.js": "/greenarrowsdashboard/static/js/787.6cd7c33a.chunk.js",
-    "index.html": "/greenarrowsdashboard/index.html",
-    "main.47b5313a.js.map": "/greenarrowsdashboard/static/js/main.47b5313a.js.map",
-    "787.6cd7c33a.chunk.js.map": "/greenarrowsdashboard/static/js/787.6cd7c33a.chunk.js.map"
+    "main.css": "/App.js/static/css/main.19e43a0f.css",
+    "main.js": "/App.js/static/js/main.6354ae5e.js",
+    "static/js/787.6cd7c33a.chunk.js": "/App.js/static/js/787.6cd7c33a.chunk.js",
+    "index.html": "/App.js/index.html",
+    "main.19e43a0f.css.map": "/App.js/static/css/main.19e43a0f.css.map",
+    "main.6354ae5e.js.map": "/App.js/static/js/main.6354ae5e.js.map",
+    "787.6cd7c33a.chunk.js.map": "/App.js/static/js/787.6cd7c33a.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.47b5313a.js"
+    "static/css/main.19e43a0f.css",
+    "static/js/main.6354ae5e.js"
   ]
 }
