@@ -1,0 +1,22 @@
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.grid-container {
+    display: grid;
+    column-gap: 10px
+}
+.telem {
+    margin:5px;
+    padding:10px;
+    border-style:solid;
+    border-radius: 2px;
+    border-color: light;
+    width: 25vw;
+}
+
+.gauge-body {
+
+}
