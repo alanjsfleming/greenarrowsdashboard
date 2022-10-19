@@ -33,7 +33,7 @@ export default function Telemetry({telemetry,settings}) {
     <div class="telem gauge">Lap : {telemetry.lap}</div>
     <div class="telem thermometer">Temperature 1 : {telemetry.Tmp1}&deg;C</div>
     <div class="telem thermometer">Temperature 2 : {telemetry.Tmp2}&deg;C</div>
-    <div class="telem">Break : {telemetry.Brk}></div>
+    <div class="telem">Break : {telemetry.Brk}</div>
     <div class="telem">Distance : {telemetry.Distance}</div>
     </div>
     </>
