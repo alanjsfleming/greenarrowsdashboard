@@ -1,5 +1,6 @@
 import React from 'react'
-
+import Gauge from './Gauge';
+import TelemetryCard from './TelemetryCard';
 
 function estimateGear(Spd,RPM,bG) {
     let wheelRPM=Spd/(59.44*60/63360);
@@ -14,28 +15,73 @@ function calculateBatteryPercent(ah,ahtotal) {
   return percent
 } 
 
+
+
+
+
 export default function Telemetry({telemetry,settings}) {
   return (
     <>
-    <div class="grid-container">
-    <div class="telem gauge gear">Estimated Gear : {estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)}</div>
-    <div class="telem battery">Battery : {calculateBatteryPercent(telemetry.AH,settings.ampHours)}%
-    
+    <div class="grid-items">
+      <div class="grid-item">
+        <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)} units="th Gear" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.ampHours)} units="%" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Vt:" data={telemetry.Vt} units="V" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Amp Hours per Lap:" data="placeholder" units="Ah/Lap" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="V2:" data={telemetry.Vt-telemetry.V1} units="V" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="A:" data={telemetry.A} units="A" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Motor RPM:" data={telemetry.RPM} kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Speed:" data={(telemetry.Spd*2.237).toFixed(1)} units="mph" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Throttle:" data={telemetry.Thrtl} units="%" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Amp Hours used:" data={telemetry.AH} units="Ah" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Laps:" data={telemetry.lap} units="" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Temperature 1:" data={telemetry.Tmp1} units="&deg;C" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Temperature 2:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Break:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
+      </div>
+      <div class="grid-item">
+        <TelemetryCard title="Distance:" data={telemetry.distance} units="" kind="gauge"/>
+      </div>
     </div>
-    <div class="telem gauge">Vt : {telemetry.Vt}V</div>
-    <div class="telem gauge">V1 : {telemetry.V1}V</div>
-    <div class="telem gauge">V2 : {telemetry.Vt-telemetry.V1}V</div>
-    <div class="telem gauge">A : {telemetry.A}A</div>
-    <div class="telem gauge">Motor RPM : {telemetry.RPM}</div>
-    <div class="telem gauge">Speed : {(telemetry.Spd*2.237).toFixed(1)} mph</div>
-    <div class="telem gauge">Throttle : {telemetry.Thrtl}%</div>
-    <div class="telem">Amp Hours used: {telemetry.AH}Ah</div>
-    <div class="telem gauge">Lap : {telemetry.lap}</div>
-    <div class="telem thermometer">Temperature 1 : {telemetry.Tmp1}&deg;C</div>
-    <div class="telem thermometer">Temperature 2 : {telemetry.Tmp2}&deg;C</div>
-    <div class="telem">Break : {telemetry.Brk}</div>
-    <div class="telem">Distance : {telemetry.Distance}</div>
-    </div>
+   
     </>
   )
 }
+
+
+/* <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Estimated Gear:</h5>
+          <h6 class="card-text">{estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)}</h6>
+        </div>
+      </div>
+      */

@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Dashboard from './Dashboard';
 import "./App.css"
+import MenuBar from './MenuBar'
 
 /*import { useState,useEffect } from 'react';*/
 const ga1dweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
@@ -51,7 +52,6 @@ function App() {
 
   function handleUpdateTelemetry(e) {
     console.log(localStorage)
-    console.log(settings,JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY)))
     fetch(ga1dweetname)
     .then((response)=>response.json())
     .then((data)=> { 
@@ -67,17 +67,28 @@ function App() {
 
   return (
     <>
+    <MenuBar/>
     <Dashboard telemetry={telemetry} settings={settings}/>
-    <label>Number of teeth on big gear (currently {settings.bigGear})</label>
-    <input class="form" ref={GearSettingsRef} type="number" defaultValue={settings.bigGear}/>
-    <button class="btn btn-primary" onClick={handleSaveGearSettings}>Save</button>
-    <br></br>
-    <label>Total Amp hours of batteries (currently {settings.ampHours} )</label>
-    <input ref={AmpHourSettingsRef} type="number" defaultValue={settings.ampHours}/>
-    <button class="btn btn-primary" onClick={handleSaveAmpHourSettings}>Save</button>
-    <br></br>
-    <button class="btn btn-primary" onClick={handleUpdateTelemetry}>Update Data</button>
-  
+    
+    
+      <div class="settings">
+        <h5>Settings:</h5>
+        <br></br>
+        <div>
+          <label>Number of teeth on big gear (currently {settings.bigGear})</label>
+          <input class="input-sm" ref={GearSettingsRef} type="number" defaultValue={settings.bigGear}/>
+          <button class="btn btn-primary" onClick={handleSaveGearSettings}>Save</button>
+        </div>
+      <br></br>
+        <div>
+          <label>Total Amp hours of batteries (currently {settings.ampHours} )</label>
+          <input class="input-sm" ref={AmpHourSettingsRef} type="number" defaultValue={settings.ampHours}/>
+          <button class="btn btn-primary" onClick={handleSaveAmpHourSettings}>Save</button>
+        </div>
+      <br></br>
+        <button class="btn btn-primary" onClick={handleUpdateTelemetry}>Update Telemetry</button>
+      </div>
+    
     </>
   );
 }
