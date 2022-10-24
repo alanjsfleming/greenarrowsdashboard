@@ -14,6 +14,8 @@ export default function Vis(type,units,data) {
                 return <Gauge data={kind.data} upper="40" lower="0" title={kind.title}/>
             } else if (kind.units==="th Gear") {
                 return <Gauge data={Math.abs(kind.data)} upper="11" lower="7" title={kind.title}/>
+            } else if (kind.units=="%") {
+                return <Gauge data={kind.data} upper="100" lower="0" title={kind.title}/>
             }
             
         }

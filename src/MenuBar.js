@@ -21,8 +21,8 @@ export default function MenuBar(settings) {
           Green Arrows Dashboard</a>
         <div class="nav-link-container" id="myTopnav">
           
-          <a href="#" class="menutabmove">GA1</a>
-          <a href="#" class="menutabmove">GA2</a>
+          <a href="#">GA1</a>
+          <a href="#">GA2</a>
           <a href="#" class="icon" onClick={openMenuFunction}><i class="fa fa-bars"></i></a>
         </div>
     </nav>

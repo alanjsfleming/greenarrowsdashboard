@@ -88,7 +88,6 @@ function App() {
       <br></br>
         <button class="btn btn-primary" onClick={handleUpdateTelemetry}>Update Telemetry</button>
       </div>
-    
     </>
   );
 }
