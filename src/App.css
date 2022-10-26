@@ -140,6 +140,7 @@ body {
         float: none;
         display: block;
         text-align: right;
+        
     }
     .nav-link-container.responsive a.menutabmove {
         display: absolute;
