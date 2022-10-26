@@ -62,7 +62,6 @@ function App() {
   }
 
   function handleUpdateTelemetry(e) {
-    console.log(settings)
     fetch(ga1dweetname)
     .then((response)=>response.json())
     .then((data)=> { 

@@ -8,7 +8,7 @@ export default function Gauge(data,upper,lower,title) {
 
     
     function setGaugeValue(gauge,data,lower,upper) {         
-        gaugeElement.current.querySelector(".gauge-fill").style.transform = `rotate(${data.data/data.upper/2}turn)`;
+        gaugeElement.current.querySelector(".gauge-fill").style.transform = `rotate(${(data.data-data.lower)/(data.upper-data.lower)/2}turn)`;
         gaugeElement.current.querySelector(".gauge-cover").textContent = `${data.data}`;
     }
 

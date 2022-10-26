@@ -21,7 +21,6 @@ export default function MenuBar(settings) {
           <img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
           Green Arrows Dashboard</a>
         <div class="nav-link-container" id="myTopnav">
-          
           <a href="#" class="menutabmove">GA1</a>
           <a href="#" class="menutabmove">GA2</a>
           <a href="#" class="icon" onClick={openMenuFunction}><i class="fa fa-bars"></i></a>
