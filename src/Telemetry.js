@@ -1,18 +1,25 @@
 import React from 'react'
-import Gauge from './Gauge';
 import TelemetryCard from './TelemetryCard';
 
 function estimateGear(Spd,RPM,bG) {
-    let wheelRPM=Spd/(59.44*60/63360);
-    let gearRatio=RPM/wheelRPM;
-    let numTeethMotor=bG/gearRatio;
-    let gearNumber=Math.round(21.5-numTeethMotor);
-    return(gearNumber);
+  if (!bG){
+    return NaN
+  } else {
+  let wheelRPM=Spd/(59.44*60/63360);
+  let gearRatio=RPM/wheelRPM;
+  let numTeethMotor=bG/gearRatio;
+  let gearNumber=Math.round(21.5-numTeethMotor);
+  return(gearNumber);
   }
+}
 
 function calculateBatteryPercent(ah,ahtotal) {
+  if (!ahtotal){
+    return NaN
+  } else {
   const percent = ((ahtotal-ah)/ahtotal*100).toFixed(1)
   return percent
+  }
 } 
 
 
@@ -22,7 +29,10 @@ function calculateBatteryPercent(ah,ahtotal) {
 export default function Telemetry({telemetry,settings}) {
   return (
     <>
-    <div class="grid-items">
+    <div class="grid-items telemetry">
+      <div class="grid-item">
+        <TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
+      </div>
       <div class="grid-item">
         <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)} units="th Gear" kind="gauge"/>
       </div>
@@ -33,7 +43,7 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Vt:" data={telemetry.Vt} units="V" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Amp Hours per Lap:" data="placeholder" units="Ah/Lap" kind="gauge"/>
+        <TelemetryCard title="Amp Hours per Lap:" data={telemetry.AH/telemetry.lap} units="Ah/Lap" kind="gauge"/>
       </div>
       <div class="grid-item">
         <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>

@@ -38,7 +38,20 @@ function App() {
       }))
   };
 
+  function handleStartTimer(e) {
+    const timeStamp=Date.now()
+    newSettings(prevSettings => ({
+      ...prevSettings,
+      timeStamp:timeStamp
+    }))
+  }
 
+  function handleResetTimer(e) {
+    newSettings(prevSettings => {
+      const {timeStamp, ...rest} = prevSettings;
+      return rest
+    });
+  };
 
   function handleSaveAmpHourSettings(e){
     const ampHours = AmpHourSettingsRef.current.value
@@ -48,10 +61,8 @@ function App() {
     }))
   }
 
-
-
   function handleUpdateTelemetry(e) {
-    console.log(localStorage)
+    console.log(settings)
     fetch(ga1dweetname)
     .then((response)=>response.json())
     .then((data)=> { 
@@ -67,12 +78,13 @@ function App() {
 
   return (
     <>
+
     <MenuBar/>
     <Dashboard telemetry={telemetry} settings={settings}/>
     
     
       <div class="settings">
-        <h5>Settings:</h5>
+        <h5 id="settings">Settings:</h5>
         <br></br>
         <div>
           <label>Number of teeth on big gear (currently {settings.bigGear})</label>
@@ -87,7 +99,14 @@ function App() {
         </div>
       <br></br>
         <button class="btn btn-primary" onClick={handleUpdateTelemetry}>Update Telemetry</button>
+        <div class="timer-button-container">
+            <h6>Race Timer:</h6>
+            <button class="btn btn-primary" onClick={handleStartTimer}>Start</button>
+            <button class="btn btn-primary timer-button-right" onClick={handleResetTimer}>Reset</button>
+        </div>
+        <a href="#topOfPage" class="btn btn-primary goTopBtn">Go to top</a>
       </div>
+ 
     </>
   );
 }
