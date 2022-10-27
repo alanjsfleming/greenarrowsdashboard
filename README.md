@@ -14,10 +14,13 @@ Time elapsed is difference between T~0~ and T~current~.
 ### Estimated Gear
 Speed
 : From eChook (in miles per hour)
+
 RPM of Motor
 : From eChook
+
 Number of teeth of wheel axle gear (big gear)
 : Given by user
+
 Diameter of wheel
 : 59.44
 
@@ -34,6 +37,7 @@ The value is then rounded to the nearest whole number.
 ### Battery:
 Ah total of batteries
 : Given by user
+
 Ah used
 : From eChook
 
@@ -48,7 +52,9 @@ Vt
 Note: this is current just Ah used / number of laps but this will be updated to a moving average from the last lap. See below...
 
 Everytime a new amp reading is added :
+
   tempTotal = tempTotal + amp reading
+  
   tempNum = tempNum +1
  
 When the lap number increases, calculate the average from last lap, display it and reset counters.
@@ -60,6 +66,7 @@ V1
 ### V2:
 Vt
 : From eChook
+
 V1
 : From eChook
 
