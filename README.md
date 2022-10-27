@@ -22,9 +22,14 @@ Diameter of wheel
 : 59.44
 
 RPM of wheel calculated by Speed/(59.44*60/63360).
-Gear ratio calculated by RPM of motor / RPM of wheel
+
+Gear ratio calculated by RPM of motor / RPM of wheel.
+
 Current number of teeth on the motor axle gear is number of teeth on big gear / gear ratio. (Remember Gear ratio = Driver/Driven)
-The gear number is then worked out by taking the number of teeth on the motor axle gear away from 22. Another 0.5 is taken off because the output would be consistently off. The value is then rounded to the nearest whole number.
+
+The gear number is then worked out by taking the number of teeth on the motor axle gear away from 22. Another 0.5 is taken off because the output would be consistently off. 
+
+The value is then rounded to the nearest whole number.
 
 ### Battery:
 Ah total of batteries
