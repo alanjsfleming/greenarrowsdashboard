@@ -6,10 +6,10 @@ The telemetry is gathered from the car from a variety of sensors and an [eChook]
 ## How values are calculated: 
 
 ### Time Elapsed:
-Time~0~
+Time0
 : Taken when start button pressed
 
-Time elapsed is difference between T~0~ and T~current~.
+Time elapsed is difference between T0 and Tcurrent
 
 ### Estimated Gear
 Speed
