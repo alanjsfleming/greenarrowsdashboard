@@ -1,70 +1,115 @@
-# Getting Started with Create React App
+# Green Arrows Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting the data
+The telemetry is gathered from the car from a variety of sensors and an [eChook](https://www.echook.uk/) board. The data is sent from the eChook board to a phone with bluetooth and the eChook app on the phone uses mobile data to send it to a [dweet](https://dweet.io/). The [JavaScript Fetch API](https://www.w3schools.com/jsref/api_fetch.asp) takes the data in json format and it is turned into a dictionary for use.
 
-## Available Scripts
+## How values are calculated: 
 
-In the project directory, you can run:
+### Time Elapsed:
+Time0
+: Taken when start button pressed
 
-### `npm start`
+Time elapsed is difference between T0 and Tcurrent
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Estimated Gear
+Speed
+: From eChook (in miles per hour)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+RPM of Motor
+: From eChook
 
-### `npm test`
+Number of teeth of wheel axle gear (big gear)
+: Given by user
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Diameter of wheel
+: 59.44
 
-### `npm run build`
+RPM of wheel calculated by Speed/(59.44*60/63360).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Gear ratio calculated by RPM of motor / RPM of wheel.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Current number of teeth on the motor axle gear is number of teeth on big gear / gear ratio. (Remember Gear ratio = Driver/Driven)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The gear number is then worked out by taking the number of teeth on the motor axle gear away from 22. Another 0.5 is taken off because the output would be consistently off. 
 
-### `npm run eject`
+The value is then rounded to the nearest whole number.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Battery:
+Ah total of batteries
+: Given by user
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Ah used
+: From eChook
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Battery percentage remaining = (Ah total - Ah used) / Ah total * 100
+This is then rounded to 1 decimal place.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Vt:
+Vt
+: From eChook
 
-## Learn More
+### Amp hours per lap:
+Note: this is currently just Ah used / number of laps but this will be updated to a moving average from the last lap. See below...
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Everytime a new amp reading is added :
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  tempTotal = tempTotal + amp reading
+  
+  tempNum = tempNum +1
+ 
+When the lap number increases, calculate the average from last lap, display it and reset counters.
 
-### Code Splitting
+### V1:
+V1
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### V2:
+Vt
+: From eChook
 
-### Analyzing the Bundle Size
+V1
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+V2 = Vt - V1
 
-### Making a Progressive Web App
+### Amps:
+A
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Motor RPM:
+RPM
+: From eChook
 
-### Advanced Configuration
+### Speed:
+Spd
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Speed (in mph) = Spd * 2.237. This is rounded to 1 decimal place.
 
-### Deployment
+### Throttle
+Thrtl
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Amp Hours used:
+AH
+: From eChook
 
-### `npm run build` fails to minify
+### Laps
+lap
+: From eChook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Temperature 1:
+Tmp1
+: From eChook
+
+### Temperature 2:
+Tmp2
+: From eChook
+
+### Break:
+Brk
+: From eChook
+
+### Distance:
+distance
+: From eChook
