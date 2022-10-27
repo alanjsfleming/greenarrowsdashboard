@@ -49,7 +49,7 @@ Vt
 : From eChook
 
 ### Amp hours per lap:
-Note: this is current just Ah used / number of laps but this will be updated to a moving average from the last lap. See below...
+Note: this is currently just Ah used / number of laps but this will be updated to a moving average from the last lap. See below...
 
 Everytime a new amp reading is added :
 
