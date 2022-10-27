@@ -76,7 +76,7 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Temperature 2:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Break:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Break:" data={telemetry.Brk} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item">
         <TelemetryCard title="Distance:" data={telemetry.distance} units="" kind="gauge"/>
