@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-
+// make this correct and use props
 export default function Gauge(data,upper,lower,title) {
     
     const gaugeElement = useRef();

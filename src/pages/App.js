@@ -5,9 +5,9 @@ import "../App.css"
 import MenuBar from './components/MenuBar'
 
 /*import { useState,useEffect } from 'react';*/
-const ga1dweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
 
-
+// This should work dynamically for whatever car is selected.
+// Timer should carry across as it assumes racing at the same time. 
 
 
 
@@ -18,6 +18,7 @@ function App() {
   const GearSettingsRef = useRef();
   const AmpHourSettingsRef = useRef()
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
+  const cardweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
 
   /* Load saved settings  */
 
@@ -38,6 +39,8 @@ function App() {
       }))
   };
 
+  // Timer functions
+
   function handleStartTimer(e) {
     const timeStamp=Date.now()
     newSettings(prevSettings => ({
@@ -53,6 +56,8 @@ function App() {
     });
   };
 
+  // Functions to allow user to set amp hour variables
+
   function handleSaveAmpHourSettings(e){
     const ampHours = AmpHourSettingsRef.current.value
     newSettings(prevSettings => ({
@@ -60,9 +65,11 @@ function App() {
       ampHours:ampHours
     }))
   }
+  
+  // Fetch from the dweet every 1.5s
 
   function handleUpdateTelemetry(e) {
-    fetch(ga1dweetname)
+    fetch(cardweetname)
     .then((response)=>response.json())
     .then((data)=> { 
      newTelemetry([data.with[0].content])
@@ -74,7 +81,7 @@ function App() {
     return () => clearInterval(interval);
   })
 
-
+  // Page Starts here
   return (
     <>
 
