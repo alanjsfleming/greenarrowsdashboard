@@ -144,7 +144,7 @@ body {
     }
     .nav-link-container.responsive a.menutabmove {
         display: absolute;
-        translate: 0rem 3rem;
+        translate: 0rem 0rem;
         background-color: rgb(247,247,247);
     }
 }
@@ -225,5 +225,28 @@ progress[value]::-webkit-progress-value {
     background-color: #009578;
 }
 
+.home-page-card {
+    display:flex;
+    margin:auto;
+    width:90%;
+    padding:2rem;
+    height:auto;
+    margin-top: 5%;
+}
 
+.home-page-card--cars {
 
+}
+
+.home-page-card--title {
+    text-align: center;
+    margin: 1rem;
+}
+
+.car-summary {
+    width:100%;
+}
+
+.car-summary-title {
+
+}

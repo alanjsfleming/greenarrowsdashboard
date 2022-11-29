@@ -1,6 +1,6 @@
 import React from 'react'
-import GALogo from './greenarrowslogocropped.png';
-
+import GALogo from '../../images/greenarrowslogocropped.png';
+import {Link} from 'react-router-dom'
 
 function openMenuFunction() {
   const x=document.getElementById("myTopnav");
@@ -17,12 +17,12 @@ export default function MenuBar(settings) {
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
     <nav class="navbar" id="topOfPage">
-    <a href="#" class="navbar-brand menuBar">
+    <Link to="/" style={{color:'inherit',textDecoration:'inherit'}}><a href="#" class="navbar-brand menuBar">
           <img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
-          Green Arrows Dashboard</a>
+          Green Arrows Dashboard</a></Link>
         <div class="nav-link-container" id="myTopnav">
-          <a href="#" class="menutabmove">GA1</a>
-          <a href="#" class="menutabmove">GA2</a>
+          <Link to="/ga1" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA1</a></Link>
+          <Link to="/ga2" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA2</a></Link>
           <a href="#" class="icon" onClick={openMenuFunction}><i class="fa fa-bars"></i></a>
         </div>
     </nav>

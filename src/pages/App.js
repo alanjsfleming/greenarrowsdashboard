@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import Dashboard from './Dashboard';
-import "./App.css"
-import MenuBar from './MenuBar'
+import Dashboard from './components/Dashboard';
+import "../App.css"
+import MenuBar from './components/MenuBar'
 
 /*import { useState,useEffect } from 'react';*/
 const ga1dweetname='https://dweet.io/get/latest/dweet/for/Albyn1'

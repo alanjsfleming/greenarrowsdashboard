@@ -113,3 +113,37 @@ Brk
 ### Distance:
 distance
 : From eChook
+
+
+## To do
+
+### Table
+
+### Line graph
+Potentially up to 3 different series
+
+### Motor efficiency
+Function of current.
+
+# Database
+MongoDB
+
+### Users
+username -> string
+password -> string
+displayname -> string
+cars -> {
+  {
+   name:"Green Arrows 1",
+   dweet:"https://dweet.io/get/latest/dweet/for/Albyn1"
+   },
+  {
+   name:"Green Arrows 1",
+   dweet:"https://dweet.io/get/latest/dweet/for/Albyn2"
+   }
+}
+
+... add google sheets writing
+
+
+### Cars

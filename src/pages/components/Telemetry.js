@@ -22,6 +22,11 @@ function calculateBatteryPercent(ah,ahtotal) {
   }
 } 
 
+function calculateMotorEfficiency(Vt,A,T) {
+  const efficiency = 1.6655+0.003*Vt+0.0026*A-0.0429*T
+  const output = Math.round(efficiency*100)
+  return output
+}
 
 
 
@@ -46,6 +51,9 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Amp Hours per Lap:" data={telemetry.AH/telemetry.lap} units="Ah/Lap" kind="gauge"/>
       </div>
       <div class="grid-item">
+        <TelemetryCard title="Motor Efficiency:" data={calculateMotorEfficiency(telemetry.Vt,telemetry.A,telemetry.Tmp1)} units="%" kind="gauge"/>
+      </div>
+      <div class="grid-item">
         <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>
       </div>
       <div class="grid-item">
@@ -67,19 +75,19 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Amp Hours used:" data={telemetry.AH} units="Ah" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Laps:" data={telemetry.lap} units="" kind="gauge"/>
+        <TelemetryCard title="Laps:" data={telemetry.Lap} units="" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Temperature 1:" data={telemetry.Tmp1} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Motor Temperature:" data={telemetry.Tmp1} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Temperature 2:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Battery Temperature:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Break:" data={telemetry.Brk} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Brake:" data={telemetry.Brk} units="" kind="gauge"/>
       </div>
       <div class="grid-item">
-        <TelemetryCard title="Distance:" data={telemetry.distance} units="" kind="gauge"/>
+        <TelemetryCard title="Distance:" data={telemetry.Distance} units="" kind="gauge"/>
       </div>
     </div>
    

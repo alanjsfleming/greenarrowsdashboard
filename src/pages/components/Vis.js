@@ -1,5 +1,6 @@
 import React from 'react'
 import Gauge from './Gauge'
+
 import Timer from './Timer'
 export default function Vis(type,units,data,settings) {
 
