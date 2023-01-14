@@ -7,15 +7,12 @@ export default function CarSummary(props) {
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item">
-                    <Link to="/ga1"><a class="nav-link active">Details</a></Link>
-                </li>
-                <li class="nav-item ">
-                    <h6 class="car-summary-title">{props.name} Summary</h6>
+                    <Link to="/ga1"><a class="nav-link active">{props.name}</a></Link>
                 </li>
             </ul>
         </div>
         <div class="card-body">
-            <p class="card-text">Battery : 70% , Time : 00:45:00</p>
+            <p class="card-text">Battery : 70% , Amps: 24A</p>
         </div>
 
     </div>

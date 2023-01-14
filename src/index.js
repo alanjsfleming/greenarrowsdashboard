@@ -5,18 +5,32 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NoPage from './pages/NoPage';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './pages/HomePage';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
+import Signup from './pages/Signup';
+import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './PrivateRoute';
+import Configure from './pages/Configure';
+import PasswordReset from './pages/PasswordReset'
+import UserSetup from './pages/UserSetup'
 
 export default function Main() {
   return (
-    <BrowserRouter basename="/">
-      <Routes>
-      
-          <Route index element={<HomePage/>}/>
-          <Route path="/ga1" element={<App/>}/>
-
-        <Route path="*" element={<NoPage/>}/>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename="/">
+        <Routes>
+          <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
+          <Route path="/login" element={<Login />}/>
+          <Route path="/ga1" element={<PrivateRoute><App /></PrivateRoute>}/>
+          <Route path="/logout" element={<Logout />}/>
+          <Route path="/register" element={<Signup />}/>
+          <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/user-setup" element={<UserSetup />}/>
+          <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
+         <Route path="*" element={<NoPage/>}/>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
