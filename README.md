@@ -126,7 +126,7 @@ Potentially up to 3 different series
 Function of current.
 
 # Database
-MongoDB
+
 
 ### Users
 username -> string
