@@ -126,7 +126,11 @@ Potentially up to 3 different series
 Function of current.
 
 # Database
+<<<<<<< HEAD
 Firebase Realtime Database
+=======
+
+>>>>>>> 747d66c2e438c7713509dec6707bd31f926b6577
 
 ### Users
 username -> string
