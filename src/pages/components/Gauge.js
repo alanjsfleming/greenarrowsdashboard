@@ -12,7 +12,7 @@ export default function Gauge(data,upper,lower,title) {
         gaugeElement.current.querySelector(".gauge-cover").textContent = `${data.data}`;
     }
 
-
+    // This doesnt make sense
     useEffect(() => {
         setGaugeValue(gaugeElement.current,data,upper,lower)
     },[data])

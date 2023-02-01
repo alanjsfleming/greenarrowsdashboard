@@ -126,7 +126,7 @@ Potentially up to 3 different series
 Function of current.
 
 # Database
-MongoDB
+Firebase Realtime Database
 
 ### Users
 username -> string
@@ -147,3 +147,21 @@ cars -> {
 
 
 ### Cars
+
+
+### Realtime database
+
+{
+  'users' : {
+    'green arrows' : {
+      1 : { data },
+      2 : { data },
+      3 : { data },
+      ...
+    },
+    'other team' : {
+      1 : { data }
+    }
+  }
+
+}

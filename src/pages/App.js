@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from './components/MenuBar'
+import Configure from './components/Configure';
 
 /*import { useState,useEffect } from 'react';*/
 
@@ -14,22 +15,28 @@ import MenuBar from './components/MenuBar'
 function App() {
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState([])
+
   const GearSettingsRef = useRef();
   const AmpHourSettingsRef = useRef()
+
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
   const cardweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
 
-  /* Load saved settings  */
-
+  // Load saved settings from browser storage
   useEffect(() => {
     const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
     if (storedSettings) {newSettings(storedSettings)};
   },[]) 
+  // TODO - rewrite to load settings from firebase when 
 
+  // When settings change, add them to local storage
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
   },[settings])
+  // TODO - rewrite to save to firebase so user can have same settings wherever they login
 
+
+  // When Gear setting saved, add to settings state
   function handleSaveGearSettings(e) {
     const bigGear = GearSettingsRef.current.value
     newSettings(prevSettings => ({
@@ -64,9 +71,10 @@ function App() {
       ampHours:ampHours
     }))
   }
+  // TODO - change this so it is a form and there is one submit button, updates together, settings modal??
+
   
   // Fetch from the dweet every 1.5s
-
   function handleUpdateTelemetry(e) {
     fetch(cardweetname)
     .then((response)=>response.json())
@@ -80,14 +88,16 @@ function App() {
     return () => clearInterval(interval);
   })
 
+
   // Page Starts here
+
+  // Change the settings portion of this to a modal that pops up when you press a button on the menu bar.
   return (
     <>
 
     <MenuBar/>
     <Dashboard telemetry={telemetry} settings={settings}/>
-    
-    
+    <Configure />
       <div class="settings">
         <h5 id="settings">Settings:</h5>
         <br></br>
@@ -111,26 +121,8 @@ function App() {
         </div>
         <a href="#topOfPage" class="btn btn-primary goTopBtn">Go to top</a>
       </div>
- 
     </>
   );
 }
 
 export default App;
-
-/*
-<div className="App">
-      <header className="App-header">
-        
-        <h1>
-          Green Arrows Dashboard
-        </h1>
-        <section class="primary-data">
-          <div>
-            <h3>BatteryPercent</h3>
-          </div>
-        </section>
-        
-      </header>
-    </div>
-    */

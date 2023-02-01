@@ -7,7 +7,7 @@ export default function CarSummary(props) {
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item">
-                    <Link to="/ga1"><a class="nav-link active">{props.name}</a></Link>
+                    <Link to="/details"><a class="nav-link active">{props.name}</a></Link>
                 </li>
             </ul>
         </div>

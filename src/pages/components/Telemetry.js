@@ -1,6 +1,7 @@
 import React from 'react'
 import TelemetryCard from './TelemetryCard';
 
+// Estimate gear, based on GA1. 59.44 is wheel diameter so this wont work for other cars. Change that.
 function estimateGear(Spd,RPM,bG) {
   if (!bG){
     return NaN
@@ -13,6 +14,7 @@ function estimateGear(Spd,RPM,bG) {
   }
 }
 
+// Calculate % Battery remaining
 function calculateBatteryPercent(ah,ahtotal) {
   if (!ahtotal){
     return NaN
@@ -22,15 +24,17 @@ function calculateBatteryPercent(ah,ahtotal) {
   }
 } 
 
+// Calculate motor efficiency.
 function calculateMotorEfficiency(Vt,A,T) {
   const efficiency = 1.6655+0.003*Vt+0.0026*A-0.0429*T
   const output = Math.round(efficiency*100)
   return output
 }
 
+// Enter your own equation
+//https://mycurvefit.com/
 
-
-
+// Make this populate with only as many as I want, render all of them but have hidden class?
 export default function Telemetry({telemetry,settings}) {
   return (
     <>

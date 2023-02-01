@@ -2,18 +2,19 @@ import React, { useState} from 'react'
 import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
-import { redirect} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function Logout() {
   const [error,setError] = useState('')
   const { currentUser, logout } = useAuth()
+  const navigate = useNavigate()
 
   async function handleSubmit() {
     setError('')
     try {
       await logout()
       console.log("redirecting")
-      redirect("/login")
+      navigate('/login')
     } catch {
       setError('Failed to logout')
     }

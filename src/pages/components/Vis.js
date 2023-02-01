@@ -4,7 +4,7 @@ import Gauge from './Gauge'
 import Timer from './Timer'
 export default function Vis(type,units,data,settings) {
 
-/* Function to determine which kind of graph and the upper and lower limits to output */
+// Rewrite this function to make it neater, choose vis type based on type specified, set upper and lower, title etc...
 
     function determineVisualisation(props) {
 
