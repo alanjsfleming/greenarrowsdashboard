@@ -14,6 +14,7 @@ import Configure from './pages/components/Configure';
 import PasswordReset from './pages/PasswordReset'
 import UserSetup from './pages/UserSetup'
 import { RaceProvider } from './contexts/RaceContext';
+import Loading from './pages/Loading';
 
 export default function Main() {
   return (
@@ -30,6 +31,7 @@ export default function Main() {
             <Route path="/user-setup" element={<UserSetup />}/>
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
+            <Route path="/loading" element={<Loading />} />
           <Route path="*" element={<NoPage/>}/>
           </Routes>
         </BrowserRouter>

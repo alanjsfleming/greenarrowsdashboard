@@ -304,3 +304,10 @@ progress[value]::-webkit-progress-value {
     display: flex;
     justify-content: space-between;
 }
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh
+}

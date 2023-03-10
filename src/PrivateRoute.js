@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
+import Loading from './pages/Loading'
 
 
 export default function PrivateRoute({ children }) {
@@ -24,7 +25,7 @@ export default function PrivateRoute({ children }) {
     if (isLoggedIn === 'true') {
         return children
     } else if (isLoggedIn === 'loading') {
-        return <h1>Loading...</h1>
+        return <span><Loading /></span>
     } else if (isLoggedIn === 'false') {
         console.log(isLoggedIn)
         return <Navigate to="/login" replace />

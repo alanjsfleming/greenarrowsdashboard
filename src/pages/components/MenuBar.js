@@ -2,6 +2,7 @@ import React from 'react'
 import GALogo from '../../images/greenarrowslogocropped.png';
 import {Link} from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import Emoji from './Emoji';
 
 function openMenuFunction() {
   const x=document.getElementById("myTopnav");
@@ -12,6 +13,8 @@ function openMenuFunction() {
   }
 }
 
+//<img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
+//🦉
 
 export default function MenuBar(settings) {
 
@@ -20,9 +23,10 @@ export default function MenuBar(settings) {
   return (
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-    <nav class="navbar" id="topOfPage">
-    <Link to="/" style={{color:'inherit',textDecoration:'inherit'}}><a href="#" class="navbar-brand menuBar">
-          <img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
+    <nav class="navbar sticky-top" id="topOfPage">
+    <Link to="/" style={{color:'inherit',textDecoration:'inherit'}}>
+      <a href="#" class="navbar-brand menuBar">
+          <Emoji symbol="🦉" label="owl" />
           {currentUser.displayName}</a></Link>
         <div class="nav-link-container" id="myTopnav">
           <Link to="/ga1" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA1</a></Link>

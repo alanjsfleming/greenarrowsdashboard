@@ -97,7 +97,7 @@ function App() {
 
     <MenuBar/>
     <Dashboard telemetry={telemetry} settings={settings}/>
-    <Configure />
+  
       <div class="settings">
         <h5 id="settings">Settings:</h5>
         <br></br>
@@ -124,5 +124,4 @@ function App() {
     </>
   );
 }
-
 export default App;

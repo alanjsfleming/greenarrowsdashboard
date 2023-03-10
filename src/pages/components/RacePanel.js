@@ -3,7 +3,7 @@ import { useRace } from '../../contexts/RaceContext'
 
 
 export default function RacePanel() {
-  const { resetrace } = useRace()
+  const { resetrace,startTime } = useRace()
   const [resetButton,setResetButton] = useState('Reset')
 
   function handleReset(e){
