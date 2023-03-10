@@ -274,3 +274,33 @@ progress[value]::-webkit-progress-value {
 .hidden {
     display:none;
 }
+
+.car-summary-vis {
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: row;
+}
+
+.summary-card {
+    width: 100% !important;
+    margin: auto !important;
+    height:fit-content !important;
+    padding: 0 !important;
+    
+}
+
+.summary-link, .summary-link:hover {
+    color: var(--bs-body-color);
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-block {
+    width:100%
+}
+
+.summary-card-label {
+    display: flex;
+    justify-content: space-between;
+}

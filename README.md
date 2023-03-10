@@ -169,3 +169,18 @@ cars -> {
   }
 
 }
+
+### Getting graph of data
+
+Dweet can fetch last 500 dweets. They update ~once per second so last 8 minutes.
+
+If a user opens client, it should join the saved data to the new data and then update the cloud version with this. Only one client should be writing values at a time.
+
+can use: 
+alldata = olddata.concat(newdata.filter(newdata.timestamp > olddata[olddata.length-1].timestamp))
+
+call once when page is loaded, 
+
+### Team
+race start time is under team
+car has "owner" field, teams look for car documents where "owner" is the team uid, can only read write if it is

@@ -1,19 +1,29 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import CarSummaryCard from './CarSummaryCard'
+import Vis from './Vis'
 
 export default function CarSummary(props) {
+
+
+
+    // summary card has following props
+    // // { 'title' : 'V1', 'units' : 'V', 'kind' : 'gauge', 'data' : 12 }
   return (
     <div class="card car-summary">
+        <Link class="summary-link" to="/details">
         <div class="card-header">
-            <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                    <Link to="/details"><a class="nav-link active">{props.name}</a></Link>
-                </li>
-            </ul>
+          
+            <h3>{props.name}</h3>
+            
         </div>
-        <div class="card-body">
-            <p class="card-text">Battery : 70% , Amps: 24A</p>
+        </Link>
+        <div class="card-body car-summary-vis">
+            <CarSummaryCard title={'V1'} units={'V'} kind={'gauge'} data={10.5}/>
+            <CarSummaryCard />
+            <CarSummaryCard />
         </div>
+        
 
     </div>
   )

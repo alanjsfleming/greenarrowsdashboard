@@ -29,6 +29,7 @@ export default function Main() {
             <Route path="/reset-password" element={<PasswordReset />} />
             <Route path="/user-setup" element={<UserSetup />}/>
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
+            <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
           <Route path="*" element={<NoPage/>}/>
           </Routes>
         </BrowserRouter>

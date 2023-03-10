@@ -3,7 +3,12 @@ import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../firebase'
 
+// has to submit team name, dweet url, car name to firebase
+// has to update the display name to the team name
 
 export default function UserSetup() {
     const teamNameRef = useRef()
@@ -11,29 +16,43 @@ export default function UserSetup() {
     const carNameRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { updatedisplayname }  = useAuth()
+
+    
+    const { currentUser,updatedisplayname } = useAuth()
+
+    const navigate = useNavigate()
 
     const handleSubmit = async(e)=> {
         e.preventDefault()
         try {
-      
-            setError('')
-            setLoading(true)
-            await updatedisplayname(teamNameRef.current.value)
+          const userDocRef = doc(db, "users", currentUser.uid)
+          setError('')
+          setLoading(true)
+          await updatedisplayname(teamNameRef.current.value)
+          await updateDoc(userDocRef, {
+            "team_name":teamNameRef.current.value,
+            "dweet_url":dweetURLRef.current.value,
+            "car_name":carNameRef.current.value
+          })
         } catch (e) {
             console.log(e)
             setError('Could not complete sign-up.')
+            console.log(error)
+            setLoading(false)
+            return 'Could not complete sign-up.'
         }
         setLoading(false)
+        console.log('we are navigating')
+        navigate('/')
         }
 
-
+        //<img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
   return (
     <>
     <MenuBar />
     <div class="form-signin m-auto text-center my-5">
       <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}>
-        <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
+        
         <h1 class="h3 mb-3 fw-normal">Complete setup</h1>
 
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
@@ -50,7 +69,7 @@ export default function UserSetup() {
           <label for="floatingCarName">Car Name</label>
         </div>
             
-        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Submit</button>
+        <button class="w-100 btn  btn-lg btn-primary" type="submit" disabled={loading}>Submit</button>
             
         <div  class="mt-2">
           <Link to="/">Skip</Link>

@@ -19,7 +19,6 @@ export default function Login() {
             setError('')
             setLoading(true)
             await login(emailRef.current.value,passwordRef.current.value)
-            console.log("redirecting")
             navigate('/')
         } catch (e) {
             console.log(e)
@@ -35,7 +34,6 @@ export default function Login() {
       <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}> 
         <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
         <h1 class="h3 mb-3 fw-normal">Welcome back!</h1>
-        {JSON.stringify(currentUser)}
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         <div class="form-floating">
           <input type="email" class="form-control mb-2" id="floatingInput" placeholder="name@example.com" ref={emailRef} required/>
