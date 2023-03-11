@@ -3,6 +3,7 @@ import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import Emoji from './components/Emoji'
 
 export default function Logout() {
   const [error,setError] = useState('')
@@ -13,7 +14,7 @@ export default function Logout() {
     setError('')
     try {
       await logout()
-      console.log("redirecting")
+      navigate("/logout#")
       navigate('/login')
     } catch {
       setError('Failed to logout')
@@ -26,9 +27,8 @@ export default function Logout() {
       <MenuBar />
       <div class="form-signin m-auto text-center my-5">
         <form class="signin-form px-5 py-5 border shadow" onSubmit={handleSubmit}>
-            <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
-            <h2 class="my-3 mb-4">Leaving?</h2>
-            {JSON.stringify(currentUser)}
+            <Emoji symbol="🦉" label="owl" /><h2 class="my-3 mb-4">Leaving?</h2>
+     
             {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
             <button class="w-100 btn btn-lg btn-dark" type="submit">Logout</button>
         </form>

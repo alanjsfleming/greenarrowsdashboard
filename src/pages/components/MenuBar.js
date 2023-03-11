@@ -4,14 +4,7 @@ import {Link} from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import Emoji from './Emoji';
 
-function openMenuFunction() {
-  const x=document.getElementById("myTopnav");
-  if (x.className==="nav-link-container") { 
-    x.className +=" responsive"} 
-  else {
-    x.className = "nav-link-container";
-  }
-}
+
 
 //<img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
 //🦉
@@ -29,9 +22,8 @@ export default function MenuBar(settings) {
           <Emoji symbol="🦉" label="owl" />
           {currentUser.displayName}</a></Link>
         <div class="nav-link-container" id="myTopnav">
-          <Link to="/ga1" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA1</a></Link>
-          <Link to="/ga2" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA2</a></Link>
-          <a href="#" class="icon" onClick={openMenuFunction}><i class="fa fa-bars"></i></a>
+          
+          <Link to="/configure" class="icon"><i class="fa fa-bars"></i></Link>
         </div>
     </nav>
     </>
@@ -45,4 +37,16 @@ export default function MenuBar(settings) {
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         
         </div>
+
+        function openMenuFunction() {
+  const x=document.getElementById("myTopnav");
+  if (x.className==="nav-link-container") { 
+    x.className +=" responsive"} 
+  else {
+    x.className = "nav-link-container";
+  }
+}
+
+        <Link to="/ga1" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA1</a></Link>
+          <Link to="/ga2" style={{color:'inherit',textDecoration:'inherit'}}><a class="menutabmove">GA2</a></Link>
 */

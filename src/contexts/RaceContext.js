@@ -9,21 +9,18 @@ export function useRace() {
 
 export function RaceProvider({ children }) {
     const [startTime,setStartTime] = useState()
-    const [raceOngoing,setRaceOngoing] = useState()
+
 
     function startrace() {
         setStartTime(Date.now())
-        setRaceOngoing(true)
     }
 
     function resetrace() {
         setStartTime(null)
-        setRaceOngoing(false)
     }
 
     const value = {
         startTime,
-        raceOngoing,
         startrace,
         resetrace
     }

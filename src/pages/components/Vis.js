@@ -1,9 +1,18 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import Gauge from './Gauge'
-
+import { Link } from 'react-router-dom'
 import Timer from './Timer'
-export default function Vis(type,units,data,settings) {
+import { useRace } from '../../contexts/RaceContext'
 
+
+export default function Vis(type,units,data) {
+
+    const [raceStart,setRaceStart] = useState()
+    const {startTime} = useRace()
+
+    useEffect(()=>{
+        setRaceStart(startTime)
+      },[startTime])
 // Rewrite this function to make it neater, choose vis type based on type specified, set upper and lower, title etc...
 
     function determineVisualisation(props) {
@@ -33,10 +42,10 @@ export default function Vis(type,units,data,settings) {
                 return <Gauge data={props.data} upper="10" lower="0" title={props.title}/>
                 }
             } else if (props.units==="minutes:seconds") {
-                if (!props.settings.timeStamp) {
-                    return <a href="#settings" class="btn btn-warning">Timer not started<br></br>Click here to go to settings</a>
+                if (raceStart<1) {
+                    return <Link to="/#raceTimer" style={{color:'inherit',textDecoration:'inherit'}}><p class="btn btn-warning btn-block">Timer not started<br></br>Click here to start a race</p></Link>
                 } else {
-                return <Timer settings={props.settings}/>
+                return <Timer />
                 }
             }
             

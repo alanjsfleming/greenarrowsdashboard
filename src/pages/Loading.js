@@ -1,19 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import Emoji from './components/Emoji'
 
 export default function Loading() {
 
+    const [dots, setDots] = useState("")
+
     function animateDots() {
         let dots = document.getElementById("dots");
-        if (dots.innerHTML.length > 3)
+        if (dots.innerHTML.length > 3) {
             dots.innerHTML = "";
-        else
+            setDots('restart')
+        }
+        else {
             dots.innerHTML += ".";
+            setDots(dots.innerHTML)
+        }
     }
 
     useEffect(() => {
-    setInterval(animateDots, 300);
-    },[])
+    setTimeout(animateDots, 300);
+    },[dots])
+
+
 
   return (
     <div class="loading">

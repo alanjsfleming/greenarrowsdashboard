@@ -3,6 +3,7 @@ import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from './components/MenuBar'
 import Configure from './components/Configure';
+import Loading from './Loading';
 
 /*import { useState,useEffect } from 'react';*/
 
@@ -96,7 +97,7 @@ function App() {
     <>
 
     <MenuBar/>
-    <Dashboard telemetry={telemetry} settings={settings}/>
+    {(telemetry) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
   
       <div class="settings">
         <h5 id="settings">Settings:</h5>

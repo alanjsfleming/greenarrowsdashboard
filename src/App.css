@@ -125,11 +125,9 @@ body {
     background-color: #ddd;
 }
 
-.nav-link-container .icon {
-    display: none;
-}
 
-/* Menu Responsive */
+
+/* Menu Responsive 
 @media screen and (max-width:639px) {
     .nav-link-container a {display: none;}
     .nav-link-container a.icon {
@@ -156,7 +154,7 @@ body {
     }
 }
 
-
+*/
 
 
 

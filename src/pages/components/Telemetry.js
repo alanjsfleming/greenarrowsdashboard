@@ -34,14 +34,17 @@ function calculateMotorEfficiency(Vt,A,T) {
 // Enter your own equation
 //https://mycurvefit.com/
 
+//<div class="grid-item">
+//<TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
+//</div>
+//
+//
 // Make this populate with only as many as I want, render all of them but have hidden class?
 export default function Telemetry({telemetry,settings}) {
   return (
     <>
     <div class="grid-items telemetry">
-      <div class="grid-item">
-        <TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
-      </div>
+      
       <div class="grid-item">
         <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)} units="th Gear" kind="gauge"/>
       </div>

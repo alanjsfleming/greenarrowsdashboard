@@ -1,39 +1,51 @@
 import React from 'react'
 import { useEffect } from 'react'
+import { useRace } from '../../contexts/RaceContext'
 
+export default function Timer() {
 
-export default function Timer(settings) {
+    const [raceStart,setRaceStart] = useRace()
+    const {startTime} = useRace()
 
-    function timeSinceStart(settings,startTime) {
+    useEffect(()=>{
+        setRaceStart(startTime)
+      },[startTime])
+
+    function timeSinceStart() {
         const currentTime=Date.now()
-        const elapsedTime=currentTime-settings.settings.timeStamp
+        const elapsedTime=currentTime-raceStart
+      
         return elapsedTime
     }
 
-    function elapsedTimeIntoValue(settings) {
-        const elapsedTime = timeSinceStart(settings)
+    function elapsedTimeIntoValue() {
+        const elapsedTime = timeSinceStart()
         return elapsedTime/1000/60
     }
 
-    function elapsedTimeIntoString(settings) {
-        const elapsedTime = timeSinceStart(settings)
+    function elapsedTimeIntoString() {
+        const elapsedTime = timeSinceStart()
         const mins=Math.floor(elapsedTime/1000/60).toLocaleString('en-US',{minimumIntegerDigits:2,useGrouping:false})
         const seconds=Math.round((elapsedTime/1000)%60).toLocaleString('en-US',{minimumIntegerDigits:2,useGrouping:false})
         const string = `${mins}:${seconds}`
         return string
     }
 
-    useEffect(()=>{
-        const interval = setInterval(timeSinceStart,1200);
-        return () => clearInterval(interval);
-      })
+    
     
   return (
     <>
     <div class="gauge-holder">
-        <progress class="progress" min="0" max="100" value={elapsedTimeIntoValue(settings)}></progress>
+        <progress class="progress" min="0" max="100" value={elapsedTimeIntoValue()}></progress>
     </div>
-    <div class="elapsedTime">{elapsedTimeIntoString(settings)}</div>
+    <div class="elapsedTime">{elapsedTimeIntoString()}</div>
     </>
   )
 }
+
+
+//useEffect(()=>{
+//    const interval = setInterval(timeSinceStart,1000);
+//    console.log("hi")
+//    return () => clearInterval(interval);
+//  })

@@ -32,10 +32,11 @@ export default function HomePage() {
     <>
     <MenuBar />
     <h2 class="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
-    <CarSummary name={'GA1'} telemetry={telemetry}/>
-    <br></br>
-    <RacePanel />
-    
+    <div class="d-flex flex-column">
+      <CarSummary name={'GA1'} telemetry={telemetry}/>
+      <br></br>
+      <RacePanel />
+    </div>
    
     
     </>
