@@ -184,3 +184,54 @@ call once when page is loaded,
 ### Team
 race start time is under team
 car has "owner" field, teams look for car documents where "owner" is the team uid, can only read write if it is
+
+
+###
+Lap info on summary:
+Lap number
+Lap time
+Lap distance
+Lap speed
+Lap efficiency
+Lap amp hours per lap
+Lap battery percentage
+
+
+
+### settings
+
+Lap times
+
+on site load the context gets the user document and the car document and stores it in the brower local storage
+
+on each individual page load, the settings are loaded from the local storage and used to display the page
+
+Pages are:
+Overview
+Car
+Settings
+
+
+
+
+
+users can set their own settings, which are stored in the user document. These are then used to display the dashboard.
+
+user document contains the following field:
+
+user document identified by uid
+
+team_name -> string
+race_start_time -> number (timestamp)
+manual_track_length -> number (meters)
+theme -> string (light/dark)
+
+car document contains the following fields:
+
+owner -> string (uid of team)
+
+car_name -> string
+dweet_name -> string
+large_gear_teeth -> number
+wheel_diameter -> number
+battery_ah -> number

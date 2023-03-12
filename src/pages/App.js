@@ -97,8 +97,8 @@ function App() {
     <>
 
     <MenuBar/>
-    {(telemetry) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
-  
+    {(telemetry[1]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
+    {console.log(telemetry)}
       <div class="settings">
         <h5 id="settings">Settings:</h5>
         <br></br>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MenuBar from './MenuBar'
 
@@ -7,7 +7,23 @@ import MenuBar from './MenuBar'
 export default function Configure() {
 
     const [currentTab,setCurrentTab] = useState(0)
+    const [settings,newSettings] = useState([])
+    const [error,setError] = useState()
+    const [success,setSuccess] = useState()
 
+    const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
+
+    useEffect(() => {
+        const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
+        if (storedSettings) {newSettings(storedSettings)};
+        
+      },[]) 
+
+
+    useEffect(() => {
+        localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+        
+    },[settings])
 
     function determineHide(tab) {
         if (tab === parseInt(currentTab)) {
@@ -27,7 +43,35 @@ export default function Configure() {
 
     function changeTab(e) {
         setCurrentTab(e.target.value)
+        console.log(settings)
     }
+
+    function handleSaveSettings() {
+        try {
+            setError()
+            setSuccess('Settings saved successfully!')
+            
+        } catch (e){
+            setSuccess()
+            setError('Failed to save settings: ' + JSON.stringify('error'))
+        }
+    }
+
+    /*
+    function handleSaveAmpHourSettings(e){
+        const ampHours = AmpHourSettingsRef.current.value
+        newSettings(prevSettings => ({
+          ...prevSettings,
+          ampHours:ampHours
+        }))
+      }
+      */
+
+    function hideAlerts() {
+        setError()
+        setSuccess()
+    }
+
 
   return (
     <>
@@ -43,7 +87,8 @@ export default function Configure() {
         
         <h1 class="pt-2 pb-3">Settings</h1>
 
-
+        {error && <p onClick={hideAlerts} className="alert alert-danger alert-dismissible">{error}</p>}
+        {success && <p onClick={hideAlerts} className="alert alert-success alert-dismissible">{success}</p>}
 
         <div class="tab" hidden={determineHide(0)}>
             <h3>Account</h3>
@@ -52,9 +97,9 @@ export default function Configure() {
                 <input type="text" class="form-control" id="team-name" placeholder="Team name"></input>
             </div>
 
-            <Link to="/reset-password"><button class="btn btn-outline-dark">Reset Password Here</button></Link>
+            <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password Here</button></Link>
 
-            <Link to="/logout"><button class="btn btn-dark btn-block my-3">Logout</button></Link>
+            <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
         </div>
 
         <div class="tab" hidden={determineHide(1)}>
@@ -118,7 +163,7 @@ export default function Configure() {
         </div>
 
         <div class="fixed-bottom d-flex">
-        <button type="button" class="btn btn-primary btn-block m-1">Save</button>
+        <button onClick={handleSaveSettings} type="button" class="btn btn-primary btn-block m-1">Save</button>
         </div>
     </div>
     

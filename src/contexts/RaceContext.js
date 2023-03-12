@@ -1,7 +1,11 @@
-import React, { useContext,useState } from 'react'
+import React, { useContext,useState,useEffect } from 'react'
 
 
 const RaceContext = React.createContext()
+
+const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
+
+
 
 export function useRace() {
     return useContext(RaceContext)
@@ -10,6 +14,14 @@ export function useRace() {
 export function RaceProvider({ children }) {
     const [startTime,setStartTime] = useState()
 
+    // use effect to load start time from local storage on refresh
+    /*
+    useEffect(() => {
+        const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
+        if (storedSettings.race_start) {setStartTime(storedSettings.race_start)};
+
+    },[])
+    */
 
     function startrace() {
         setStartTime(Date.now())

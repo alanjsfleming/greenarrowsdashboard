@@ -4,6 +4,7 @@ import CarSummary from './components/CarSummary'
 import RacePanel from './components/RacePanel'
 import { useAuth } from '../contexts/AuthContext'
 import MenuBar from './components/MenuBar'
+import LapSummary from './components/LapSummary'
 
 
 // Pass the timer as a prop through to the details page
@@ -20,6 +21,9 @@ export default function HomePage() {
     .then((response)=>response.json())
     .then((data)=> { 
      newTelemetry([data.with[0].content])
+    })
+    .catch(e =>{
+      
     });
   }
 
@@ -36,6 +40,8 @@ export default function HomePage() {
       <CarSummary name={'GA1'} telemetry={telemetry}/>
       <br></br>
       <RacePanel />
+      <br></br>
+      <LapSummary />
     </div>
    
     
