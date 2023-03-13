@@ -53,7 +53,8 @@ export default function LapSummary(props) {
         <div class="card-header text-center">
             <h3>Laps</h3>
         </div>
-        <div class="card-body car-summary-vis">
+        <div class="card-body car-summary-vis d-flex flex-column">
+            
             <LapComponent/>
         </div>
         
@@ -76,3 +77,5 @@ export default function LapSummary(props) {
         
     ))}
     */
+    //{manualLengthMode && <small>(Manual Length Mode)</small>}
+    // 

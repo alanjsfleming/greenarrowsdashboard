@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react'
 import { useRace } from '../../contexts/RaceContext'
+import { Link } from 'react-router-dom'
 
 // the page will not run because of the error below
 // TypeError: Cannot read property 'raceStart' of undefined
@@ -17,8 +18,9 @@ export default function RacePanel() {
   const [resetButton,setResetButton] = useState('btn-primary')
   const [raceStart,setRaceStart] = useState()
 
-  const [settings,newSettings] = useState()
+  const [settings,newSettings] = useState({})
   const [raceTime,setRaceTime] = useState()
+  const [raceTimeValue,setRaceTimeValue] = useState()
   // Load settings from local storage
   
 
@@ -27,8 +29,10 @@ export default function RacePanel() {
   // it is not setting the settings state
   useEffect(() => {
     console.log('useEffect called with empty dependency array');
+    try {
     const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
     if (storedSettings) {newSettings(storedSettings)};  
+    } catch (e) {console.log(e)}
   },[])
  
 
@@ -53,7 +57,11 @@ export default function RacePanel() {
       setResetButton('btn-danger')
   } else {
     setResetButton('btn-primary')
-    resetrace()
+    setRaceStart(null)
+    newSettings(prevSettings=>({
+      ...prevSettings,
+      raceStart: null
+    }))
   }
 
 }
@@ -62,8 +70,6 @@ export default function RacePanel() {
 function handleUnfocusReset(e){
   setResetButton('btn-primary')
 }
-
-
 
   function handleStart(e){
     startrace()
@@ -90,6 +96,7 @@ function handleUnfocusReset(e){
   function elapsedTimeIntoValue() {
     const elapsedTime = timeSinceStart()
     return elapsedTime/1000/60
+    
   }
 
   function elapsedTimeIntoString() {
@@ -97,20 +104,22 @@ function handleUnfocusReset(e){
     const mins=Math.floor(elapsedTime/1000/60).toLocaleString('en-US',{minimumIntegerDigits:2,useGrouping:false})
     const seconds=Math.round((elapsedTime/1000)%60).toLocaleString('en-US',{minimumIntegerDigits:2,useGrouping:false})
     const string = `${mins}:${seconds}`
-  
+    
     return string
   }
 
   // updates the race time every second with the elapsed time in minutes and seconds
   useEffect(() => {
+    console.log(raceStart)
     const interval = setInterval(() => {
       setRaceTime(elapsedTimeIntoString())
+      setRaceTimeValue(elapsedTimeIntoValue())
     }, 100)
     return () => clearInterval(interval);
   },[raceStart]);
 
   
-
+  // make setup button go to settings page in the race data section
 
   return (
     <div class="card car-summary" id="raceTimer">
@@ -118,11 +127,11 @@ function handleUnfocusReset(e){
             <h3 class="card-title mt-1 text-center">Race {raceTime}</h3>
         </div>
         <div class="card-body">
-            <progress class="progress" min="0" max="100" value={"2"} ></progress>
-            <div>
-                <button onClick={handleStart} class="btn btn-primary mx-1">Start</button>
-                <button onClick={handleReset} onBlur={handleUnfocusReset} class={"btn mx-1 "+resetButton} >Reset</button>
-                <button class="btn btn-primary mx-1">Setup</button>
+            <progress class="progress" min="0" max="90" value={raceTimeValue} ></progress>
+            <div class="btn-group w-100 mt-2">
+                <button disabled={raceStart} onClick={handleStart} class="btn btn-primary btn-block ">Start</button>
+                <button onClick={handleReset} onBlur={handleUnfocusReset} class={"btn btn-block "+resetButton} >Reset</button>
+                <Link to="/configure" class="btn btn-primary btn-block">Setup</Link>
             </div>
         </div>
     </div>
