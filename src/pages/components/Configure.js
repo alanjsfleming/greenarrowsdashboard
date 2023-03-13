@@ -1,12 +1,12 @@
 import React, { useRef, useState,useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import MenuBar from './MenuBar'
 
 
 // change this all to be a modal?
 export default function Configure() {
 
-    const [currentTab,setCurrentTab] = useState(0)
+    const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1])
     const [settings,newSettings] = useState([])
     const [error,setError] = useState()
     const [success,setSuccess] = useState()
@@ -16,7 +16,7 @@ export default function Configure() {
     useEffect(() => {
         const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
         if (storedSettings) {newSettings(storedSettings)};
-        
+     
       },[]) 
 
 
@@ -44,6 +44,7 @@ export default function Configure() {
     function changeTab(e) {
         setCurrentTab(e.target.value)
         console.log(settings)
+      
     }
 
     function handleSaveSettings() {

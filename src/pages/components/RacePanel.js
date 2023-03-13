@@ -131,7 +131,7 @@ function handleUnfocusReset(e){
             <div class="btn-group w-100 mt-2">
                 <button disabled={raceStart} onClick={handleStart} class="btn btn-primary btn-block ">Start</button>
                 <button onClick={handleReset} onBlur={handleUnfocusReset} class={"btn btn-block "+resetButton} >Reset</button>
-                <Link to="/configure" class="btn btn-primary btn-block">Setup</Link>
+                <Link to="/configure?2" class="btn btn-primary btn-block">Setup</Link>
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@ export default function MenuBar(settings) {
           {currentUser.displayName}</a></Link>
         <div class="nav-link-container" id="myTopnav">
           
-          <Link to="/configure" class="icon"><i class="fa fa-bars"></i></Link>
+          <Link to="/configure?0" class="icon"><i class="fa fa-bars"></i></Link>
         </div>
     </nav>
     </>
