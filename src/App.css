@@ -17,11 +17,6 @@ body {
     margin:0.5rem
 }
 
-.settings {
-    background-color: rgb(233, 230, 230);
-    padding: 0.5rem;
-}
-
 .center {
     margin: auto;
     width:75%;
@@ -49,7 +44,8 @@ body {
     position: relative;
     border-top-left-radius: 100% 200%;
     border-top-right-radius: 100% 200%;
-    overflow: hidden;
+    overflow: hidden !important;
+    outline: 1px solid rgba(0,0,0,0.2);
 }
 
 .gauge-fill {

@@ -235,3 +235,23 @@ dweet_name -> string
 large_gear_teeth -> number
 wheel_diameter -> number
 battery_ah -> number
+
+### Data sent by dweet
+
+{
+    "Vt": 18.01,
+    "V1": 0,
+    "A": 20.4,
+    "RPM": 1360,
+    "Spd": 13.6,
+    "Thrtl": 68,
+    "AH": 167.53,
+    "Lap": 0,
+    "Tmp1": 34,
+    "Tmp2": 0,
+    "Brk": 0,
+    "Gear": 0,
+    "Distance": 53387.32,
+    "Lat": 57.1189133,
+    "Lon": -2.1351633
+}

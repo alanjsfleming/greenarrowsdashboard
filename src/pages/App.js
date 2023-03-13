@@ -36,42 +36,13 @@ function App() {
   },[settings])
   // TODO - rewrite to save to firebase so user can have same settings wherever they login
 
-
-  // When Gear setting saved, add to settings state
-  function handleSaveGearSettings(e) {
-    const bigGear = GearSettingsRef.current.value
-    newSettings(prevSettings => ({
-      ...prevSettings,
-      bigGear:bigGear
-      }))
-  };
-
   // Timer functions
 
-  function handleStartTimer(e) {
-    const timeStamp=Date.now()
-    newSettings(prevSettings => ({
-      ...prevSettings,
-      timeStamp:timeStamp
-    }))
-  }
+ 
 
-  function handleResetTimer(e) {
-    newSettings(prevSettings => {
-      const {timeStamp, ...rest} = prevSettings;
-      return rest
-    });
-  };
+   // Functions to allow user to set amp hour variables
 
-  // Functions to allow user to set amp hour variables
-
-  function handleSaveAmpHourSettings(e){
-    const ampHours = AmpHourSettingsRef.current.value
-    newSettings(prevSettings => ({
-      ...prevSettings,
-      ampHours:ampHours
-    }))
-  }
+  
   // TODO - change this so it is a form and there is one submit button, updates together, settings modal??
 
   
@@ -81,6 +52,7 @@ function App() {
     .then((response)=>response.json())
     .then((data)=> { 
      newTelemetry([data.with[0].content])
+     console.log(telemetry)
     });
   }
 
@@ -97,31 +69,7 @@ function App() {
     <>
 
     <MenuBar/>
-    {(telemetry[1]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
-    {console.log(telemetry)}
-      <div class="settings">
-        <h5 id="settings">Settings:</h5>
-        <br></br>
-        <div>
-          <label>Number of teeth on big gear (currently {settings.bigGear})</label>
-          <input class="input-sm" ref={GearSettingsRef} type="number" defaultValue={settings.bigGear}/>
-          <button class="btn btn-primary" onClick={handleSaveGearSettings}>Save</button>
-        </div>
-      <br></br>
-        <div>
-          <label>Total Amp hours of batteries (currently {settings.ampHours} )</label>
-          <input class="input-sm" ref={AmpHourSettingsRef} type="number" defaultValue={settings.ampHours}/>
-          <button class="btn btn-primary" onClick={handleSaveAmpHourSettings}>Save</button>
-        </div>
-      <br></br>
-        <button class="btn btn-primary" onClick={handleUpdateTelemetry}>Update Telemetry</button>
-        <div class="timer-button-container">
-            <h6>Race Timer:</h6>
-            <button class="btn btn-primary" onClick={handleStartTimer}>Start</button>
-            <button class="btn btn-primary timer-button-right" onClick={handleResetTimer}>Reset</button>
-        </div>
-        <a href="#topOfPage" class="btn btn-primary goTopBtn">Go to top</a>
-      </div>
+    {(telemetry[0]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
     </>
   );
 }

@@ -6,6 +6,7 @@ import MenuBar from './MenuBar'
 // change this all to be a modal?
 export default function Configure() {
 
+    const configureFormRef = useRef()
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1])
     const [settings,newSettings] = useState([])
     const [error,setError] = useState()
@@ -13,6 +14,7 @@ export default function Configure() {
 
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
 
+    // Load settings from local storage
     useEffect(() => {
         const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
         if (storedSettings) {newSettings(storedSettings)};
@@ -20,11 +22,14 @@ export default function Configure() {
       },[]) 
 
 
+      // save settings to local storage and firebase on settings change
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-        
+        // call function to save settings to firebase
+        // not doing that here because it will save settings every time page loading???
     },[settings])
 
+    // determine if a tab should hide depending on current tab selected
     function determineHide(tab) {
         if (tab === parseInt(currentTab)) {
             return false
@@ -33,6 +38,7 @@ export default function Configure() {
         }
     }
 
+    // determine if a tab button should be active depending on current tab selected
     function determineActive(tab) {
         if (tab === parseInt(currentTab)) {
             return "active"
@@ -41,22 +47,35 @@ export default function Configure() {
         }
     }
 
+    // change tab when button clicked
     function changeTab(e) {
         setCurrentTab(e.target.value)
         console.log(settings)
       
     }
 
+    // save update settings with form data when save button clicked
     function handleSaveSettings() {
         try {
+            saveSettingsToSettings()
+            saveSettingsToFirebase()
             setError()
-            setSuccess('Settings saved successfully!')
-            
+            setSuccess('Settings saved successfully!') 
         } catch (e){
             setSuccess()
             setError('Failed to save settings: ' + JSON.stringify('error'))
         }
     }
+
+    function saveSettingsToSettings() {
+        const formData = configureFormRef.current
+        console.log(formData)
+    }
+
+    // function to save settings to firebase car document when settings saved
+    function saveSettingsToFirebase() {
+        // TODO
+    }  
 
     /*
     function handleSaveAmpHourSettings(e){
@@ -68,11 +87,36 @@ export default function Configure() {
       }
       */
 
+    // hide alerts when clicked
     function hideAlerts() {
         setError()
         setSuccess()
     }
 
+    // function to update a document in the cars collection in firebase
+    // document will contain all the settings for that car:
+    // - car_name
+    // - battery_capacity
+    // - dweet_name
+    // - large_gear_teeth 
+    // - owner ( current user uid )
+    // - wheel circumference
+    function updateCar() {
+        // TODO
+        // update document with new values
+    }
+    
+    // function to add a new car to the cars collection in firebase
+    function addNewCar() {
+        // TODO
+        // add new document with default values
+    }
+
+    // function to delete a car from the cars collection in firebase
+    function deleteCar() {
+        // TODO
+        // delete document
+    }
 
   return (
     <>
@@ -91,6 +135,7 @@ export default function Configure() {
         {error && <p onClick={hideAlerts} className="alert alert-danger alert-dismissible">{error}</p>}
         {success && <p onClick={hideAlerts} className="alert alert-success alert-dismissible">{success}</p>}
 
+        <form ref={configureFormRef}>
         <div class="tab" hidden={determineHide(0)}>
             <h3>Account</h3>
             <div class="form-group my-3">
@@ -166,7 +211,9 @@ export default function Configure() {
         <div class="fixed-bottom d-flex">
         <button onClick={handleSaveSettings} type="button" class="btn btn-primary btn-block m-1">Save</button>
         </div>
+        </form>
     </div>
+    
     
 
   

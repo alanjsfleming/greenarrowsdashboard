@@ -31,7 +31,7 @@ export default function HomePage() {
   }
 
   useEffect(()=>{
-    const interval = setInterval(handleUpdateTelemetry,1500);
+    const interval = setInterval(handleUpdateTelemetry,1000);
     return () => clearInterval(interval);
   })
 
@@ -39,7 +39,13 @@ export default function HomePage() {
     <>
     <MenuBar />
     <h2 class="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
-    {errorFetching>8 && <div class="alert alert-warning text-center mx-2">Unable to fetch data from car.<br></br> Check that Dweet has data.</div>}
+    {errorFetching>8 && 
+    <div class="alert alert-warning mx-2 text-center">
+      <p>Unable to fetch data from car.</p>
+      <ul class="text-center">
+        <li>Check that Dweet has data.</li>
+      </ul>
+    </div>}
     <div class="d-flex flex-column">
       <CarSummary name={'GA1'} telemetry={telemetry}/>
       <br></br>
