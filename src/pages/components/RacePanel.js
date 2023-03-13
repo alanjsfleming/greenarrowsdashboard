@@ -46,6 +46,7 @@ export default function RacePanel() {
     }
   },[settings])
 
+
   function handleReset(e){
     if (resetButton === 'btn-primary') {
 
@@ -57,6 +58,7 @@ export default function RacePanel() {
 
 }
 
+// when a primed reset button is clicked off of it will put the button back to its normal condition
 function handleUnfocusReset(e){
   setResetButton('btn-primary')
 }
@@ -72,6 +74,7 @@ function handleUnfocusReset(e){
       raceStart: currentTime
     }))
   }
+
 
   function timeSinceStart() {
     const currentTime=Date.now()
@@ -98,6 +101,7 @@ function handleUnfocusReset(e){
     return string
   }
 
+  // updates the race time every second with the elapsed time in minutes and seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setRaceTime(elapsedTimeIntoString())
