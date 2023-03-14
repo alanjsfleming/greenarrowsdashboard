@@ -51,7 +51,7 @@ export default function Telemetry({telemetry,settings}) {
       </div>
 
       <div class="grid-item">
-        <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.bigGear)} units="th Gear" kind="gauge"/>
+        <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.teethGear)} units="th Gear" kind="gauge"/>
       </div>
       <div class="grid-item">
         <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.ampHours)} units="%" kind="gauge"/>

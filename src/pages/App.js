@@ -17,8 +17,6 @@ function App() {
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState([])
 
-  const GearSettingsRef = useRef();
-  const AmpHourSettingsRef = useRef()
 
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
   const cardweetname='https://dweet.io/get/latest/dweet/for/Albyn1'

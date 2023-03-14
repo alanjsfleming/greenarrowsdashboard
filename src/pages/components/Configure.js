@@ -55,21 +55,43 @@ export default function Configure() {
     }
 
     // save update settings with form data when save button clicked
-    function handleSaveSettings() {
+    const handleSaveSettings = (e) => {
         try {
-            saveSettingsToSettings()
+            saveSettingsToSettings(e)
             saveSettingsToFirebase()
             setError()
             setSuccess('Settings saved successfully!') 
         } catch (e){
             setSuccess()
-            setError('Failed to save settings: ' + JSON.stringify('error'))
+            setError('Failed to save settings.')
         }
     }
 
-    function saveSettingsToSettings() {
-        const formData = configureFormRef.current
-        console.log(formData)
+    function saveSettingsToSettings(e) {
+        console.log(settings)
+        const teamName = configureFormRef.current.elements.teamName.value ? configureFormRef.current.elements.teamName.value : settings.teamName
+        const carName = configureFormRef.current.elements.carName.value ? configureFormRef.current.elements.carName.value : settings.carName
+        const dweetUrl = configureFormRef.current.elements.dweetUrl.value ? configureFormRef.current.elements.dweetUrl.value : settings.dweetUrl
+        const ampHours = configureFormRef.current.elements.ampHours.value ? configureFormRef.current.elements.ampHours.value : settings.ampHours
+        const teethGear = configureFormRef.current.elements.teethGear.value ? configureFormRef.current.elements.teethGear.value : settings.teethGear
+        const raceLength = configureFormRef.current.elements.raceLength.value ? configureFormRef.current.elements.raceLength.value : settings.raceLength
+        const trackLength = configureFormRef.current.elements.trackLength.value ? configureFormRef.current.elements.trackLength.value : settings.trackLength
+        const theme = configureFormRef.current.elements.theme.value ? configureFormRef.current.elements.theme.value : settings.theme
+
+        console.log(settings.teamName,teamName)
+        newSettings(prevSettings => ({
+            ...prevSettings,
+            teamName:teamName,
+            carName:carName,
+            dweetUrl:dweetUrl,
+            ampHours:ampHours,
+            teethGear:teethGear,
+            raceLength:raceLength,
+            trackLength:trackLength,
+            theme:theme
+        }))
+
+        console.log(teamName,settings.teamName)
     }
 
     // function to save settings to firebase car document when settings saved
@@ -132,15 +154,15 @@ export default function Configure() {
         
         <h1 class="pt-2 pb-3">Settings</h1>
 
-        {error && <p onClick={hideAlerts} className="alert alert-danger alert-dismissible">{error}</p>}
-        {success && <p onClick={hideAlerts} className="alert alert-success alert-dismissible">{success}</p>}
+        {error && <p onClick={hideAlerts} className="alert alert-danger">{error}</p>}
+        {success && <p onClick={hideAlerts} className="alert alert-success">{success}</p>}
 
         <form ref={configureFormRef}>
         <div class="tab" hidden={determineHide(0)}>
             <h3>Account</h3>
             <div class="form-group my-3">
-                <label for="team-name">Change Team Name</label>
-                <input type="text" class="form-control" id="team-name" placeholder="Team name"></input>
+                <label for="teamName">Change Team Name</label>
+                <input type="text" class="form-control" id="teamName" placeholder={settings.teamName}></input>
             </div>
 
             <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password Here</button></Link>
@@ -157,23 +179,23 @@ export default function Configure() {
                 </div>
                 <div class="card-body">
                 <div class="form-group">
-                    <label for="car-name">Car Name</label>
-                    <input type="text" class="form-control" id="car-name" placeholder="My Car"></input>
+                    <label for="carName">Car Name</label>
+                    <input type="text" class="form-control" id="carName" placeholder={settings.carName}></input>
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="dweet-url">Dweet Thing name</label>
-                    <input type="text" class="form-control" id="dweet-url" placeholder="Thing name"></input>
+                    <label for="dweetUrl">Dweet Thing name</label>
+                    <input type="text" class="form-control" id="dweetUrl" placeholder={settings.dweetUrl}></input>
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="amp-hours">Battery Capacity (Amp Hours)</label>
-                    <input type="number" class="form-control" id="amp-hours" placeholder="28"></input>
+                    <label for="ampHours">Battery Capacity (Amp Hours)</label>
+                    <input type="number" class="form-control" id="ampHours" placeholder={settings.ampHours}></input>
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="teeth-gear">Teeth on larger gear</label>
-                    <input type="number" class="form-control" id="teeth-gear" placeholder="58"></input>
+                    <label for="teethGear">Teeth on larger gear</label>
+                    <input type="number" class="form-control" id="teethGear" placeholder={settings.teethGear}></input>
                 </div>
                 </div>
             </div>
@@ -187,13 +209,13 @@ export default function Configure() {
         <div class="tab" hidden={determineHide(2)}>
             <h3>Race</h3>
             <div class="form-group my-3">
-                <label for="race-length">Race Length (mins)</label>
-                <input type="number" class="form-control" id="race-length" placeholder="90"></input>
+                <label for="raceLength">Race Length (mins)</label>
+                <input type="number" class="form-control" id="raceLength" placeholder={settings.raceLength}></input>
             </div>
 
             <div class="form-group my-3">
-                <label for="track-length">Manual Track Length (m)</label>
-                <input type="number" class="form-control" id="track-length" placeholder="3800"></input>
+                <label for="trackLength">Manual Track Length (m)</label>
+                <input type="number" class="form-control" id="trackLength" placeholder={settings.trackLength}></input>
             </div>
         </div>
 
