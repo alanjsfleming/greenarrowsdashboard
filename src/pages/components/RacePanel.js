@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 export default function RacePanel() {
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
 
+  
   const { resetrace,startTime,startrace } = useRace()
 
   const [resetButton,setResetButton] = useState('btn-primary')
@@ -124,10 +125,10 @@ function handleUnfocusReset(e){
   return (
     <div class="card car-summary" id="raceTimer">
         <div class="card-header">
-            <h3 class="card-title mt-1 text-center">Race {raceTime}</h3>
+            <h3 class="card-title mt-1 text-center">Race {(raceTime < settings.raceLength) ? raceTime : settings.raceLength+':00'}</h3>
         </div>
         <div class="card-body">
-            <progress class="progress" min="0" max="90" value={raceTimeValue} ></progress>
+            <progress class="progress" min="0" max={settings.raceLength} value={raceTimeValue} ></progress>
             <div class="btn-group w-100 mt-2">
                 <button disabled={raceStart} onClick={handleStart} class="btn btn-primary btn-block ">Start</button>
                 <button onClick={handleReset} onBlur={handleUnfocusReset} class={"btn btn-block "+resetButton} >Reset</button>

@@ -145,6 +145,7 @@ export default function Configure() {
     <MenuBar />
 
     <div class="mx-1 d-flex flex-column justify-content-between text-center mb-5">
+        
         <div class="text-center btn-group" role="group" aria-label="Settings Tabs">
             <button value="0" class={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
             <button value="1" class={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab}>Cars</button>
@@ -203,7 +204,7 @@ export default function Configure() {
         
 
             <br></br>
-            <button type="button" disabled class="btn btn-primary btn-block">Add new</button>
+            <button type="button" disabled class="btn btn-primary btn-block">Add car</button>
         </div>
 
         <div class="tab" hidden={determineHide(2)}>

@@ -218,6 +218,17 @@ progress[value] {
     height:1.5rem;
 }
 
+.homepage-dash {
+    max-width:40em;
+    margin: auto;
+}
+
+.configure-dash {
+    max-width:40em;
+    margin: auto;
+    
+}
+
 progress[value]::-webkit-progress-bar {
     background-color: #b4c0be;
 }
@@ -245,8 +256,9 @@ progress[value]::-webkit-progress-value {
 }
 
 .car-summary {
-    width:100%;
-}
+    width:95%;
+    margin:auto;
+  }
 
 .car-summary-title {
 

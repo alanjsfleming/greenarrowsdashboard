@@ -19,7 +19,7 @@ function App() {
 
 
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
-  const cardweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
+  const cardweetname='https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl
 
   // Load saved settings from browser storage
   useEffect(() => {

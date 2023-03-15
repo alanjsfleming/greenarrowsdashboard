@@ -13,6 +13,7 @@ export function useRace() {
 
 export function RaceProvider({ children }) {
     const [startTime,setStartTime] = useState()
+    const [settings,setSettings] = useState()
 
     // use effect to load start time from local storage on refresh
     /*
