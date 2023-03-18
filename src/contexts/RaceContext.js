@@ -1,4 +1,5 @@
 import React, { useContext,useState,useEffect } from 'react'
+import { db } from '../firebase'
 
 
 const RaceContext = React.createContext()
@@ -15,6 +16,9 @@ export function RaceProvider({ children }) {
     const [startTime,setStartTime] = useState()
     const [settings,setSettings] = useState()
 
+    
+    
+    
     // use effect to load start time from local storage on refresh
     /*
     useEffect(() => {
@@ -23,6 +27,8 @@ export function RaceProvider({ children }) {
 
     },[])
     */
+
+    
 
     function startrace() {
         setStartTime(Date.now())

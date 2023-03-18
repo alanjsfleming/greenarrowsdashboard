@@ -1,16 +1,20 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MenuBar from './MenuBar'
-
+import { doc,getFirestore,updateDoc} from 'firebase/firestore'
+import { useAuth } from '../../contexts/AuthContext'
+import { db } from '../../firebase'
 
 // change this all to be a modal?
 export default function Configure() {
-
+    const { currentUser,updatedisplayname } = useAuth()
     const configureFormRef = useRef()
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1])
     const [settings,newSettings] = useState([])
     const [error,setError] = useState()
     const [success,setSuccess] = useState()
+
+    const userDocRef = doc(db,"users", currentUser.uid)
 
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
 
@@ -25,6 +29,8 @@ export default function Configure() {
       // save settings to local storage and firebase on settings change
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+        saveSettingsToFirebase()
+            .catch((e)=>{console.log(e)})
         // call function to save settings to firebase
         // not doing that here because it will save settings every time page loading???
     },[settings])
@@ -58,10 +64,12 @@ export default function Configure() {
     const handleSaveSettings = (e) => {
         try {
             saveSettingsToSettings(e)
-            saveSettingsToFirebase()
+            
+            
             setError()
             setSuccess('Settings saved successfully!') 
         } catch (e){
+            console.log(e)
             setSuccess()
             setError('Failed to save settings.')
         }
@@ -95,8 +103,21 @@ export default function Configure() {
     }
 
     // function to save settings to firebase car document when settings saved
-    function saveSettingsToFirebase() {
-        // TODO
+    async function saveSettingsToFirebase() {
+        const userSettings = {  team_name : settings.teamName,
+                                race_length : settings.raceLength,
+                                race_start_time : settings.raceStart,
+                                track_length : settings.trackLength,
+                                appearance_theme : settings.theme 
+                            }
+        updatedisplayname(settings.teamName)
+        updateDoc(userDocRef, userSettings, { merge: true })
+        .then(userDocRef => {
+            console.log("Document written with ID: ", userDocRef.id);
+        })
+        .catch(error => {
+            console.error("Error adding document: ", error);
+        });
     }  
 
     /*
@@ -124,14 +145,29 @@ export default function Configure() {
     // - owner ( current user uid )
     // - wheel circumference
     function updateCar() {
-        // TODO
-        // update document with new values
+        
     }
     
     // function to add a new car to the cars collection in firebase
     function addNewCar() {
         // TODO
+        //if (settings.car) {
+         //   setError('There is currently a limit of one car per user.')
+          //  return
+        //}
         // add new document with default values
+        const newCar = [{    car_name : 'My',
+                            dweet_name : 'Thing',
+                            battery_capacity : 28, 
+                            large_gear_teeth : 60,
+                            owner: '123456789',
+                            wheel_circumference : 4
+                     }]
+        const previousCars = settings.cars
+        newSettings(prevSettings => ({
+            ...prevSettings,
+            cars : previousCars.concat(newCar)
+        }))
     }
 
     // function to delete a car from the cars collection in firebase
@@ -140,6 +176,40 @@ export default function Configure() {
         // delete document
     }
 
+    /*
+    const MapTeamCars = () => {
+        if (settings.car) {
+            return settings.cars.map((car,index) => {
+                return <div class="card w-100 m-auto">
+                <div class="card-header">
+                    <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
+                </div>
+                <div class="card-body">
+                <div class="form-group">
+                    <label for="carName">Car Name</label>
+                    <input type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="dweetUrl">Dweet Thing name</label>
+                    <input type="text" class="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="ampHours">Battery Capacity (Amp Hours)</label>
+                    <input type="number" class="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="teethGear">Teeth on larger gear</label>
+                    <input type="number" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
+                </div>
+                </div>
+            </div>
+            })
+        }
+    }
+*/
   return (
     <>
     <MenuBar />
@@ -173,10 +243,9 @@ export default function Configure() {
 
         <div class="tab" hidden={determineHide(1)}>
             <h3>Cars</h3>
-
             <div class="card w-100 m-auto">
                 <div class="card-header">
-                    <h4 class="card-title">Car 1: GA1</h4>
+                    <h4 class="card-title">Car 1: {settings.carName}</h4>
                 </div>
                 <div class="card-body">
                 <div class="form-group">
@@ -200,11 +269,12 @@ export default function Configure() {
                 </div>
                 </div>
             </div>
+            
 
         
 
             <br></br>
-            <button type="button" disabled class="btn btn-primary btn-block">Add car</button>
+            <button type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
         </div>
 
         <div class="tab" hidden={determineHide(2)}>
@@ -217,6 +287,15 @@ export default function Configure() {
             <div class="form-group my-3">
                 <label for="trackLength">Manual Track Length (m)</label>
                 <input type="number" class="form-control" id="trackLength" placeholder={settings.trackLength}></input>
+            </div>
+
+    
+            <div class="form-group my-3">
+                <label for="theme">Lap Increments by distance</label>
+                <select class="form-control" id="lapIncrementDistance">
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
             </div>
         </div>
 

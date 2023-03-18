@@ -22,13 +22,14 @@ export default function Main() {
       <RaceProvider>
         <BrowserRouter basename="/">
           <Routes>
-            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
+           
             <Route path="/login" element={<Login />}/>
-            <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
-            <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
             <Route path="/register" element={<Signup />}/>
             <Route path="/reset-password" element={<PasswordReset />} />
-            <Route path="/user-setup" element={<UserSetup />}/>
+            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
+            <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
+            <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
+    
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
             <Route path="/loading" element={<Loading />} />
