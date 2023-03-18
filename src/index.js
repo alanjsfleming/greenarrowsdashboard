@@ -24,7 +24,7 @@ export default function Main() {
           <Routes>
            
             <Route path="/login" element={<Login />}/>
-            <Route path="/register" element={<Signup />}/>
+            
             <Route path="/reset-password" element={<PasswordReset />} />
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
@@ -47,7 +47,7 @@ root.render(
     <Main/>
 
 );
-
+// <Route path="/register" element={<Signup />}/>
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

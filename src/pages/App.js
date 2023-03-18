@@ -16,11 +16,9 @@ import Loading from './Loading';
 function App() {
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState([])
-
+  const [fetchURL,setFetchURL] = useState()
 
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
-  const cardweetname='https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl
-
   // Load saved settings from browser storage
   useEffect(() => {
     const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
@@ -31,6 +29,7 @@ function App() {
   // When settings change, add them to local storage
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
   },[settings])
   // TODO - rewrite to save to firebase so user can have same settings wherever they login
 
@@ -46,7 +45,7 @@ function App() {
   
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
-    fetch(cardweetname)
+    fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
      newTelemetry([data.with[0].content])

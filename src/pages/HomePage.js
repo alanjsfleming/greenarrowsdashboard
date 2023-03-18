@@ -17,7 +17,7 @@ export default function HomePage() {
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState()
   const [errorFetching, setErrorFetching] = useState(0)
-
+  const [fetchURL,setFetchURL] = useState()
   const { currentUser } = useAuth()
 
   const { resetrace,startTime,startrace } = useRace()
@@ -65,16 +65,18 @@ export default function HomePage() {
     try {
     setRaceStart(settings.raceStart)
     setRaceLength(settings.raceLength)
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
     } catch {
       console.log('raceStart not set')
     }
   },[settings])
   
-
-  const cardweetname='https://dweet.io/get/latest/dweet/for/Albyn1'
+  
+  
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
-    fetch(cardweetname)
+    console.log(fetchURL)
+    fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
       setErrorFetching(0)
@@ -172,7 +174,7 @@ useEffect(() => {
       </div>
     </div>}
     <div class="d-flex homepage-dash flex-column">
-      <CarSummary name={'GA1'} telemetry={telemetry}/>
+      <CarSummary name={(settings) ? settings.carName : "Car 1"} telemetry={telemetry}/>
       <br></br>
       <div class="card car-summary" id="raceTimer">
       <div class="card-header">
