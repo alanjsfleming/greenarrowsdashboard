@@ -34,7 +34,10 @@ export default function HomePage() {
     try {
     loadSettingsFromFirebase()
     const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
-    if (storedSettings) {newSettings(storedSettings)};  
+    if (storedSettings) {
+      newSettings(storedSettings)
+      
+    };  
     } catch (e) {console.log(e)}
   },[])
  
@@ -48,8 +51,9 @@ export default function HomePage() {
         raceLength:data.race_length,
         trackLength:data.track_length,
         theme:data.appearance_theme,
+        raceStart:data.race_start_time
     }))
-    console.log(docSnap.data)
+    
     }).catch((error) => {
       console.log("Error getting document:", error);
     });
@@ -58,6 +62,7 @@ export default function HomePage() {
   // save settings to local storage on settings change
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+    
   },[settings])
 
   // set state start time on component load
@@ -75,6 +80,7 @@ export default function HomePage() {
   
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
     console.log(fetchURL)
     fetch(fetchURL)
     .then((response)=>response.json())
@@ -88,14 +94,17 @@ export default function HomePage() {
   }
 
   useEffect(()=>{
-    const interval = setInterval(handleUpdateTelemetry,1000);
-    return () => clearInterval(interval);
-  })
+    const telemetryInterval = setInterval(handleUpdateTelemetry,1000);
+    return () => clearInterval(telemetryInterval);
+  },[fetchURL])
 
   
 function handleReset(e){
   if (resetButton === 'btn-primary') {
-
+    try {
+      
+    } catch {}
+    
     setResetButton('btn-danger')
 } else {
   setResetButton('btn-primary')
@@ -152,11 +161,11 @@ function elapsedTimeIntoString() {
 
 // updates the race time every second with the elapsed time in minutes and seconds
 useEffect(() => {
-  const interval = setInterval(() => {
+  const timerInterval = setInterval(() => {
     setRaceTime(elapsedTimeIntoString())
     setRaceTimeValue(elapsedTimeIntoValue())
   }, 100)
-  return () => clearInterval(interval);
+  return () => clearInterval(timerInterval);
 },[raceStart]);
 
   return (

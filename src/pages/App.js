@@ -29,7 +29,7 @@ function App() {
   // When settings change, add them to local storage
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
+    
   },[settings])
   // TODO - rewrite to save to firebase so user can have same settings wherever they login
 
@@ -45,6 +45,7 @@ function App() {
   
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
     fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 

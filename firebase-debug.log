@@ -1,0 +1,81 @@
+[debug] [2023-03-18T13:39:53.889Z] ----------------------------------------------------------------------
+[debug] [2023-03-18T13:39:53.894Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\alanj\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2023-03-18T13:39:53.895Z] CLI Version:   11.24.1
+[debug] [2023-03-18T13:39:53.895Z] Platform:      win32
+[debug] [2023-03-18T13:39:53.896Z] Node Version:  v16.18.0
+[debug] [2023-03-18T13:39:53.897Z] Time:          Sat Mar 18 2023 13:39:53 GMT+0000 (Greenwich Mean Time)
+[debug] [2023-03-18T13:39:53.897Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-03-18T13:39:54.002Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-03-18T13:39:54.003Z] > authorizing via signed-in user (alanjsfleming5@gmail.com)
+[debug] [2023-03-18T13:39:54.003Z] [iam] checking project f24telemetry for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2023-03-18T13:39:54.007Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/f24telemetry:testIamPermissions [none]
+[debug] [2023-03-18T13:39:54.007Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/f24telemetry:testIamPermissions x-goog-quota-user=projects/f24telemetry
+[debug] [2023-03-18T13:39:54.007Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/f24telemetry:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2023-03-18T13:39:54.257Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/f24telemetry:testIamPermissions 200
+[debug] [2023-03-18T13:39:54.257Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/f24telemetry:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2023-03-18T13:39:54.259Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/f24telemetry/serviceAccounts/f24telemetry@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2023-03-18T13:39:54.259Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/f24telemetry/serviceAccounts/f24telemetry@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2023-03-18T13:39:54.850Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/f24telemetry/serviceAccounts/f24telemetry@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2023-03-18T13:39:54.850Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/f24telemetry/serviceAccounts/f24telemetry@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2023-03-18T13:39:54.851Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry [none]
+[debug] [2023-03-18T13:39:55.119Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry 200
+[debug] [2023-03-18T13:39:55.119Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry {"projectId":"f24telemetry","projectNumber":"703216325012","displayName":"f24telemetry","name":"projects/f24telemetry","resources":{"hostingSite":"f24telemetry","realtimeDatabaseInstance":"f24telemetry-default-rtdb"},"state":"ACTIVE","etag":"1_dda5511d-1e0a-4f8e-b750-e548c5636c48"}
+[debug] [2023-03-18T13:39:55.120Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry [none]
+[debug] [2023-03-18T13:39:55.364Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry 200
+[debug] [2023-03-18T13:39:55.364Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry {"projectId":"f24telemetry","projectNumber":"703216325012","displayName":"f24telemetry","name":"projects/f24telemetry","resources":{"hostingSite":"f24telemetry","realtimeDatabaseInstance":"f24telemetry-default-rtdb"},"state":"ACTIVE","etag":"1_dda5511d-1e0a-4f8e-b750-e548c5636c48"}
+[info] 
+[info] === Deploying to 'f24telemetry'...
+[info] 
+[info] i  deploying database, firestore, functions, hosting 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] +  functions: Finished running predeploy script. 
+[info] i  database: checking rules syntax... 
+[debug] [2023-03-18T13:40:09.537Z] >>> [apiv2][query] GET https://firebasedatabase.googleapis.com/v1beta/projects/f24telemetry/locations/-/instances/f24telemetry-default-rtdb [none]
+[debug] [2023-03-18T13:40:09.828Z] <<< [apiv2][status] GET https://firebasedatabase.googleapis.com/v1beta/projects/f24telemetry/locations/-/instances/f24telemetry-default-rtdb 200
+[debug] [2023-03-18T13:40:09.828Z] <<< [apiv2][body] GET https://firebasedatabase.googleapis.com/v1beta/projects/f24telemetry/locations/-/instances/f24telemetry-default-rtdb {"name":"projects/703216325012/locations/europe-west1/instances/f24telemetry-default-rtdb","project":"projects/703216325012","databaseUrl":"https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app","type":"DEFAULT_DATABASE","state":"ACTIVE"}
+[debug] [2023-03-18T13:40:09.831Z] >>> [apiv2][query] PUT https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json dryRun=true
+[debug] [2023-03-18T13:40:09.831Z] >>> [apiv2][body] PUT https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json "{\n  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */\n  \"rules\": {\n    \".read\": false,\n    \".write\": false\n  }\n}"
+[debug] [2023-03-18T13:40:09.979Z] <<< [apiv2][status] PUT https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json 200
+[debug] [2023-03-18T13:40:09.979Z] <<< [apiv2][body] PUT https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app/.settings/rules.json {"status":"ok"}
+[info] +  database: rules syntax for database f24telemetry-default-rtdb is valid 
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2023-03-18T13:40:09.983Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/f24telemetry:test [none]
+[debug] [2023-03-18T13:40:09.983Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/f24telemetry:test [omitted]
+[debug] [2023-03-18T13:40:10.689Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/f24telemetry:test 200
+[debug] [2023-03-18T13:40:10.690Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/f24telemetry:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2023-03-18T13:40:10.692Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry [none]
+[debug] [2023-03-18T13:40:10.953Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry 200
+[debug] [2023-03-18T13:40:10.953Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry {"projectId":"f24telemetry","projectNumber":"703216325012","displayName":"f24telemetry","name":"projects/f24telemetry","resources":{"hostingSite":"f24telemetry","realtimeDatabaseInstance":"f24telemetry-default-rtdb"},"state":"ACTIVE","etag":"1_dda5511d-1e0a-4f8e-b750-e548c5636c48"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2023-03-18T13:40:10.957Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-03-18T13:40:10.957Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/f24telemetry
+[debug] [2023-03-18T13:40:10.959Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/runtimeconfig.googleapis.com [none]
+[debug] [2023-03-18T13:40:10.959Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/f24telemetry
+[debug] [2023-03-18T13:40:10.960Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudbuild.googleapis.com [none]
+[debug] [2023-03-18T13:40:10.960Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudbuild.googleapis.com x-goog-quota-user=projects/f24telemetry
+[debug] [2023-03-18T13:40:10.962Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/artifactregistry.googleapis.com [none]
+[debug] [2023-03-18T13:40:10.962Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/artifactregistry.googleapis.com x-goog-quota-user=projects/f24telemetry
+[debug] [2023-03-18T13:40:11.818Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudfunctions.googleapis.com 200
+[debug] [2023-03-18T13:40:11.818Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudfunctions.googleapis.com [omitted]
+[info] +  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2023-03-18T13:40:11.820Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/artifactregistry.googleapis.com 200
+[debug] [2023-03-18T13:40:11.820Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/artifactregistry.googleapis.com [omitted]
+[info] +  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2023-03-18T13:40:11.823Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/runtimeconfig.googleapis.com 200
+[debug] [2023-03-18T13:40:11.823Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2023-03-18T13:40:11.834Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudbuild.googleapis.com 200
+[debug] [2023-03-18T13:40:11.835Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/f24telemetry/services/cloudbuild.googleapis.com [omitted]
+[info] +  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2023-03-18T13:40:11.836Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry/adminSdkConfig [none]
+[debug] [2023-03-18T13:40:12.094Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry/adminSdkConfig 200
+[debug] [2023-03-18T13:40:12.094Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/f24telemetry/adminSdkConfig {"projectId":"f24telemetry","databaseURL":"https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app","storageBucket":"f24telemetry.appspot.com"}
+[debug] [2023-03-18T13:40:12.095Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/f24telemetry/configs [none]
+[debug] [2023-03-18T13:40:12.567Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/f24telemetry/configs 200
+[debug] [2023-03-18T13:40:12.567Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/f24telemetry/configs {}

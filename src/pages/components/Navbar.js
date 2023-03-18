@@ -21,9 +21,7 @@ export default function MenuBar() {
                     <a class="nav-link">Features</a>
                 </li>
             </ul>
-            <div class="d-flex">
-                <a href="#"><button class="btn btn-primary">Register</button></a>
-            </div>
+            
         </div>
         </div>
     </nav>
