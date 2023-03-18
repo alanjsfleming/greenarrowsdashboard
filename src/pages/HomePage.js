@@ -188,7 +188,7 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
-      <LapSummary />
+      
     </div>
    
     
@@ -196,6 +196,7 @@ useEffect(() => {
   )
 }
 
+// <LapSummary/>
 // <RacePanel />
 // {settings.raceLength}
 // (raceTime < settings.raceLength) ? raceTime : settings.raceLength+':00'}

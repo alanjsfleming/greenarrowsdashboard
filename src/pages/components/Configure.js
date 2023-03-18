@@ -274,7 +274,7 @@ export default function Configure() {
         
 
             <br></br>
-            <button type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
+            <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
         </div>
 
         <div class="tab" hidden={determineHide(2)}>

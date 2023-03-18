@@ -31,8 +31,11 @@ export default function UserSetup() {
           await updatedisplayname(teamNameRef.current.value)
           await updateDoc(userDocRef, {
             "team_name":teamNameRef.current.value,
-            "dweet_url":dweetURLRef.current.value,
-            "car_name":carNameRef.current.value
+            "appearance_theme":"light",
+            "track_length":"500",
+            "race_length":"90",
+            "race_start_time":null
+
           })
         } catch (e) {
             console.log(e)
