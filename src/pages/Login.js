@@ -50,7 +50,7 @@ export default function Login() {
             
         <div  class="mt-2">
           <Link to="/reset-password">Forgot password?</Link>
-          <p>Dont have an account? <a href="#">Try for free!</a></p>
+          <p>Dont have an account? <Link to="/register">Try for free!</Link></p>
         </div>
       </form>
     </div>

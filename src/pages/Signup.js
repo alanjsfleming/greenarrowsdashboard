@@ -3,6 +3,7 @@ import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function Signup() {
@@ -12,6 +13,7 @@ export default function Signup() {
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
     const { signup }  = useAuth()
+    const navigate = useNavigate()
 
     const handleSubmit = async(e)=> {
         e.preventDefault()
@@ -22,7 +24,7 @@ export default function Signup() {
       
             setError('')
             setLoading(true)
-            await signup(emailRef.current.value,passwordRef.current.value)
+            await signup(emailRef.current.value,passwordRef.current.value).then(navigate('/'))
         } catch (e) {
             console.log(e)
             setError('Could not create user')
