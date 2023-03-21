@@ -45,7 +45,6 @@ body {
     border-top-left-radius: 100% 200%;
     border-top-right-radius: 100% 200%;
     overflow: hidden !important;
-    outline: 1px solid rgba(0,0,0,0.2);
 }
 
 .gauge-fill {

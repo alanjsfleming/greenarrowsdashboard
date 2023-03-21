@@ -236,7 +236,7 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
-      <button class="btn btn-danger mx-2" onClick={tempFuncResetRunData}>Reset Data</button>
+      <button class="btn btn-danger mx-3" onClick={tempFuncResetRunData}>Reset Data</button>
       <br></br>
       <LapSummary settings={settings}/>
     </div>
