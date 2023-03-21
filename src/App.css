@@ -224,8 +224,8 @@ progress[value] {
 }
 
 .configure-dash {
-    max-width:40em;
-    margin: auto;
+    max-width: 60rem;
+    margin:auto;
 }
 
 progress[value]::-webkit-progress-bar {

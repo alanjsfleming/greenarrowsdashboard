@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from './components/MenuBar'
-import Configure from './components/Configure';
 import Loading from './Loading';
 
 /*import { useState,useEffect } from 'react';*/

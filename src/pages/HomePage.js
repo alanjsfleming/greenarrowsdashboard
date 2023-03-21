@@ -60,13 +60,11 @@ export default function HomePage() {
   }
 
   // save settings to local storage on settings change
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-    
-  },[settings])
+  
 
   // set state start time on component load
   useEffect(()=>{
+    localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
     try {
     setRaceStart(settings.raceStart)
     setRaceLength(settings.raceLength)
@@ -81,17 +79,29 @@ export default function HomePage() {
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
     setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
-    console.log(fetchURL)
     fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
       setErrorFetching(0)
      newTelemetry([data.with[0].content])
-    })
+     
+     }
+     
+    )
     .catch(e =>{
       setErrorFetching(errorFetching+1)
     });
   }
+
+  // use effect to update running telemetry when telemetry state changes
+  
+
+  useEffect(()=>{
+    if (telemetry.length > 0) {
+      appendDataToSettings(telemetry)
+    }
+    console.log(telemetry)
+  },[telemetry])
 
   useEffect(()=>{
     const telemetryInterval = setInterval(handleUpdateTelemetry,1000);
@@ -157,6 +167,24 @@ function elapsedTimeIntoString() {
   const string = `${mins}:${seconds}`
   
   return string
+}
+
+// When race is running, save each request to local storage settings.running_data array
+// function to append data packet to settings.running_data array
+function appendDataToSettings(data) {
+  // if settings.running_data is undefined, create it
+  if (!settings.hasOwnProperty('running_data')) {
+    newSettings(prevSettings=>({
+      ...prevSettings,
+      running_data: [data]
+      }))
+  } else {
+    // if settings.running_data is defined, append the data to it
+  newSettings(prevSettings=>({
+    ...prevSettings,
+    running_data: [...prevSettings.running_data, data]
+  }))
+  }
 }
 
 // updates the race time every second with the elapsed time in minutes and seconds

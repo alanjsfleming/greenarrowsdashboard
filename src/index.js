@@ -10,11 +10,12 @@ import Logout from './pages/Logout';
 import Signup from './pages/Signup';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
-import Configure from './pages/components/Configure';
+import Configure from './pages/Configure';
 import PasswordReset from './pages/PasswordReset'
 import UserSetup from './pages/UserSetup'
 import { RaceProvider } from './contexts/RaceContext';
 import Loading from './pages/Loading';
+
 
 export default function Main() {
   return (

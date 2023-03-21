@@ -1,9 +1,9 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import MenuBar from './MenuBar'
+import MenuBar from './components/MenuBar'
 import { doc,getFirestore,updateDoc} from 'firebase/firestore'
-import { useAuth } from '../../contexts/AuthContext'
-import { db } from '../../firebase'
+import { useAuth } from '../contexts/AuthContext'
+import { db } from '../firebase'
 
 // change this all to be a modal?
 export default function Configure() {
@@ -13,6 +13,7 @@ export default function Configure() {
     const [settings,newSettings] = useState([])
     const [error,setError] = useState()
     const [success,setSuccess] = useState()
+    const [carDropdownShow,setCarDropdownShow] = useState(false)
 
     const userDocRef = doc(db,"users", currentUser.uid)
 
@@ -55,6 +56,7 @@ export default function Configure() {
 
     // change tab when button clicked
     function changeTab(e) {
+        setCarDropdownShow(false)
         setCurrentTab(e.target.value)
         console.log(settings)
       
@@ -176,6 +178,22 @@ export default function Configure() {
         // delete document
     }
 
+    function handleCarDropDownClick(e) {
+        if (carDropdownShow) {
+            setCarDropdownShow(false)
+        } else {
+            setCarDropdownShow(true)
+        }
+    }
+
+    function determineCarDropdownShow() {
+        if (carDropdownShow) {
+            return "show"
+        } else {
+            return ""
+        }
+    }
+
     /*
     const MapTeamCars = () => {
         if (settings.car) {
@@ -214,11 +232,19 @@ export default function Configure() {
     <>
     <MenuBar />
 
-    <div class="mx-1 d-flex flex-column justify-content-between text-center mb-5">
+    <div class="d-flex flex-column justify-content-between text-center mb-5 configure-dash">
         
-        <div class="text-center btn-group" role="group" aria-label="Settings Tabs">
+        <div class="text-center mx-1 btn-group" role="group" aria-label="Settings Tabs">
             <button value="0" class={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
-            <button value="1" class={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab}>Cars</button>
+            
+            <div class={"col-3 dropdown "+determineCarDropdownShow()}>
+            <button class={"dropdown-toggle btn btn-secondary btn-block "+determineActive(1)} onClick={handleCarDropDownClick} >Cars</button>
+            <div class={"dropdown-menu "+determineCarDropdownShow()} aria-labelledby="dropdownMenuButton">
+                <button  value="1" class="dropdown-item" onClick={changeTab}>Overview</button>
+                <a class="dropdown-item" href="#">Car 1:</a>
+            </div>
+        </div>
+            
             <button value="2" class={"btn btn-secondary col-3 "+determineActive(2)} onClick={changeTab}>Data</button>
             <button value="3" class={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
         </div>
@@ -229,7 +255,7 @@ export default function Configure() {
         {success && <p onClick={hideAlerts} className="alert alert-success">{success}</p>}
 
         <form ref={configureFormRef}>
-        <div class="tab" hidden={determineHide(0)}>
+        <div class="tab  mx-1" hidden={determineHide(0)}>
             <h3>Account</h3>
             <div class="form-group my-3">
                 <label for="teamName">Change Team Name</label>
@@ -241,7 +267,7 @@ export default function Configure() {
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
         </div>
 
-        <div class="tab" hidden={determineHide(1)}>
+        <div class="tab mx-1" hidden={determineHide(1)}>
             <h3>Cars</h3>
             <div class="card w-100 m-auto">
                 <div class="card-header">
@@ -277,7 +303,15 @@ export default function Configure() {
             <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
         </div>
 
-        <div class="tab" hidden={determineHide(2)}>
+        <div hidden>
+            <p> Note to self: This div will map for all cars so user can select more detailed stuff</p>
+        </div>
+
+
+
+
+
+        <div class="tab mx-1" hidden={determineHide(2)}>
             <h3>Race</h3>
             <div class="form-group my-3">
                 <label for="raceLength">Race Length (mins)</label>
@@ -299,7 +333,7 @@ export default function Configure() {
             </div>
         </div>
 
-        <div class="tab" hidden={determineHide(3)}>
+        <div class="tab mx-1" hidden={determineHide(3)}>
             <h3>Appearance</h3>
             <div class="form-group my-3">
                 <label for="theme">Theme</label>
