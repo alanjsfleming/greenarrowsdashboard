@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom'
 
 export default function LapSummary(props) {
@@ -8,23 +8,69 @@ export default function LapSummary(props) {
 
     const [currentLapData, setCurrentLapData] = useState()
 
+    const [runningData,setRunningData] = useState()
 
+    useEffect(() => {
+        try{
+        setRunningData(props.settings.running_data)
+        getCurrentLapData()
+        } catch (error) {
+            console.log(error)
+        }
+
+    },[props.settings])
+
+    // Function that filters out the current lap data from the lapData array
+    function getCurrentLapData(){
+        const lapTime = "00:00:12"
+   
+        
+        const AmpHours = Math.max(...runningData.map(data=>data.AH))
+        setCurrentLapData(
+            {   
+                num:1,
+                aV1:Math.round(calculateAverageValue(runningData.map(data=>data.V1))*10)/10,
+                aAH:AmpHours,
+                aA:Math.round(calculateAverageValue(runningData.map(data=>data.A))*10)/10,
+                aSpeed:Math.round(calculateAverageValue(runningData.map(data=>data.Speed))*10)/10,
+            })
+      
+    }
+
+    function calculateAverageValue(array){
+        let total = 0
+        let count = 0
+        array.forEach(function(item,index){
+            total+=item;
+            count++
+        })
+        return total/count
+    }
 
     const LapComponent = () => (
-        <table class="table table-striped">
+        <table class="table table-striped text-center">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Lap #</th>
                     <th scope="col">Time</th>
                     <th scope="col">AH</th>
-                    <th scope="col">V1  </th>
-                    <th scope="col">A</th>
-                    <th scope="col">Speed (mph)</th>
+                    <th scope="col">aV1  </th>
+                    <th scope="col">aA</th>
+                    <th scope="col">aSpeed (mph)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr scope="row">
                     <th scope="col">Current</th>
+                    <th scope="col">00:02:12</th>
+                    <th scope="col">{currentLapData ? currentLapData.aAH : '-'}</th>
+                    <th scope="col">{currentLapData ? currentLapData.aV1 : '-'}</th>
+                    <th scope="col">{currentLapData ? currentLapData.aA : '-'}</th>
+                    <th scope="col">20</th>
+                </tr>
+
+                <tr scope="row">
+                    <th scope="col">Last</th>
                     <th scope="col">00:02:12</th>
                     <th scope="col">3</th>
                     <th scope="col">12.1</th>
@@ -54,8 +100,7 @@ export default function LapSummary(props) {
             <h3>Laps</h3>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
-            
-            <LapComponent/>
+            <LapComponent />
         </div>
         
 

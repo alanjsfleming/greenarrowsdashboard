@@ -97,10 +97,12 @@ export default function HomePage() {
   
 
   useEffect(()=>{
-    if (telemetry.length > 0) {
-      appendDataToSettings(telemetry)
+    if (telemetry.length > 0 && raceStart) {
+      const data = telemetry[0]
+      data.timestamp=Date.now()
+      appendDataToSettings(data)
     }
-    console.log(telemetry)
+    
   },[telemetry])
 
   useEffect(()=>{
@@ -196,6 +198,13 @@ useEffect(() => {
   return () => clearInterval(timerInterval);
 },[raceStart]);
 
+  function tempFuncResetRunData() {
+    newSettings(prevSettings=>({
+      ...prevSettings,
+      running_data: []
+    }))
+  }
+
   return (
     <>
     <MenuBar />
@@ -227,7 +236,9 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
-      
+      <button class="btn btn-danger mx-2" onClick={tempFuncResetRunData}>Reset Data</button>
+      <br></br>
+      <LapSummary settings={settings}/>
     </div>
    
     
@@ -235,7 +246,7 @@ useEffect(() => {
   )
 }
 
-// <LapSummary/>
+// 
 // <RacePanel />
 // {settings.raceLength}
 // (raceTime < settings.raceLength) ? raceTime : settings.raceLength+':00'}
