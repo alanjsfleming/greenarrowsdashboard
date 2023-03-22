@@ -87,6 +87,7 @@ export default function Configure() {
         const raceLength = configureFormRef.current.elements.raceLength.value ? configureFormRef.current.elements.raceLength.value : settings.raceLength
         const trackLength = configureFormRef.current.elements.trackLength.value ? configureFormRef.current.elements.trackLength.value : settings.trackLength
         const theme = configureFormRef.current.elements.theme.value ? configureFormRef.current.elements.theme.value : settings.theme
+        const manualLapMode = configureFormRef.current.elements.manualLapMode.value ? configureFormRef.current.elements.manualLapMode.value : settings.manualLapMode
 
         console.log(settings.teamName,teamName)
         newSettings(prevSettings => ({
@@ -98,7 +99,8 @@ export default function Configure() {
             teethGear:teethGear,
             raceLength:raceLength,
             trackLength:trackLength,
-            theme:theme
+            theme:theme,
+            manualLapMode:manualLapMode
         }))
 
         console.log(teamName,settings.teamName)
@@ -110,7 +112,8 @@ export default function Configure() {
                                 race_length : settings.raceLength,
                                 race_start_time : settings.raceStart,
                                 track_length : settings.trackLength,
-                                appearance_theme : settings.theme 
+                                appearance_theme : settings.theme,
+                                manualLapMode : settings.manualLapMode
                             }
         updatedisplayname(settings.teamName)
         updateDoc(userDocRef, userSettings, { merge: true })
@@ -325,8 +328,8 @@ export default function Configure() {
 
     
             <div class="form-group my-3">
-                <label for="theme">Lap Increments by distance</label>
-                <select class="form-control" id="lapIncrementDistance">
+                <label for="manualLapMode">Lap Increments by distance</label>
+                <select class="form-control" id="manualLapMode">
                     <option value="true">Enabled</option>
                     <option value="false">Disabled</option>
                 </select>
