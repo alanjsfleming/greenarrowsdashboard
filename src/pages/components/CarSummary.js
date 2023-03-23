@@ -9,6 +9,7 @@ export default function CarSummary(props) {
 
     // summary card has following props
     // // { 'title' : 'V1', 'units' : 'V', 'kind' : 'gauge', 'data' : 12 }
+    // TODO: make the user be able to choose which metrics to display in the summary card. Up to 9. Make it a grid so it looks nice.
 
     function mapCarSummaries() {
         return props.summary.map((summary) => {

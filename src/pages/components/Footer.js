@@ -8,8 +8,7 @@ export default function Footer() {
             <span class="mb-3 mb-md-0 text-muted">Telemetry</span> 
         </div>
     <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-      <li class="ms-3">Twitter</li>
-      <li class="ms-3">Instagram</li>
+      <li class="ms-3"><a class="text-muted text-decoration-none" href="https://www.buymeacoffee.com/alanjsfleming">Buy Me a Coffee</a></li>
     </ul>
   </footer>
 </div>

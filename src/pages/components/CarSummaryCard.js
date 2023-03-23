@@ -5,7 +5,7 @@ export default function CarSummaryCard(props) {
 
 // props are each summary element
 // { 'title' : 'V1', 'units' : 'V', 'kind' : 'gauge', 'data' : 12 }
-
+// change 'kind' to 'type' to match the Vis component
 
 
   return (

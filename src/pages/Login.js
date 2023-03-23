@@ -1,12 +1,17 @@
-import React, { useRef, useState} from 'react'
+import React, { useRef, useState,useEffect} from 'react'
 import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, Link} from 'react-router-dom'
 import Emoji from './components/Emoji'
-
+import {analytics} from '../firebase'
+import { logEvent } from 'firebase/analytics'
 
 export default function Login() {
+    // Send a page view event to Firebase Analytics
+    useEffect(() => {
+      logEvent(analytics,'login_page_view')
+    })
     const emailRef = useRef()
     const passwordRef = useRef()
     const [error,setError] = useState('')

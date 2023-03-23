@@ -3,6 +3,8 @@ import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from './components/MenuBar'
 import Loading from './Loading';
+import {analytics} from '../firebase'
+import { logEvent } from 'firebase/analytics';
 
 /*import { useState,useEffect } from 'react';*/
 
@@ -13,6 +15,13 @@ import Loading from './Loading';
 
 
 function App() {
+  // Send a page view event to Firebase Analytics
+  useEffect(() => {
+    logEvent(analytics,'details_page_view')
+  })
+
+
+  // State variables
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState([])
   const [fetchURL,setFetchURL] = useState()
@@ -31,15 +40,6 @@ function App() {
     
   },[settings])
   // TODO - rewrite to save to firebase so user can have same settings wherever they login
-
-  // Timer functions
-
- 
-
-   // Functions to allow user to set amp hour variables
-
-  
-  // TODO - change this so it is a form and there is one submit button, updates together, settings modal??
 
   
   // Fetch from the dweet every 1.5s

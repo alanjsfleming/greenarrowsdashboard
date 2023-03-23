@@ -33,6 +33,7 @@ function calculateMotorEfficiency(Vt,A,T) {
 
 // Enter your own equation
 //https://mycurvefit.com/
+// Excel can get equation of line, go back to Motor experiments and enter
 
 //<div class="grid-item">
 //<TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>

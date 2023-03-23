@@ -15,7 +15,18 @@ import PasswordReset from './pages/PasswordReset'
 import UserSetup from './pages/UserSetup'
 import { RaceProvider } from './contexts/RaceContext';
 import Loading from './pages/Loading';
+import {analytics} from './firebase'
+import { logEvent } from 'firebase/analytics'
 
+function sendToAnalytics({id,name,value}){
+  logEvent(analytics,'event',{
+    eventCategory: 'Web Vitals',
+    eventAction: name,
+    eventValue: Math.round(name === 'CLS' ? value * 1000 : value),
+    eventLabel: id,
+    nonInteraction: true,
+  })
+}
 
 export default function Main() {
   return (
@@ -52,4 +63,4 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals(sendToAnalytics);

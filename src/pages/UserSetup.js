@@ -1,16 +1,22 @@
-import React, { useRef, useState} from 'react'
+import React, { useRef, useState,useEffect} from 'react'
 import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../firebase'
-
+import { db,analytics } from '../firebase'
+import { logEvent } from 'firebase/analytics'
 // has to submit team name, dweet url, car name to firebase
 // has to update the display name to the team name
 
 export default function UserSetup() {
+  // Send a page view event to Firebase Analytics
+  useEffect(() => {
+    logEvent(analytics,'details_page_view')
+  })
+
+
     const teamNameRef = useRef()
     const dweetURLRef = useRef()
     const carNameRef = useRef()

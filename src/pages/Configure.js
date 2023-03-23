@@ -7,6 +7,8 @@ import { db } from '../firebase'
 
 // change this all to be a modal?
 export default function Configure() {
+
+
     const { currentUser,updatedisplayname } = useAuth()
     const configureFormRef = useRef()
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1])

@@ -7,11 +7,17 @@ import MenuBar from './components/MenuBar'
 import LapSummary from './components/LapSummary'
 import { useRace } from '../contexts/RaceContext'
 import { doc, getDoc } from "firebase/firestore";
-import { db } from '../firebase'
+import { analytics, db } from '../firebase'
+import { logEvent } from 'firebase/analytics'
 
 
-// Pass the timer as a prop through to the details page
 export default function HomePage() {
+  // Send a page view event to Firebase Analytics
+  useEffect(() => {
+    logEvent(analytics,'summary_page_view')
+  })
+
+
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
   
   const [telemetry, newTelemetry] = useState([]);

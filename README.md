@@ -188,13 +188,13 @@ car has "owner" field, teams look for car documents where "owner" is the team ui
 
 ###
 Lap info on summary:
-Lap number
-Lap time
-Lap distance
-Lap speed
-Lap efficiency
-Lap amp hours per lap
-Lap battery percentage
+Lap number [ ]
+Lap time [ ]
+Lap distance [ ]
+Lap speed [ ]
+Lap efficiency [ ]
+Lap amp hours per lap [ ]
+Lap battery percentage [ ]
 
 
 
@@ -255,3 +255,5 @@ battery_ah -> number
     "Lat": 57.1189133,
     "Lon": -2.1351633
 }
+
+Chart.js

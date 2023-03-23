@@ -1,11 +1,17 @@
-import React, { useState} from 'react'
+import React, { useState,useEffect} from 'react'
 import Footer from './components/Footer'
 import MenuBar from './components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Emoji from './components/Emoji'
+import {analytics} from '../firebase'
+import { logEvent } from 'firebase/analytics'
 
 export default function Logout() {
+  // Send a page view event to Firebase Analytics
+  useEffect(() => {
+    logEvent(analytics,'logout_page_view')
+  })
   const [error,setError] = useState('')
   const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
