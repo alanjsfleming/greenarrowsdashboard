@@ -22,6 +22,8 @@ export default function Configure() {
     const [success,setSuccess] = useState()
     const [carDropdownShow,setCarDropdownShow] = useState(false)
 
+    const [carBeingDeleted,setCarBeingDeleted] = useState()
+
     const userDocRef = doc(db,"users", currentUser.uid)
 
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
@@ -203,11 +205,25 @@ export default function Configure() {
     }
 
     // function to delete a car from the cars collection in firebase
-    function deleteCar() {
+    function deleteCar(e) {
         // TODO
         // delete document
+        const carNumber = e.target.value
+        // First, popup a confirmation dialog
+        console.log('delete car',carNumber)
+        setCarBeingDeleted(carNumber)
     }
 
+    function deleteCarConfirmed() {
+        console.log('confirm delete car')
+        setCarBeingDeleted()
+    }
+
+    function deleteCarCancelled() {
+        console.log('cancel delete car')
+        setCarBeingDeleted()
+    }
+  
 
     function tempFuncResetRunData() {
         newSettings(prevSettings=>({
@@ -215,6 +231,8 @@ export default function Configure() {
           running_data: []
         }))
       }
+
+
 
     /*
     const MapTeamCars = () => {
@@ -268,6 +286,25 @@ export default function Configure() {
             <button value="3" class={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
         </div>
         
+        <div class={"modal fade "+((carBeingDeleted) && " show  d-block")}>
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Delete Car</h3>
+                            
+                        </div>
+                        <div class="modal-content p-4">
+                            <h4 class="my-3">Are you sure you want to delete this car?</h4>
+                            <h4>This is irreversible!</h4>
+                            <button class="btn btn-danger btn-lg mt-2" onClick={deleteCarConfirmed}>Yes, Delete</button>
+                            <br></br>
+                            <button class="btn btn-outline-primary btn-lg" onClick={deleteCarCancelled}>No! Cancel</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+       
+
         <h1 class="pt-2 pb-3">Settings</h1>
 
         {error && <p onClick={hideAlerts} className="alert alert-danger">{error}</p>}
@@ -400,6 +437,9 @@ export default function Configure() {
                     <input type="number" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
                 </div>
                 </div>
+                <br></br>
+                <small class="text-muted">Deleting a car is irreversible!</small>
+                <button type="button" class="btn btn-outline-danger btn-block" value={index} onClick={deleteCar}>Delete Car</button> 
 
                 </div>
             </div>
