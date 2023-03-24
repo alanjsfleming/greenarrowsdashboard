@@ -64,17 +64,26 @@ export default function Configure() {
     // change tab when button clicked
     function changeTab(e) {
         setCarDropdownShow(false)
-        setCurrentTab(e.target.value)
-        console.log(settings)
-      
+        if (e.target.value) {
+            setCurrentTab(e.target.value)
+        } else {
+            setCurrentTab(e.target.parentElement.getAttribute("data-value"))
+        }
+        console.log(settings) 
     }
 
-    function handleReverseGearingMode() {
-        if (settings.reverseGearingMode) {
-            newSettings({...settings,reverseGearingMode:false})
+
+    // Edit this function to take the e.target.value as the car number to find cars[e.target.value]
+    // and then toggle the reverse gearing mode on the car itself rather than the settings
+    function handleReverseGearingMode(e) {
+        const carNumber = e.target.value
+        const carsCopy = [...settings.cars]
+        if (carsCopy[carNumber].reverseGearingMode) {
+            carsCopy[carNumber].reverseGearingMode = false
         } else {
-            newSettings({...settings,reverseGearingMode:true})
+            carsCopy[carNumber].reverseGearingMode = true
         }
+        newSettings(prevSettings=>({...prevSettings,cars:carsCopy}))
     }
 
     // save update settings with form data when save button clicked
@@ -159,12 +168,14 @@ export default function Configure() {
     // function to update a document in the cars collection in firebase
     // document will contain all the settings for that car:
     // - car_name
+    // - car_number
     // - battery_capacity
     // - dweet_name
     // - large_gear_teeth 
     // - owner ( current user uid )
     // - wheel circumference
-    function updateCar() {
+    // - manual lap mode
+    function saveCarSettings() {
         
     }
     
@@ -197,21 +208,13 @@ export default function Configure() {
         // delete document
     }
 
-    function handleCarDropDownClick(e) {
-        if (carDropdownShow) {
-            setCarDropdownShow(false)
-        } else {
-            setCarDropdownShow(true)
-        }
-    }
 
-    function determineCarDropdownShow() {
-        if (carDropdownShow) {
-            return "show"
-        } else {
-            return ""
-        }
-    }
+    function tempFuncResetRunData() {
+        newSettings(prevSettings=>({
+          ...prevSettings,
+          running_data: []
+        }))
+      }
 
     /*
     const MapTeamCars = () => {
@@ -256,13 +259,10 @@ export default function Configure() {
         <div class="text-center mx-1 btn-group" role="group" aria-label="Settings Tabs">
             <button value="0" class={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
             
-            <div class={"col-3 dropdown "+determineCarDropdownShow()}>
-            <button class={"dropdown-toggle btn btn-secondary btn-block "+determineActive(1)} onClick={handleCarDropDownClick} >Cars</button>
-            <div class={"dropdown-menu "+determineCarDropdownShow()} aria-labelledby="dropdownMenuButton">
-                <button  value="1" class="dropdown-item" onClick={changeTab}>Overview</button>
-                <a class="dropdown-item" href="#">Car 1:</a>
-            </div>
-        </div>
+        
+            <button value="1" class={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab} >Cars</button>
+        
+        
             
             <button value="2" class={"btn btn-secondary col-3 "+determineActive(2)} onClick={changeTab}>Data</button>
             <button value="3" class={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
@@ -288,49 +288,28 @@ export default function Configure() {
 
         <div class="tab mx-1" hidden={determineHide(1)}>
             <h3>Cars</h3>
+            {settings.cars ? settings.cars.map((car,index)=>(
             <div class="card w-100 m-auto">
-                <div class="card-header">
-                    <h4 class="card-title">Car 1: {settings.carName}</h4>
+            
+                <div class="card-header" data-value={index+4} onClick={changeTab}>
+                    <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
                 </div>
+
                 <div class="card-body">
-                <div class="form-group">
-                    <label for="carName">Car Name</label>
-                    <input type="text" class="form-control" id="carName" placeholder={settings.carName}></input>
+                    <div class="form-group">
+                        <label for="carName">Car Name</label>
+                        <input type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
+                    </div>
                 </div>
-
-                <div class="form-group my-3">
-                    <label for="dweetUrl">Dweet Thing name</label>
-                    <input type="text" class="form-control" id="dweetUrl" placeholder={settings.dweetUrl}></input>
-                </div>
-
-                <div class="form-group my-3">
-                    <label for="ampHours">Battery Capacity (Amp Hours)</label>
-                    <input type="number" class="form-control" id="ampHours" placeholder={settings.ampHours}></input>
-                </div>
-
-                <div class="form-group my-3">
-                    <button type="button" onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{settings.reverseGearingMode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
-                </div>
-                <div hidden={settings.reverseGearingMode ? false : true} >
-                <div hidden={true} class="form-group my-3">
-                    <label for="teethGear">Teeth on small gear</label>
-                    <input type="number" class="form-control" id="smallteethGear"></input>
-                </div>
-
-                <div class="form-group my-3">
-                    <label for="teethGear">Teeth on large gear</label>
-                    <input type="number" class="form-control" id="teethGear" placeholder={settings.teethGear}></input>
-                </div>
-                </div>
-
-                </div>
-            </div>
+            </div>)
+            ): <p>No cars...</p>}
             
 
         
 
             <br></br>
             <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
+
         </div>
 
         <div hidden>
@@ -361,6 +340,8 @@ export default function Configure() {
                     <option value="false">Disabled</option>
                 </select>
             </div>
+            <button class="btn btn-danger btn-block" onClick={tempFuncResetRunData}>Reset Data</button>
+            
         </div>
 
         <div class="tab mx-1" hidden={determineHide(3)}>
@@ -377,6 +358,55 @@ export default function Configure() {
         <div class="fixed-bottom d-flex">
         <button onClick={handleSaveSettings} type="button" class="btn btn-primary btn-block m-1">Save</button>
         </div>
+
+
+
+
+
+
+        {settings.cars ? settings.cars.map((car,index)=>(
+        <div class="tab mx-1" hidden={determineHide(index+4)}>
+            <div class="card w-100 m-auto">
+                <div class="card-header">
+                    <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
+                </div>
+                <div class="card-body">
+                <div class="form-group">
+                    <label for="carName">Car Name</label>
+                    <input type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="dweetUrl">Dweet Thing name</label>
+                    <input type="text" class="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="ampHours">Battery Capacity (Amp Hours)</label>
+                    <input type="number" class="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverseGearingMode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
+                </div>
+                <div hidden={car.reverseGearingMode ? false : true} >
+                <div hidden={true} class="form-group my-3">
+                    <label for="teethGear">Teeth on small gear</label>
+                    <input type="number" class="form-control" id="smallteethGear"></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="teethGear">Teeth on large gear</label>
+                    <input type="number" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
+                </div>
+                </div>
+
+                </div>
+            </div>
+        </div>)): <p>No cars...</p>}
+
+
+
         </form>
     </div>
     

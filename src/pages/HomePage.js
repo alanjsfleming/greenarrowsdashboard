@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import MenuBar from './components/MenuBar'
 import LapSummary from './components/LapSummary'
 import { useRace } from '../contexts/RaceContext'
-import { doc, getDoc,collection,query,where,getDocs } from "firebase/firestore";
+import { doc, getDoc,collection,query,where,getDocs, orderBy } from "firebase/firestore";
 import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 
@@ -64,7 +64,7 @@ export default function HomePage() {
     }).catch((error) => {
       console.log("Error getting user document:", error);
     });
-    const carQuery = query(carsRef, where("owner","==",currentUser.uid))
+    const carQuery = query(carsRef, where("owner","==",currentUser.uid), orderBy("car_number"))
     const querySnapshot = getDocs(carQuery).then((querySnapshot) => {
       let carArray = []
       querySnapshot.forEach((doc) => {
@@ -222,12 +222,7 @@ useEffect(() => {
   return () => clearInterval(timerInterval);
 },[raceStart]);
 
-  function tempFuncResetRunData() {
-    newSettings(prevSettings=>({
-      ...prevSettings,
-      running_data: []
-    }))
-  }
+  
 
   return (
     <>
@@ -244,7 +239,8 @@ useEffect(() => {
       </div>
     </div>}
     <div class="d-flex homepage-dash flex-column">
-      <CarSummary name={(settings) ? settings.carName : "Car 1"} telemetry={telemetry}/>
+      {settings ? settings.cars.map((car,index) => (
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry}/>)) : <p>No cars...</p>}
       <br></br>
       <div class="card car-summary" id="raceTimer">
       <div class="card-header">
@@ -260,8 +256,7 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
-      <button class="btn btn-danger mx-3" onClick={tempFuncResetRunData}>Reset Data</button>
-      <br></br>
+      
       <LapSummary settings={settings}/>
     </div>
    
