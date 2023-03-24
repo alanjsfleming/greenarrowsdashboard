@@ -27,7 +27,6 @@ export const createUserDoc = functions.auth.user().onCreate(async (user) => {
     battery_capacity:30,
     dweet_name: null,
     large_gear_teeth: 60,
-    small_gear_teeth: 20,
     wheel_circumference: 3,
   }
   // Create the user document and the initial car document.

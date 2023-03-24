@@ -2,13 +2,18 @@ import React from 'react'
 import TelemetryCard from './TelemetryCard';
 
 // Estimate gear, based on GA1. 59.44 is wheel diameter so this wont work for other cars. Change that.
+// Is it diameter or circumference????
+// Change This function to return the gear number from the telemetry data if reverse gear mode is not selected.
 function estimateGear(Spd,RPM,bG) {
   if (!bG){
     return NaN
   } else {
+  // change the 59.44 to the wheel diameter
   let wheelRPM=Spd/(59.44*60/63360);
   let gearRatio=RPM/wheelRPM;
   let numTeethMotor=bG/gearRatio;
+  // 0.5 is an offset to make the gear number more accurate, possibly add a setting for this?
+  // not sure what 21 is for, but it works.
   let gearNumber=Math.round(21.5-numTeethMotor);
   return(gearNumber);
   }

@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import MenuBar from './components/MenuBar'
 import LapSummary from './components/LapSummary'
 import { useRace } from '../contexts/RaceContext'
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc,collection,query,where,getDocs } from "firebase/firestore";
 import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 
@@ -49,6 +49,7 @@ export default function HomePage() {
  
   function loadSettingsFromFirebase() {
     const docRef = doc(db, "users", currentUser.uid);
+    const carsRef = collection(db,"cars")
     const docSnap = getDoc(docRef).then((doc) => {
       const data = doc.data()
       newSettings(prevSettings => ({
@@ -61,7 +62,24 @@ export default function HomePage() {
     }))
     
     }).catch((error) => {
-      console.log("Error getting document:", error);
+      console.log("Error getting user document:", error);
+    });
+    const carQuery = query(carsRef, where("owner","==",currentUser.uid))
+    const querySnapshot = getDocs(carQuery).then((querySnapshot) => {
+      let carArray = []
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        // write this to settings in settings.cars object as an array
+        carArray.push(doc.data())
+      })
+      newSettings(prevSettings => ({
+        ...prevSettings,
+        cars:carArray
+    }))
+       
+      
+    }).catch((error) => {
+      console.log("Error getting cars documents:", error);
     });
   }
 

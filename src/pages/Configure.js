@@ -4,10 +4,15 @@ import MenuBar from './components/MenuBar'
 import { doc,getFirestore,updateDoc} from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
+import { analytics } from '../firebase'
+import { logEvent } from 'firebase/analytics'
 
 // change this all to be a modal?
 export default function Configure() {
-
+    // Send a page view event to Firebase Analytics
+    useEffect(() => {
+        logEvent(analytics,'settings_page_view')
+    })
 
     const { currentUser,updatedisplayname } = useAuth()
     const configureFormRef = useRef()
@@ -32,8 +37,8 @@ export default function Configure() {
       // save settings to local storage and firebase on settings change
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-        saveSettingsToFirebase()
-            .catch((e)=>{console.log(e)})
+        //saveSettingsToFirebase()
+         //   .catch((e)=>{console.log(e)})
         // call function to save settings to firebase
         // not doing that here because it will save settings every time page loading???
     },[settings])
@@ -62,6 +67,14 @@ export default function Configure() {
         setCurrentTab(e.target.value)
         console.log(settings)
       
+    }
+
+    function handleReverseGearingMode() {
+        if (settings.reverseGearingMode) {
+            newSettings({...settings,reverseGearingMode:false})
+        } else {
+            newSettings({...settings,reverseGearingMode:true})
+        }
     }
 
     // save update settings with form data when save button clicked
@@ -163,9 +176,10 @@ export default function Configure() {
           //  return
         //}
         // add new document with default values
-        const newCar = [{    car_name : 'My',
+        const newCar = [{    car_name : 'New Car',
                             dweet_name : 'Thing',
-                            battery_capacity : 28, 
+                            battery_capacity : 28,
+                            small_gear_teeth:20, 
                             large_gear_teeth : 60,
                             owner: '123456789',
                             wheel_circumference : 4
@@ -295,9 +309,20 @@ export default function Configure() {
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="teethGear">Teeth on larger gear</label>
+                    <button type="button" onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{settings.reverseGearingMode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
+                </div>
+                <div hidden={settings.reverseGearingMode ? false : true} >
+                <div hidden={true} class="form-group my-3">
+                    <label for="teethGear">Teeth on small gear</label>
+                    <input type="number" class="form-control" id="smallteethGear"></input>
+                </div>
+
+                <div class="form-group my-3">
+                    <label for="teethGear">Teeth on large gear</label>
                     <input type="number" class="form-control" id="teethGear" placeholder={settings.teethGear}></input>
                 </div>
+                </div>
+
                 </div>
             </div>
             

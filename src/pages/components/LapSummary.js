@@ -59,12 +59,10 @@ export default function LapSummary(props) {
                 // Filter the runningData array into n number of arrays, each containing the data for each lap
                 lapDataArrays.push(runningData.filter(function(data) {
                     return data.Distance >= firstDist && data.Distance < lastDist
+                    }
+                ))
             }
-            ))
-        }
-            
-            
-             
+            console.log(lapDataArrays)
         }
         return lapDataArrays
     }
@@ -174,13 +172,11 @@ export default function LapSummary(props) {
   return (
     <div class="card car-summary">
         <div class="card-header text-center">
-            <h3>Laps ({JSON.stringify(currentLapNum,lapData,currentLapData)})</h3>
+            <h3>Laps ({currentLapNum ? JSON.stringify(currentLapNum) : '-'})</h3>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
             <LapComponent />
         </div>
-        
-
     </div>
   )
 }
