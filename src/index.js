@@ -34,9 +34,7 @@ export default function Main() {
       <RaceProvider>
         <BrowserRouter basename="/">
           <Routes>
-           
-            <Route path="/login" element={<Login />}/>
-            
+            <Route path="/login" element={<Login />}/>           
             <Route path="/reset-password" element={<PasswordReset />} />
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>

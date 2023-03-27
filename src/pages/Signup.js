@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
+import Emoji from './components/Emoji'
 
 export default function Signup() {
     // Send a page view event to Firebase Analytics
@@ -44,8 +45,11 @@ export default function Signup() {
     <>
     <MenuBar />
     <div class="form-signin m-auto text-center my-5">
-      <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}>
-        <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
+      <form class="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}>
+        <div class="my-2 text-center d-flex flex-column">
+          <Emoji symbol="🦉" label="owl" />
+          <h5>DashOwl</h5>
+        </div>
         <h1 class="h3 mb-3 fw-normal">Register Free Account</h1>
         
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}

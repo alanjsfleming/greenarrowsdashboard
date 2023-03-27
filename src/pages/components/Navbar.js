@@ -9,21 +9,13 @@ import Emoji from './Emoji'
 
 export default function MenuBar() {
   return (
-    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand underline" href="https://dashowl.co.uk"><Emoji symbol="🦉" label="owl" />DashOwl</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link">Features</a>
-                </li>
-            </ul>
-            
-        </div>
-        </div>
+    <>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+    <nav class="navbar sticky-top" id="topOfPage">
+        <a class="navbar-brand menuBar py-1 my-2" href="https://dashowl.co.uk">
+            <Emoji symbol="🦉" label="owl" />DashOwl</a>
+        
     </nav>
+    </>
   )
 }

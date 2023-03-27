@@ -107,6 +107,7 @@ export default function LapSummary(props) {
                 AH:AmpHours,
                 aA:Math.round(calculateAverageValue(runningData.map(data=>data.A))*10)/10,
                 aSpd:Math.round(calculateAverageValue(runningData.map(data=>data.Speed))*10)/10,
+
             })
     }
 
@@ -133,23 +134,23 @@ export default function LapSummary(props) {
                 </tr>
             </thead>
             <tbody>
-                <tr scope="row">
+                {runningData && (<tr scope="row">
                     <th scope="col">Current</th>
                     <th scope="col">00:02:12</th>
                     <th scope="col">{currentLapData ? currentLapData.AH : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aV1 : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aA : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aSpd : '-'}</th>
-                </tr>
+                </tr>)}
 
-                <tr scope="row">
+                {lapData[0] && (<tr scope="row">
                     <th scope="col">Last</th>
                     <th scope="col">00:02:12</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).AH : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aV1 : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aA : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aSpd : '-'}</th>
-                </tr>
+                </tr>)}
         
                 {lapData.length>0 ? lapData.map(lap=>(
                     <tr>
@@ -173,6 +174,9 @@ export default function LapSummary(props) {
     <div class="card car-summary">
         <div class="card-header text-center">
             <h3>Laps ({currentLapNum ? JSON.stringify(currentLapNum) : '-'})</h3>
+            <div>
+                <p>Distance: </p>
+            </div>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
             <LapComponent />

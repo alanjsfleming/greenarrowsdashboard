@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db,analytics } from '../firebase'
 import { logEvent } from 'firebase/analytics'
+import Emoji from './components/Emoji'
 // has to submit team name, dweet url, car name to firebase
 // has to update the display name to the team name
 
@@ -60,9 +61,11 @@ export default function UserSetup() {
     <>
     <MenuBar />
     <div class="form-signin m-auto text-center my-5">
-      <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}>
-        
-        <h1 class="h3 mb-3 fw-normal">Complete setup</h1>
+      <form class="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}>
+        <div class="my-2">
+        <Emoji symbol="🦉" label="owl" />
+        </div>
+        <h1 class="h3 mb-3 fw-normal my-1">Set up your first car</h1>
 
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         <div class="form-floating">

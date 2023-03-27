@@ -37,7 +37,7 @@ export default function Login() {
     <>
     <MenuBar />
     <div class="form-signin m-auto text-center my-5">
-      <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}> 
+      <form class="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}> 
         <Emoji symbol="🦉" label="owl" />
         <h1 class="h3 my-3 fw-normal">Welcome back!</h1>
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
