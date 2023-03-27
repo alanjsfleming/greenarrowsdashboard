@@ -1,11 +1,12 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MenuBar from './components/MenuBar'
-import { doc,getFirestore,updateDoc} from 'firebase/firestore'
+import { doc,updateDoc,addDoc, deleteDoc} from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
 import { analytics } from '../firebase'
 import { logEvent } from 'firebase/analytics'
+import { where, getDocs,query,collection } from 'firebase/firestore'
 
 // change this all to be a modal?
 export default function Configure() {
@@ -39,8 +40,6 @@ export default function Configure() {
       // save settings to local storage and firebase on settings change
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-        //saveSettingsToFirebase()
-         //   .catch((e)=>{console.log(e)})
         // call function to save settings to firebase
         // not doing that here because it will save settings every time page loading???
     },[settings])
@@ -77,6 +76,7 @@ export default function Configure() {
 
     // Edit this function to take the e.target.value as the car number to find cars[e.target.value]
     // and then toggle the reverse gearing mode on the car itself rather than the settings
+    // can I do this without saving the settings every time?
     function handleReverseGearingMode(e) {
         const carNumber = e.target.value
         const carsCopy = [...settings.cars]
@@ -92,7 +92,8 @@ export default function Configure() {
     const handleSaveSettings = (e) => {
         try {
             saveSettingsToSettings(e)
-            
+            saveSettingsToFirebase()
+           .catch((e)=>{console.log(e)})
             
             setError()
             setSuccess('Settings saved successfully!') 
@@ -141,15 +142,76 @@ export default function Configure() {
                                 appearance_theme : settings.theme,
                                 manualLapMode : settings.manualLapMode
                             }
+        // now get the car setting array
+        const carSettings = settings.cars
+        try {
+        // update displayname
         updatedisplayname(settings.teamName)
+        // update user document in firebase
         updateDoc(userDocRef, userSettings, { merge: true })
         .then(userDocRef => {
             console.log("Document written with ID: ", userDocRef.id);
         })
         .catch(error => {
             console.error("Error adding document: ", error);
-        });
-    }  
+        });}
+        catch (e) {
+            console.log(e)
+        }
+
+         // For every car in the settings array, update the car document in firebase
+        carSettings.forEach(car => {
+            console.log(car.car_number)
+            // Create a query to find the car document in firebase
+            const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",car.car_number))
+            // Build the car document to be updated in firebase
+            const carDoc = {    
+                                car_name:car.car_name,
+                                battery_capacity:car.battery_capacity,
+                                dweet_name:car.dweet_name,
+                                large_gear_teeth:car.large_gear_teeth,
+                                wheel_circumference:car.wheel_circumference,
+                                reverse_gearing_mode:car.reverse_gearing_mode
+                        }
+
+            // Get the query results
+            const carQuerySnapshot = getDocs(carQuery).then((querySnapshot)=>{
+          
+            // If the query returns a document, get the document id
+            if (querySnapshot.size >0) {
+                console.log(querySnapshot.docs[0].id)
+                const carDocumentId = querySnapshot.docs[0].id
+                // Update the car document in firebase
+                updateDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
+            } else {
+                // If the query does not return a document (i.e. the car document does not exist)
+                // then create a new car document in firebase
+                const carDoc = {    
+                    car_name:car.car_name,
+                    car_number:car.car_number,
+                    owner:currentUser.uid,
+                    battery_capacity:car.battery_capacity,
+                    dweet_name:car.dweet_name,
+                    large_gear_teeth:car.large_gear_teeth,
+                    wheel_circumference:car.wheel_circumference,
+                    reverse_gearing_mode:car.reverse_gearing_mode
+                }
+                const carsCollectionRef = collection(db,"cars")
+                addDoc(carsCollectionRef,carDoc)
+                .then((docRef)=>{
+                    console.log("Document written with ID: ", docRef.id);
+                })
+                .catch((e)=>{
+                    console.log(e)
+                })
+                }
+            })
+            .catch((e)=>{
+                console.log(e)
+            })
+        })
+    }
+
 
     /*
     function handleSaveAmpHourSettings(e){
@@ -190,12 +252,14 @@ export default function Configure() {
         //}
         // add new document with default values
         const newCar = [{    car_name : 'New Car',
+                            car_number : settings.cars.length+1,
                             dweet_name : 'Thing',
                             battery_capacity : 28,
                             small_gear_teeth:20, 
                             large_gear_teeth : 60,
-                            owner: '123456789',
-                            wheel_circumference : 4
+                            owner: currentUser.uid,
+                            wheel_circumference : 4,
+                            reverse_gearing_mode : false,
                      }]
         const previousCars = settings.cars
         newSettings(prevSettings => ({
@@ -204,8 +268,51 @@ export default function Configure() {
         }))
     }
 
-    // function to delete a car from the cars collection in firebase
-    function deleteCar(e) {
+    // I want to only call this when a car is deleted and then save button is pressed really
+    // TODO - above
+    function deleteCarFirebase(carNumber) {
+        console.log(carNumber,currentUser.uid)
+        const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",parseInt(carNumber)))
+                
+        const carQuerySnapshot = getDocs(carQuery).then((querySnapshot) => {
+            if (querySnapshot.size>0) {
+                console.log(querySnapshot.docs[0].id)
+                deleteDoc(doc(db,"cars",querySnapshot.docs[0].id))
+                .then(() => {
+                    console.log("Document successfully deleted!");
+                    // Now delete the car from the settings
+                    
+                    // Then I need to update all the car numbers
+
+                    // Make array of all cars
+
+                    // Loop through array and set car number to index+1
+
+                    // Update the settings
+                    // update firebase
+                }
+                )
+                .catch((error) => {
+                    console.error("Error removing document: ", error);
+                }
+                )
+
+            }
+        })
+    }
+
+    function deleteCarSettings(carNumber) {
+       
+        const previousCars = settings.cars
+        const newCars = previousCars.filter(car => car.car_number != carNumber)
+
+        newSettings(prevSettings => ({
+            ...prevSettings,
+            cars : newCars
+        }))
+    }
+
+    function handleDeleteCar(e) {
         // TODO
         // delete document
         const carNumber = e.target.value
@@ -216,7 +323,11 @@ export default function Configure() {
 
     function deleteCarConfirmed() {
         console.log('confirm delete car')
+        // delete the car from firebase
+        deleteCarFirebase(carBeingDeleted)
+        deleteCarSettings(carBeingDeleted)
         setCarBeingDeleted()
+        changeTab()
     }
 
     function deleteCarCancelled() {
@@ -345,7 +456,7 @@ export default function Configure() {
         
 
             <br></br>
-            <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
+            <button type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
 
         </div>
 
@@ -424,6 +535,11 @@ export default function Configure() {
                 </div>
 
                 <div class="form-group my-3">
+                    <label for="wheelCircumference">Wheel circumference (m)</label>
+                    <input type="number" class="form-control" id="wheelCircumference" placeholder={car.wheel_circumference}></input>
+                </div>
+
+                <div class="form-group my-3">
                     <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverseGearingMode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
                 </div>
                 <div hidden={car.reverseGearingMode ? false : true} >
@@ -439,7 +555,7 @@ export default function Configure() {
                 </div>
                 <br></br>
                 <small class="text-muted">Deleting a car is irreversible!</small>
-                <button type="button" class="btn btn-outline-danger btn-block" value={index} onClick={deleteCar}>Delete Car</button> 
+                <button type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
 
                 </div>
             </div>
