@@ -313,10 +313,9 @@ export default function Configure() {
     }
 
     function handleDeleteCar(e) {
-        // TODO
-        // delete document
         const carNumber = e.target.value
         // First, popup a confirmation dialog
+        // The actual deletion happens when the user confirms it
         console.log('delete car',carNumber)
         setCarBeingDeleted(carNumber)
     }

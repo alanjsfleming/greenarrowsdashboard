@@ -37,7 +37,6 @@ function App() {
   // When settings change, add them to local storage
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-    
   },[settings])
   // TODO - rewrite to save to firebase so user can have same settings wherever they login
 
@@ -61,7 +60,6 @@ function App() {
 
   // Page Starts here
 
-  // Change the settings portion of this to a modal that pops up when you press a button on the menu bar.
   return (
     <>
 
