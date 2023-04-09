@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom'
+import ContentLocked from './ContentLocked'
 
 export default function LapSummary(props) {
 
@@ -9,6 +10,21 @@ export default function LapSummary(props) {
     const [currentLapData, setCurrentLapData] = useState()
     const [currentLapNum, setCurrentLapNum] = useState()
     const [runningData,setRunningData] = useState()
+
+
+    const [allowedPermissions, setAllowedPermissions] = useState(false)
+
+
+    useEffect(() => {
+        try {
+            if (props.settings.role === 'premium' || props.settings.role === 'basic') {
+                setAllowedPermissions(true)
+            }
+        } catch(error) {
+            console.log(error)
+        }
+    },[props.settings])
+
 
     useEffect(() => {
         try{
@@ -179,7 +195,10 @@ export default function LapSummary(props) {
             </div>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
-            <LapComponent />
+            {allowedPermissions ? <LapComponent />
+            : 
+            <ContentLocked />
+            }
         </div>
     </div>
   )

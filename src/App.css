@@ -315,3 +315,17 @@ progress[value]::-webkit-progress-value {
     align-items: center;
     height: 100vh
 }
+
+.upgrade-screen {
+    position: absolute;
+    box-shadow: inset 0 0 0 3000px rgba(150,150,150,0.192);
+    filter:blur(10px);
+    border-radius: 10px;
+}
+
+.upgrade-background {
+    height: 100%;
+    width: 100%;
+    padding: none;
+    background: linear-gradient(45deg, rgb(212, 98, 241) 0%, rgb(66, 66, 214) 0%, rgba(0,212,255,1) 100%);
+}

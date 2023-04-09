@@ -18,9 +18,9 @@ export default function MenuBar(settings) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
     <nav class="navbar sticky-top" id="topOfPage">
     <Link to="/" style={{color:'inherit',textDecoration:'inherit'}}>
-      <a href="www.dashowl.co.uk" class="navbar-brand menuBar">
+      <p class="navbar-brand menuBar">
           <Emoji symbol="🦉" label="owl" />
-          {currentUser.displayName}</a></Link>
+          {currentUser.displayName}</p></Link>
         <div class="nav-link-container" id="myTopnav">
           
         <Link to="/configure?0" class="icon"><i class="fa fa-bars"></i></Link>

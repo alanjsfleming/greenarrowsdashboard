@@ -500,6 +500,15 @@ export default function Configure() {
                     <option>Dark</option>
                 </select>
             </div>
+
+            <h3>Summary Page</h3>
+            <div class="form-group my-3">
+                <label for="summaryMap">Location map</label>
+                <select class="form-control" id="summaryMap">
+                    <option>Disabled</option>
+                    <option>Enabled</option>
+                </select>
+            </div>
         </div>
 
         <div class="fixed-bottom d-flex">

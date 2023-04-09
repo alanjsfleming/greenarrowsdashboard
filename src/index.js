@@ -17,6 +17,7 @@ import { RaceProvider } from './contexts/RaceContext';
 import Loading from './pages/Loading';
 import {analytics} from './firebase'
 import { logEvent } from 'firebase/analytics'
+import UpgradePlan from './pages/UpgradePlan';
 
 function sendToAnalytics({id,name,value}){
   logEvent(analytics,'event',{
@@ -42,6 +43,7 @@ export default function Main() {
             <Route path="/register" element={<Signup />}/>
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
+            <Route path="/upgrade-plan" element={<UpgradePlan />} />
             <Route path="/loading" element={<Loading />} />
           <Route path="*" element={<NoPage/>}/>
           </Routes>

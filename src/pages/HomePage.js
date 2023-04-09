@@ -9,7 +9,7 @@ import { useRace } from '../contexts/RaceContext'
 import { doc, getDoc,collection,query,where,getDocs, orderBy } from "firebase/firestore";
 import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
-
+import LocationMap from './components/LocationMap'
 
 export default function HomePage() {
   // Send a page view event to Firebase Analytics
@@ -58,7 +58,8 @@ export default function HomePage() {
         raceLength:data.race_length,
         trackLength:data.track_length,
         theme:data.appearance_theme,
-        raceStart:data.race_start_time
+        raceStart:data.race_start_time,
+        role:data.role
     }))
     
     }).catch((error) => {
@@ -92,7 +93,9 @@ export default function HomePage() {
     try {
     setRaceStart(settings.raceStart)
     setRaceLength(settings.raceLength)
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
+    // COME BACK TO THIS
+    // Need to load correct car telemetry
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
     } catch {
       console.log('raceStart not set')
     }
@@ -102,17 +105,18 @@ export default function HomePage() {
   
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.dweetUrl)
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
     fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
       setErrorFetching(0)
-     newTelemetry([data.with[0].content])
+      newTelemetry([data.with[0].content])
      
      }
      
     )
     .catch(e =>{
+      console.log('undefined')
       setErrorFetching(errorFetching+1)
     });
   }
@@ -129,12 +133,13 @@ export default function HomePage() {
     
   },[telemetry])
 
+  // This allows the telemetry to be fetched dynamically as it takes time for the url to be taken from local storage
   useEffect(()=>{
-    const telemetryInterval = setInterval(handleUpdateTelemetry,1000);
+    const telemetryInterval = setInterval(handleUpdateTelemetry,1500);
     return () => clearInterval(telemetryInterval);
   },[fetchURL])
 
-  
+  // Race reset
 function handleReset(e){
   if (resetButton === 'btn-primary') {
     try {
@@ -213,6 +218,15 @@ function appendDataToSettings(data) {
   }
 }
 
+// Function To Extract the coordinates of each car to name and [lat,lon]
+const getCarCoordinates = (each) => {
+  if (!telemetry[each.car_number-1]) {return null}
+
+  return { name: each.car_name,
+           location: [telemetry[each.car_number-1].Lat,telemetry[each.car_number-1].Lon] }
+
+}
+
 // updates the race time every second with the elapsed time in minutes and seconds
 useEffect(() => {
   const timerInterval = setInterval(() => {
@@ -226,6 +240,7 @@ useEffect(() => {
 
   return (
     <>
+      
     <MenuBar />
     <h2 class="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
     {errorFetching>8 && 
@@ -256,7 +271,13 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
-      
+      <LocationMap settings={settings} locationData={
+        [
+          { name : (settings) ? settings.cars[0].car_name : 'Not loaded',
+          location : (telemetry.Lat) ? [telemetry.Lat,telemetry.Lon] : [57.1189133,-2.1351633]
+        } 
+        ]
+} />
       <LapSummary settings={settings}/>
     </div>
    

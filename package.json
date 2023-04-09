@@ -11,6 +11,7 @@
     "firebase": "^9.15.0",
     "jquery": "^3.6.4",
     "node-dweetio": "^0.0.11",
+    "pigeon-maps": "^0.21.3",
     "popper.js": "^1.16.1",
     "react": "^18.2.0",
     "react-bubbly-transitions": "^1.0.1",

@@ -1,5 +1,6 @@
 import React from 'react'
 import TelemetryCard from './TelemetryCard';
+import LocationMap from './LocationMap';
 
 // Estimate gear, based on GA1. 59.44 is wheel diameter so this wont work for other cars. Change that.
 // Is it diameter or circumference????
@@ -54,6 +55,10 @@ export default function Telemetry({telemetry,settings}) {
     <div class="grid-items telemetry">
       <div class="grid-item">
         <TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
+      </div>
+
+      <div class="grid-item">
+        <LocationMap />
       </div>
 
       <div class="grid-item">
