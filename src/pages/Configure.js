@@ -93,7 +93,7 @@ export default function Configure() {
         try {
             saveSettingsToSettings(e)
             saveSettingsToFirebase()
-           .catch((e)=>{console.log(e)})
+            .catch((e)=>{console.log(e)})
             
             setError()
             setSuccess('Settings saved successfully!') 
@@ -115,6 +115,8 @@ export default function Configure() {
         const trackLength = configureFormRef.current.elements.trackLength.value ? configureFormRef.current.elements.trackLength.value : settings.trackLength
         const theme = configureFormRef.current.elements.theme.value ? configureFormRef.current.elements.theme.value : settings.theme
         const manualLapMode = configureFormRef.current.elements.manualLapMode.value ? configureFormRef.current.elements.manualLapMode.value : settings.manualLapMode
+        const summaryMap = configureFormRef.current.elements.summaryMap.value ? configureFormRef.current.elements.summaryMap.value : settings.summaryMap
+        const lapSummaryTable = configureFormRef.current.elements.lapSummaryTable.value ? configureFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable
 
         console.log(settings.teamName,teamName)
         newSettings(prevSettings => ({
@@ -127,10 +129,13 @@ export default function Configure() {
             raceLength:raceLength,
             trackLength:trackLength,
             theme:theme,
-            manualLapMode:manualLapMode
+            manualLapMode:manualLapMode,
+            summaryMap:summaryMap,
+            lapSummaryTable:lapSummaryTable
         }))
 
         console.log(teamName,settings.teamName)
+        
     }
 
     // function to save settings to firebase car document when settings saved
@@ -140,7 +145,9 @@ export default function Configure() {
                                 race_start_time : settings.raceStart,
                                 track_length : settings.trackLength,
                                 appearance_theme : settings.theme,
-                                manualLapMode : settings.manualLapMode
+                                manualLapMode : settings.manualLapMode,
+                                lap_summary_table : settings.lapSummaryTable,
+                                summary_map : settings.summaryMap,
                             }
         // now get the car setting array
         const carSettings = settings.cars
@@ -154,6 +161,9 @@ export default function Configure() {
         })
         .catch(error => {
             console.error("Error adding document: ", error);
+            setSuccess()
+            setError('Failed to save settings to cloud.',error)
+            
         });}
         catch (e) {
             console.log(e)
@@ -431,12 +441,30 @@ export default function Configure() {
             <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password Here</button></Link>
 
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
+
+            <div class="border-top mt-2">
+                <h3 class="mt-2">Billing</h3>
+                <a class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</a>
+                <Link to={"/upgrade-plan?fromApp=true&currentPlan="+settings.role} class="btn btn-outline-dark btn-block mb-2">Upgrade Plan</Link>
+            </div>
+
+            <div class="border-top mt-2">
+                <h3 class="mt-2">DashOwl</h3>
+                <a href="https://www.vis.dashowl.co.uk" class="btn btn-outline-dark btn-block">eChook Logfile Visualiser (Free!)</a>
+                <div hidden class="form-group my-3">
+                    <label for="newsLetterEmail">Newsletter:</label>
+                    <input type="email" class="form-control text-center" id="newsLetterEmail" placeholder={currentUser.email}></input>
+
+                </div>
+            </div>
+
+
         </div>
 
         <div class="tab mx-1" hidden={determineHide(1)}>
             <h3>Cars</h3>
             {settings.cars ? settings.cars.map((car,index)=>(
-            <div class="card w-100 m-auto">
+            <div class="card w-100 m-auto mb-2">
             
                 <div class="card-header" data-value={index+4} onClick={changeTab}>
                     <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
@@ -487,7 +515,7 @@ export default function Configure() {
                     <option value="false">Disabled</option>
                 </select>
             </div>
-            <button class="btn btn-danger btn-block" onClick={tempFuncResetRunData}>Reset Data</button>
+            <button class="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Data</button>
             
         </div>
 
@@ -495,7 +523,7 @@ export default function Configure() {
             <h3>Appearance</h3>
             <div class="form-group my-3">
                 <label for="theme">Theme</label>
-                <select class="form-control" id="theme">
+                <select disabled class="form-control" id="theme">
                     <option>Light</option>
                     <option>Dark</option>
                 </select>
@@ -504,9 +532,17 @@ export default function Configure() {
             <h3>Summary Page</h3>
             <div class="form-group my-3">
                 <label for="summaryMap">Location map</label>
-                <select class="form-control" id="summaryMap">
+                <select disabled class="form-control" id="summaryMap">
                     <option>Disabled</option>
-                    <option>Enabled</option>
+                    <option selected={settings.summaryMap==='Enabled' ? "selected" : ""}>Enabled</option>
+                </select>
+            </div>
+
+            <div class="form-group my-3">
+                <label for="lapSummaryTable">Lap Summary Table</label>
+                <select disabled class="form-control" id="lapSummaryTable">
+                    <option>Disabled</option>
+                    <option selected={settings.lapSummaryTable==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
             </div>
         </div>

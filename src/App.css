@@ -7,12 +7,25 @@ body {
     -moz-osx-font-smoothing: grayscale;
   }
   
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;
   }
 
-.card {
+.card-dash {
     width:15rem;
     margin:0.5rem
 }
@@ -324,8 +337,9 @@ progress[value]::-webkit-progress-value {
 }
 
 .upgrade-background {
-    height: 100%;
+    height: 5rem;
     width: 100%;
     padding: none;
-    background: linear-gradient(45deg, rgb(212, 98, 241) 0%, rgb(66, 66, 214) 0%, rgba(0,212,255,1) 100%);
+    background: linear-gradient(45deg, rgb(127, 48, 146) 0%, rgb(31, 31, 90) 0%, rgba(0,212,255,1) 100%);
+
 }

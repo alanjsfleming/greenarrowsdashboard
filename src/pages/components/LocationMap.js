@@ -16,7 +16,7 @@ export default function LocationMap(props) {
 
     useEffect(() => {
         try {
-            if (props.settings.role === 'premium' || props.settings.role === 'basic') {
+            if (props.settings.role === 'pro' || props.settings.role === 'standard') {
                 setAllowedPermissions(true)
             }
         } catch(error) {
@@ -87,7 +87,7 @@ export default function LocationMap(props) {
             <Link to="/configure?3" class="btn btn-outline-secondary btn-block">Disable Map</Link>
             </div> 
             : 
-            <ContentLocked />
+            <ContentLocked role={props.settings.role}/>
             )
             }
 

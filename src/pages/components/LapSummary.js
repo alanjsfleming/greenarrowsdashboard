@@ -9,15 +9,13 @@ export default function LapSummary(props) {
 
     const [currentLapData, setCurrentLapData] = useState()
     const [currentLapNum, setCurrentLapNum] = useState()
-    const [runningData,setRunningData] = useState()
+    const [runningData,setRunningData] = useState([])
 
-
-    const [allowedPermissions, setAllowedPermissions] = useState(false)
-
-
+    // Determine if user is allowed to access this content
+    const [allowedPermissions, setAllowedPermissions] = useState(false)    
     useEffect(() => {
         try {
-            if (props.settings.role === 'premium' || props.settings.role === 'basic') {
+            if (props.settings.role === 'pro' || props.settings.role === 'standard') {
                 setAllowedPermissions(true)
             }
         } catch(error) {
@@ -29,7 +27,7 @@ export default function LapSummary(props) {
     useEffect(() => {
         try{
         console.log("lap summary props",props.settings)
-        setRunningData(props.settings.running_data)
+        (props.settings.running_data) && setRunningData(props.settings.running_data)
         setCurrentLapNum(calculateCurrentLapNum())
         getCurrentLapData()
         } catch (error) {
@@ -152,7 +150,7 @@ export default function LapSummary(props) {
             <tbody>
                 {runningData && (<tr scope="row">
                     <th scope="col">Current</th>
-                    <th scope="col">00:02:12</th>
+                    <th scope="col"></th>
                     <th scope="col">{currentLapData ? currentLapData.AH : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aV1 : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aA : '-'}</th>
@@ -161,17 +159,17 @@ export default function LapSummary(props) {
 
                 {lapData[0] && (<tr scope="row">
                     <th scope="col">Last</th>
-                    <th scope="col">00:02:12</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-1).time : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).AH : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aV1 : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aA : '-'}</th>
                     <th scope="col">{lapData[0] ? lapData.at(-1).aSpd : '-'}</th>
                 </tr>)}
         
-                {lapData.length>0 ? lapData.map(lap=>(
+                {lapData.length>0 ? lapData.map((lap,index)=>(
                     <tr>
                         <th scope="row">{lap.num}</th>
-                        <td>00:00:00</td>
+                        <td>00</td>
                         <td>{lap.AH}</td>
                         <td>{lap.aV1}</td>
                         <td>{lap.aA}</td>
@@ -179,7 +177,7 @@ export default function LapSummary(props) {
                         
                     </tr>
                 )) : <tr>
-                        <th colspan="6" scope="row">No Data...</th>   
+                        <th colSpan="6" scope="row">No Data...</th>   
                     </tr>}
             </tbody>
     
@@ -187,11 +185,11 @@ export default function LapSummary(props) {
     )
 
   return (
-    <div class="card car-summary">
+    <div class="card car-summary mb-3">
         <div class="card-header text-center">
             <h3>Laps ({currentLapNum ? JSON.stringify(currentLapNum) : '-'})</h3>
             <div>
-                <p>Distance: </p>
+                <p>Distance: {(runningData.length>0) ? runningData.at(-1).Distance : '-'} </p>
             </div>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">

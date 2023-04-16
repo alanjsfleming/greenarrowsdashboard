@@ -11,6 +11,7 @@ import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
 
+
 export default function HomePage() {
   // Send a page view event to Firebase Analytics
   useEffect(() => {
@@ -59,7 +60,9 @@ export default function HomePage() {
         trackLength:data.track_length,
         theme:data.appearance_theme,
         raceStart:data.race_start_time,
-        role:data.role
+        role:data.role,
+        lapSummaryTable:data.lap_summary_table,
+        summaryMap:data.summary_map,
     }))
     
     }).catch((error) => {
@@ -257,7 +260,7 @@ useEffect(() => {
       {settings ? settings.cars.map((car,index) => (
       <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry}/>)) : <p>No cars...</p>}
       <br></br>
-      <div class="card car-summary" id="raceTimer">
+      <div class="card-dash car-summary" id="raceTimer">
       <div class="card-header">
           <h3 class="card-title mt-1 text-center">Race {raceTime}</h3>
       </div>
@@ -271,14 +274,21 @@ useEffect(() => {
       </div>
   </div>
       <br></br>
+      {(settings && settings.summaryMap==='Enabled') ? 
       <LocationMap settings={settings} locationData={
         [
-          { name : (settings) ? settings.cars[0].car_name : 'Not loaded',
+          { 
+          name : (telemetry.Lat && settings) ? settings.cars[0].car_name : 'No GPS data',
           location : (telemetry.Lat) ? [telemetry.Lat,telemetry.Lon] : [57.1189133,-2.1351633]
         } 
-        ]
-} />
-      <LapSummary settings={settings}/>
+        ]} /> 
+        : 
+        <></>}
+
+      {(settings && settings.lapSummaryTable==='Enabled') ? 
+      <LapSummary settings={settings}/> 
+      : 
+      <></> }
     </div>
    
     
