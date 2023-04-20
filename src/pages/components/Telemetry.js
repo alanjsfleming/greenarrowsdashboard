@@ -53,63 +53,62 @@ export default function Telemetry({telemetry,settings}) {
   return (
     <>
     <div class="grid-items telemetry">
-      <div class="grid-item">
+      <div class="grid-item border mt-1 rounded-3">
         <TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
       </div>
 
-      <div class="grid-item">
-        <LocationMap />
-      </div>
+      
 
-      <div class="grid-item">
-        <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.teethGear)} units="th Gear" kind="gauge"/>
+
+      <div class="grid-item border rounded-3">
+        <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].large_gear_teeth)} units="th Gear" kind="gauge"/>
       </div>
-      <div class="grid-item">
-        <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.ampHours)} units="%" kind="gauge"/>
+      <div class="grid-item border rounded-3">
+        <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.cars[0].battery_capacity)} units="%" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Vt:" data={telemetry.Vt} units="V" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Amp Hours per Lap:" data={telemetry.AH/telemetry.lap} units="Ah/Lap" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Motor Efficiency:" data={calculateMotorEfficiency(telemetry.Vt,telemetry.A,telemetry.Tmp1)} units="%" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="V2:" data={telemetry.Vt-telemetry.V1} units="V" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="A:" data={telemetry.A} units="A" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Motor RPM:" data={telemetry.RPM} kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Speed:" data={(telemetry.Spd*2.237).toFixed(1)} units="mph" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Throttle:" data={telemetry.Thrtl} units="%" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Amp Hours used:" data={telemetry.AH} units="Ah" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Laps:" data={telemetry.Lap} units="" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Motor Temperature:" data={telemetry.Tmp1} units="&deg;C" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Battery Temperature:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3">
         <TelemetryCard title="Brake:" data={telemetry.Brk} units="" kind="gauge"/>
       </div>
-      <div class="grid-item">
+      <div class="grid-item border rounded-3 mb-1">
         <TelemetryCard title="Distance:" data={telemetry.Distance} units="" kind="gauge"/>
       </div>
     </div>
@@ -126,3 +125,14 @@ export default function Telemetry({telemetry,settings}) {
         </div>
       </div>
       */
+
+      /* <div class="grid-item">
+        <LocationMap settings={settings} locationData={
+          [
+            {
+              name : 'GA1',
+              location : (telemetry.Lat) ? [telemetry.Lat,telemetry.Lon] : [52,-2]
+            }
+          ]
+        }/>
+      </div>*/

@@ -442,9 +442,9 @@ export default function Configure() {
 
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
 
-            <div class="border-top mt-2">
+            <div hidden class="border-top mt-2">
                 <h3 class="mt-2">Billing</h3>
-                <a class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</a>
+                <button class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</button>
                 <Link to={"/upgrade-plan?fromApp=true&currentPlan="+settings.role} class="btn btn-outline-dark btn-block mb-2">Upgrade Plan</Link>
             </div>
 
@@ -483,7 +483,7 @@ export default function Configure() {
         
 
             <br></br>
-            <button type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
+            <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
 
         </div>
 
@@ -532,7 +532,7 @@ export default function Configure() {
             <h3>Summary Page</h3>
             <div class="form-group my-3">
                 <label for="summaryMap">Location map</label>
-                <select disabled class="form-control" id="summaryMap">
+                <select class="form-control" id="summaryMap">
                     <option>Disabled</option>
                     <option selected={settings.summaryMap==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
@@ -540,7 +540,7 @@ export default function Configure() {
 
             <div class="form-group my-3">
                 <label for="lapSummaryTable">Lap Summary Table</label>
-                <select disabled class="form-control" id="lapSummaryTable">
+                <select class="form-control" id="lapSummaryTable">
                     <option>Disabled</option>
                     <option selected={settings.lapSummaryTable==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
@@ -599,7 +599,7 @@ export default function Configure() {
                 </div>
                 <br></br>
                 <small class="text-muted">Deleting a car is irreversible!</small>
-                <button type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
+                <button disabled type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
 
                 </div>
             </div>

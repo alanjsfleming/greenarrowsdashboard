@@ -23,15 +23,17 @@ export default function LapSummary(props) {
         }
     },[props.settings])
 
+    // VCq7rqiEK4qbGd7qZ4C0 GA1 
+
+
 
     useEffect(() => {
         try{
-        console.log("lap summary props",props.settings)
         (props.settings.running_data) && setRunningData(props.settings.running_data)
-        setCurrentLapNum(calculateCurrentLapNum())
-        getCurrentLapData()
+        setCurrentLapNum(calculateCurrentLapNum());
+        getCurrentLapData();
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
         console.log(currentLapNum)
     },[props.settings])
@@ -47,13 +49,13 @@ export default function LapSummary(props) {
     // Use effect to call calculateAllLapData when the currentLapNum changes
     useEffect(() => {
         try{
-            calculateAllLapData(filterSeparateLaps())
+            calculateAllLapData(filterSeparateLaps());
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     },[currentLapNum])
 
-
+    // FIX THIS
     // Function filter separate laps, which finds the indexes of the first and last data point of each lap and filters into n number of laps separate arrays
     function filterSeparateLaps() {
         // For each lap, find the first and last index of the lap
@@ -69,7 +71,7 @@ export default function LapSummary(props) {
             // Manual Lap Mode
             } else {
                 const firstDist = i*props.settings.trackLength
-                const lastDist = i+1*props.settings.trackLength
+                const lastDist = (i+1)*props.settings.trackLength
                 // Filter the runningData array into n number of arrays, each containing the data for each lap
                 lapDataArrays.push(runningData.filter(function(data) {
                     return data.Distance >= firstDist && data.Distance < lastDist
@@ -81,19 +83,21 @@ export default function LapSummary(props) {
         return lapDataArrays
     }
 
+
+    // It is trying to access undefined values in the lapDataArrays, add a check to see if the value is undefined before accessing
     function calculateAllLapData(lapDataArrays) {
         // For each lap, find the average of V1, A, and Speed
-        const averages = lapDataArrays.map(lapDataArray => {
+        const averages = lapDataArrays.map((lapDataArray,index) => {
             console.log(lapDataArrays)
             return {
-                num:lapDataArray[0].Lap,
-                time:elapsedTimeIntoString(lapDataArray.at(-1).timestamp-lapDataArray[0].timestamp),
-                AH:lapDataArray.at(-1).AH-lapDataArray[0].AH,
+                num:index+1,
+                time:((lapDataArray.at(-1)?.timestamp) && (lapDataArray[0]?.timestamp)) ? elapsedTimeIntoString(lapDataArray.at(-1).timestamp-lapDataArray[0].timestamp) : "-",
+                AH:((lapDataArray.at(-1)?.AH) && (lapDataArray[0]?.AH)) ? Math.round((lapDataArray.at(-1).AH-lapDataArray[0].AH)*10)/10 : "-",
                 aV1:Math.round(calculateAverageValue(lapDataArray.map(data=>data.V1))*10)/10,
                 aA:Math.round(calculateAverageValue(lapDataArray.map(data=>data.A))*10)/10,
-                aSpd:Math.round(calculateAverageValue(lapDataArray.map(data=>data.speed))*10)/10
+                aSpd:Math.round(calculateAverageValue(lapDataArray.map(data=>data.Speed))*10)/10
             }
-        })
+        }) 
         // Return an array of objects, each containing the average data for each lap
         setLapData(averages)
     }
@@ -101,8 +105,8 @@ export default function LapSummary(props) {
     function calculateCurrentLapNum() {
         
         if (props.settings.manualLapMode) {
-            return Math.floor(runningData.at(-1).Distance/props.settings.trackLength)
-            console.log(runningData.at(-1).Distance,parseFloat(props.settings.trackLength),Math.floor(runningData.at(-1).Distance/props.settings.trackLength))
+            return runningData.at(-1).Distance/props.settings.trackLength
+            
         } else {
             return runningData.at(-1).Lap
         }
@@ -121,7 +125,7 @@ export default function LapSummary(props) {
                 AH:AmpHours,
                 aA:Math.round(calculateAverageValue(runningData.map(data=>data.A))*10)/10,
                 aSpd:Math.round(calculateAverageValue(runningData.map(data=>data.Speed))*10)/10,
-
+                
             })
     }
 
@@ -150,7 +154,7 @@ export default function LapSummary(props) {
             <tbody>
                 {runningData && (<tr scope="row">
                     <th scope="col">Current</th>
-                    <th scope="col"></th>
+                    <th scope="col">{}</th>
                     <th scope="col">{currentLapData ? currentLapData.AH : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aV1 : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aA : '-'}</th>
@@ -169,7 +173,7 @@ export default function LapSummary(props) {
                 {lapData.length>0 ? lapData.map((lap,index)=>(
                     <tr>
                         <th scope="row">{lap.num}</th>
-                        <td>00</td>
+                        <td>{lap.time}</td>
                         <td>{lap.AH}</td>
                         <td>{lap.aV1}</td>
                         <td>{lap.aA}</td>

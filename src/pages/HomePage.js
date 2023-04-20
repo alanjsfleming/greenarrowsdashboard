@@ -11,6 +11,15 @@ import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
 
+// need to pass the car running data array to where it is consumed
+// teams/teamid/carid
+// need to store the carid somewhere in the settings
+
+// When new data point is taken, compare it to running data array to see if its,
+// Actually a new datapoint, if it is then push to the array in realtime database
+// with timestamp added
+
+
 
 export default function HomePage() {
   // Send a page view event to Firebase Analytics
@@ -206,6 +215,7 @@ function elapsedTimeIntoString() {
 // When race is running, save each request to local storage settings.running_data array
 // function to append data packet to settings.running_data array
 function appendDataToSettings(data) {
+  console.log(data)
   // if settings.running_data is undefined, create it
   if (!settings.hasOwnProperty('running_data')) {
     newSettings(prevSettings=>({
