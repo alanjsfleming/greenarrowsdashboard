@@ -10,6 +10,8 @@ import { doc, getDoc,collection,query,where,getDocs, orderBy } from "firebase/fi
 import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
+import { rtdb } from '../firebase'
+import { ref, onValue,push,once } from "firebase/database";
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -45,6 +47,14 @@ export default function HomePage() {
   const [raceTime,setRaceTime] = useState()
   const [raceTimeValue,setRaceTimeValue] = useState()
 
+  // settings.cars[i].running_data should be always equal to the realtime database entry for that car
+  // function to set the settings state to the realtime database entry for that car
+  function syncCarDataWithRealtimeDatabase() {
+    //car_num = car_num - 1
+    //const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[car_num].id}`)
+    
+  }
+
   useEffect(() => {
     console.log('useEffect called with empty dependency array');
     try {
@@ -55,6 +65,7 @@ export default function HomePage() {
       
     };  
     } catch (e) {console.log(e)}
+    
   },[])
  
   function loadSettingsFromFirebase() {
@@ -83,14 +94,14 @@ export default function HomePage() {
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // write this to settings in settings.cars object as an array
-        carArray.push(doc.data())
-      })
+        const carDataSnapshot = doc.data()
+        carDataSnapshot.id = doc.id
+        carArray.push(carDataSnapshot)
+      }) 
       newSettings(prevSettings => ({
         ...prevSettings,
-        cars:carArray
+        cars:carArray,
     }))
-       
-      
     }).catch((error) => {
       console.log("Error getting cars documents:", error);
     });
@@ -111,6 +122,23 @@ export default function HomePage() {
     } catch {
       console.log('raceStart not set')
     }
+    try {
+      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
+      onValue(rtCarRef, (snapshot) => {
+        const data = snapshot.val();  
+        newSettings(prevSettings => ({
+          ...prevSettings,
+          cars:prevSettings.cars.map((car,i) => {
+            if (i === 0) {
+              return {...car,running_data:data}
+            }
+            return car
+          })
+          }))
+          console.log("successfully synced car data with realtime database")
+      }, (error) => {
+        console.log("Error: " + error.code);
+      });} catch (e) {}
   },[settings])
   
   
@@ -140,7 +168,7 @@ export default function HomePage() {
     if (telemetry.length > 0 && raceStart) {
       const data = telemetry[0]
       data.timestamp=Date.now()
-      appendDataToSettings(data)
+      appendDataToSettings(data,1)
     }
     
   },[telemetry])
@@ -214,7 +242,33 @@ function elapsedTimeIntoString() {
 
 // When race is running, save each request to local storage settings.running_data array
 // function to append data packet to settings.running_data array
-function appendDataToSettings(data) {
+function appendDataToSettings(data,car_num) {
+  // this needs to be changed for when multiple cars...
+  const carId = settings.cars[car_num-1].id
+
+  // Store the data in firebase realtime database
+  const rtDocRef = ref(rtdb, `teams/${currentUser.uid}/${carId}`)
+
+  // the 1 is the car num
+  syncCarDataWithRealtimeDatabase(1)
+  // Check the datapoint against the previous points to see if duplicate
+  
+  // get last datapoint from realtime database
+  const lastDataPoint = settings.cars[0].running_data.at(-1)
+ 
+  // if the last datapoint is the same as the current datapoint, don't push it
+  if (lastDataPoint && (lastDataPoint.timestamp < (data.timestamp+1000))) {
+    return
+  } else {
+    // If it passes then Push the data to the realtime database
+    push(rtDocRef, data)
+  }
+
+
+ 
+
+  // The below is for when the data is only stored locally
+  /*
   console.log(data)
   // if settings.running_data is undefined, create it
   if (!settings.hasOwnProperty('running_data')) {
@@ -229,6 +283,7 @@ function appendDataToSettings(data) {
     running_data: [...prevSettings.running_data, data]
   }))
   }
+  */
 }
 
 // Function To Extract the coordinates of each car to name and [lat,lon]

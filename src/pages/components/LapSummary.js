@@ -29,7 +29,7 @@ export default function LapSummary(props) {
 
     useEffect(() => {
         try{
-        (props.settings.running_data) && setRunningData(props.settings.running_data)
+        (props.settings.cars[0].running_data) && setRunningData(props.settings.cars[0].running_data)
         setCurrentLapNum(calculateCurrentLapNum());
         getCurrentLapData();
         } catch (error) {
@@ -95,7 +95,7 @@ export default function LapSummary(props) {
                 AH:((lapDataArray.at(-1)?.AH) && (lapDataArray[0]?.AH)) ? Math.round((lapDataArray.at(-1).AH-lapDataArray[0].AH)*10)/10 : "-",
                 aV1:Math.round(calculateAverageValue(lapDataArray.map(data=>data.V1))*10)/10,
                 aA:Math.round(calculateAverageValue(lapDataArray.map(data=>data.A))*10)/10,
-                aSpd:Math.round(calculateAverageValue(lapDataArray.map(data=>data.Speed))*10)/10
+                aSpd:Math.round(calculateAverageValue(lapDataArray.map(data=>data.Spd))*10)/10
             }
         }) 
         // Return an array of objects, each containing the average data for each lap
@@ -124,7 +124,7 @@ export default function LapSummary(props) {
                 aV1:Math.round(calculateAverageValue(runningData.map(data=>data.V1))*10)/10,
                 AH:AmpHours,
                 aA:Math.round(calculateAverageValue(runningData.map(data=>data.A))*10)/10,
-                aSpd:Math.round(calculateAverageValue(runningData.map(data=>data.Speed))*10)/10,
+                aSpd:Math.round(calculateAverageValue(runningData.map(data=>data.Spd))*10)/10,
                 
             })
     }
