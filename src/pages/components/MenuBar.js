@@ -16,14 +16,14 @@ export default function MenuBar(settings) {
   return (
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-    <nav class="navbar sticky-top" id="topOfPage">
+    <nav className="navbar sticky-top" id="topOfPage">
     <Link to="/" style={{color:'inherit',textDecoration:'inherit'}}>
-      <p class="navbar-brand menuBar">
+      <p className="navbar-brand menuBar">
           <Emoji symbol="🦉" label="owl" />
           {currentUser.displayName}</p></Link>
-        <div class="nav-link-container" id="myTopnav">
+        <div className="nav-link-container" id="myTopnav">
           
-        <Link to="/configure?0" class="icon"><i class="fa fa-bars"></i></Link>
+        <Link to="/configure?0" className="icon"><i className="fa fa-bars"></i></Link>
         </div>
     </nav>
     </>

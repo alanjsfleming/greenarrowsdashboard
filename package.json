@@ -1,7 +1,7 @@
 {
   "name": "greenarrowsdashboard",
   "version": "0.1.0",
-  "homepage": "https://dash.green-arrows.co.uk",
+  "homepage": "https://app.dashowl.co.uk",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

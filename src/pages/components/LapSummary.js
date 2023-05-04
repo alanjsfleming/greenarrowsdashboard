@@ -26,17 +26,17 @@ export default function LapSummary(props) {
     // VCq7rqiEK4qbGd7qZ4C0 GA1 
 
 
-
+    // change this to use props.runningData
     useEffect(() => {
         try{
-        (props.settings.cars[0].running_data) && setRunningData(props.settings.cars[0].running_data)
+        (props.runningData) && setRunningData(props.runningData)
         setCurrentLapNum(calculateCurrentLapNum());
         getCurrentLapData();
         } catch (error) {
             console.log(error);
         }
         console.log(currentLapNum)
-    },[props.settings])
+    },[props.runningData])
 
     function elapsedTimeIntoString(elapsedTime) {
         const mins=Math.floor(elapsedTime/1000/60).toLocaleString('en-US',{minimumIntegerDigits:2,useGrouping:false})
@@ -153,21 +153,22 @@ export default function LapSummary(props) {
             </thead>
             <tbody>
                 {runningData && (<tr scope="row">
-                    <th scope="col">Current</th>
+                    <th scope="col">Overall</th>
                     <th scope="col">{}</th>
                     <th scope="col">{currentLapData ? currentLapData.AH : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aV1 : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aA : '-'}</th>
                     <th scope="col">{currentLapData ? currentLapData.aSpd : '-'}</th>
                 </tr>)}
+                
 
-                {lapData[0] && (<tr scope="row">
+                {lapData[1] && (<tr scope="row">
                     <th scope="col">Last</th>
-                    <th scope="col">{lapData[0] ? lapData.at(-1).time : '-'}</th>
-                    <th scope="col">{lapData[0] ? lapData.at(-1).AH : '-'}</th>
-                    <th scope="col">{lapData[0] ? lapData.at(-1).aV1 : '-'}</th>
-                    <th scope="col">{lapData[0] ? lapData.at(-1).aA : '-'}</th>
-                    <th scope="col">{lapData[0] ? lapData.at(-1).aSpd : '-'}</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-2).time : '-'}</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-2).AH : '-'}</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-2).aV1 : '-'}</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-2).aA : '-'}</th>
+                    <th scope="col">{lapData[0] ? lapData.at(-2).aSpd : '-'}</th>
                 </tr>)}
         
                 {lapData.length>0 ? lapData.map((lap,index)=>(

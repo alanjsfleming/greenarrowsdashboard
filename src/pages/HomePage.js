@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useState,useRef } from 'react'
 import {Link}  from "react-router-dom"
 import CarSummary from './components/CarSummary'
 import RacePanel from './components/RacePanel'
@@ -11,7 +11,7 @@ import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
 import { rtdb } from '../firebase'
-import { ref, onValue,push,once } from "firebase/database";
+import { ref, onValue,push,off } from "firebase/database";
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -46,7 +46,9 @@ export default function HomePage() {
 
   const [raceTime,setRaceTime] = useState()
   const [raceTimeValue,setRaceTimeValue] = useState()
+  const [runningData,setRunningData] = useState([])
 
+  const runningDataRef = useRef(runningData)
   // settings.cars[i].running_data should be always equal to the realtime database entry for that car
   // function to set the settings state to the realtime database entry for that car
   function syncCarDataWithRealtimeDatabase() {
@@ -56,7 +58,7 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    console.log('useEffect called with empty dependency array');
+  
     try {
     loadSettingsFromFirebase()
     const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
@@ -101,7 +103,7 @@ export default function HomePage() {
       newSettings(prevSettings => ({
         ...prevSettings,
         cars:carArray,
-    }))
+    })) 
     }).catch((error) => {
       console.log("Error getting cars documents:", error);
     });
@@ -122,27 +124,64 @@ export default function HomePage() {
     } catch {
       console.log('raceStart not set')
     }
-    try {
-      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
-      onValue(rtCarRef, (snapshot) => {
-        const data = snapshot.val();  
-        newSettings(prevSettings => ({
-          ...prevSettings,
-          cars:prevSettings.cars.map((car,i) => {
-            if (i === 0) {
-              return {...car,running_data:data}
-            }
-            return car
-          })
-          }))
-          console.log("successfully synced car data with realtime database")
-      }, (error) => {
-        console.log("Error: " + error.code);
-      });} catch (e) {}
+    
   },[settings])
   
+  useEffect(()=>{
+    // When the raceStart changes, if it is not running then make sure client is not listening to realtime database, this is for bandwidth reasons
+    if (!raceStart) {
+      try {
+        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
+      
+        off(rtCarRef)
+      } catch(e) {
+        console.log(e)
+      }
+      return
+    }
+    // Otherwise, if it is on then subscribe and update client state with realtime database value for the users car
+    try {
+      
+      // Change this ref to be dynamic to the car
+      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
+      const realtimeDatabaseListener = onValue(rtCarRef, (snapshot) => {
+        
+        const data = []
+        snapshot.forEach((childSnapshot) => {
+          data.push(childSnapshot.val())
+        })
+        
+
+       
+        // If the there is no data in the realtime database, return and do nothing
+        if (data === null) {
+          console.log("data is null")
+          return
+        }
+        
+        
+
+        // If the data is the same in the database as the client already has then do nothing.
+        if (runningDataRef.current === data) {
+          console.log("data is the same")
+          return
+        }
+
+
+        // If it passes the other escapes then set the client data to be the same as the database
+        setRunningData(data)
+        console.log("Taken value from realtime database")
+      }, (error) => {
+        console.log("Error: " + error);
+      });
+      console.log("successfully set up realtime database listener"+rtCarRef)
+    } catch (e) { console.log("error setting up realtime database listener" + e)}
+  },[raceStart])
   
-  
+  useEffect(()=>{
+    console.log(runningData)
+  },[runningData])
+
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
     setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
@@ -156,7 +195,7 @@ export default function HomePage() {
      
     )
     .catch(e =>{
-      console.log('undefined')
+      console.log('undefined'+e)
       setErrorFetching(errorFetching+1)
     });
   }
@@ -195,7 +234,6 @@ function handleReset(e){
     raceStart: null
   }))
 }
-
 }
 
 // when a primed reset button is clicked off of it will put the button back to its normal condition
@@ -245,7 +283,7 @@ function elapsedTimeIntoString() {
 function appendDataToSettings(data,car_num) {
   // this needs to be changed for when multiple cars...
   const carId = settings.cars[car_num-1].id
-
+  const lastDataPoint = { timestamp : 0}
   // Store the data in firebase realtime database
   const rtDocRef = ref(rtdb, `teams/${currentUser.uid}/${carId}`)
 
@@ -254,14 +292,27 @@ function appendDataToSettings(data,car_num) {
   // Check the datapoint against the previous points to see if duplicate
   
   // get last datapoint from realtime database
-  const lastDataPoint = settings.cars[0].running_data.at(-1)
+  //if (settings.cars[0].running_data) {
+  if (runningData.length>1) {
+  //const lastDataPoint = settings.cars[0].running_data.at(-1)
+  const lastDataPoint = runningData.at(-1)
+  }
  
   // if the last datapoint is the same as the current datapoint, don't push it
-  if (lastDataPoint && (lastDataPoint.timestamp < (data.timestamp+1000))) {
+  //if (settings.cars[0].running_data && (lastDataPoint.timestamp < (data.timestamp+1000))) {
+  // Test here if data meets conditions to be pushed to the realtime database
+  if (runningData && (lastDataPoint.timestamp > (data.timestamp-1000))) {
+    console.log(data.timestamp)
     return
+  
   } else {
     // If it passes then Push the data to the realtime database
-    push(rtDocRef, data)
+    try {
+      const latestDataPointRef = push(rtDocRef, data)
+      console.log(latestDataPointRef)
+      console.log("pushed")
+    } catch(e) {console.log(e)}
+    
   }
 
 
@@ -310,31 +361,31 @@ useEffect(() => {
     <>
       
     <MenuBar />
-    <h2 class="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
+    <h2 className="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
     {errorFetching>8 && 
-    <div class="alert alert-warning mx-2 d-flex flex-column homepage-dash ">
-      <p class="text-center">Unable to fetch data from car.</p>
-      <div class="m-auto">
+    <div className="alert alert-warning mx-2 d-flex flex-column homepage-dash ">
+      <p className="text-center">Unable to fetch data from car.</p>
+      <div className="m-auto">
       <ul>
         <li>Dweet Thing name may be inputted incorrectly.</li>
         <li>Check that Dweet Thing is receiving data from car.</li>
       </ul>
       </div>
     </div>}
-    <div class="d-flex homepage-dash flex-column">
+    <div className="d-flex homepage-dash flex-column">
       {settings ? settings.cars.map((car,index) => (
       <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry}/>)) : <p>No cars...</p>}
       <br></br>
-      <div class="card-dash car-summary" id="raceTimer">
-      <div class="card-header">
-          <h3 class="card-title mt-1 text-center">Race {raceTime}</h3>
+      <div className="card-dash car-summary border rounded-3" id="raceTimer">
+      <div className="card-header">
+          <h3 className="card-title mt-1 text-center">Race {raceTime}</h3>
       </div>
-      <div class="card-body">
-          <progress class="progress" min="0" max={raceLength} value={raceTimeValue} ></progress>
-          <div class="btn-group w-100 mt-2">
-              <button disabled={raceStart} onClick={handleStart} class="btn btn-primary btn-block ">Start</button>
-              <button onClick={handleReset} onBlur={handleUnfocusReset} class={"btn btn-block "+resetButton} >Reset</button>
-              <Link to="/configure?2" class="btn btn-primary btn-block">Setup</Link>
+      <div className="card-body">
+          <progress className="progress" min="0" max={raceLength} value={raceTimeValue} ></progress>
+          <div className="btn-group w-100 mt-2">
+              <button disabled={raceStart} onClick={handleStart} className="btn btn-primary btn-block ">Start</button>
+              <button onClick={handleReset} onBlur={handleUnfocusReset} className={"btn btn-block "+resetButton} >Reset</button>
+              <Link to="/configure?2" className="btn btn-primary btn-block">Setup</Link>
           </div>
       </div>
   </div>
@@ -351,7 +402,7 @@ useEffect(() => {
         <></>}
 
       {(settings && settings.lapSummaryTable==='Enabled') ? 
-      <LapSummary settings={settings}/> 
+      <LapSummary settings={settings} runningData={runningData}/> 
       : 
       <></> }
     </div>

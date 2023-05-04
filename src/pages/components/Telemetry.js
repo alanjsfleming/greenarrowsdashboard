@@ -57,24 +57,31 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Time Elapsed:" units="minutes:seconds" kind="gauge" settings={settings}/>
       </div>
 
-      
-
-
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].large_gear_teeth)} units="th Gear" kind="gauge"/>
-      </div>
+      </div> 
+
+
+
+    
+ 
+    
+
+      
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.cars[0].battery_capacity)} units="%" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Vt:" data={telemetry.Vt} units="V" kind="gauge"/>
       </div>
+
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Amp Hours per Lap:" data={telemetry.AH/telemetry.lap} units="Ah/Lap" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Motor Efficiency:" data={calculateMotorEfficiency(telemetry.Vt,telemetry.A,telemetry.Tmp1)} units="%" kind="gauge"/>
       </div>
+     
       <div class="grid-item border rounded-3">
         <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>
       </div>
@@ -136,3 +143,8 @@ export default function Telemetry({telemetry,settings}) {
           ]
         }/>
       </div>*/
+
+/*
+
+
+  */

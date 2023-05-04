@@ -7,6 +7,8 @@ import { db } from '../firebase'
 import { analytics } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import { where, getDocs,query,collection } from 'firebase/firestore'
+import {ref,remove} from "firebase/database"
+import { rtdb } from '../firebase'
 
 // change this all to be a modal?
 export default function Configure() {
@@ -134,6 +136,18 @@ export default function Configure() {
             lapSummaryTable:lapSummaryTable
         }))
 
+        // Carname, battery capacity, large gear teeth, wheel circumference, thing name
+        const carCopyAll = [...settings.cars]
+        carCopyAll[0].car_name = carName
+        carCopyAll[0].battery_capacity = ampHours
+        carCopyAll[0].large_gear_teeth = teethGear
+        carCopyAll[0].wheel_circumference = trackLength
+        carCopyAll[0].dweet_name = dweetUrl
+        newSettings(prevSettings => ({
+            ...prevSettings,
+            cars:carCopyAll
+        }))
+
         console.log(teamName,settings.teamName)
         
     }
@@ -157,7 +171,10 @@ export default function Configure() {
         // update user document in firebase
         updateDoc(userDocRef, userSettings, { merge: true })
         .then(userDocRef => {
-            console.log("Document written with ID: ", userDocRef.id);
+            console.log("Document successfully updated!",userDocRef);
+            setSuccess('Settings saved successfully!') 
+            setError()
+            
         })
         .catch(error => {
             console.error("Error adding document: ", error);
@@ -346,6 +363,10 @@ export default function Configure() {
   
 
     function tempFuncResetRunData() {
+        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
+        remove(rtCarRef).then(()=>{
+            console.log("deleted")
+        })
         newSettings(prevSettings=>({
           ...prevSettings,
           running_data: []

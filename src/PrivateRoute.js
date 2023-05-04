@@ -10,9 +10,7 @@ export default function PrivateRoute({ children }) {
 
 
     useEffect(() => {
-        console.log("current user",currentUser) 
         if (typeof currentUser === 'undefined') {
-            console.log("undefined")
             setLoginStatus('loading')
         } else if (currentUser === null) { 
             setLoginStatus('false')

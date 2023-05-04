@@ -24,10 +24,10 @@ export default function Loading() {
 
 
   return (
-    <div class="loading">
+    <div className="loading">
         <Emoji symbol="🦉" label="owl"/>
         <br></br>
-        <h1 class="fixed position-static">Loading</h1><h1 id="dots"></h1>
+        <h1 className="fixed position-static">Loading</h1><h1 id="dots"></h1>
     </div>
     
   )
