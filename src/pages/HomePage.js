@@ -190,9 +190,7 @@ export default function HomePage() {
     .then((data)=> { 
       setErrorFetching(0)
       newTelemetry([data.with[0].content])
-     
      }
-     
     )
     .catch(e =>{
       console.log('undefined'+e)

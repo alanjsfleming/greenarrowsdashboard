@@ -284,6 +284,7 @@ export default function Configure() {
                             battery_capacity : 28,
                             small_gear_teeth:20, 
                             large_gear_teeth : 60,
+                            // id field = document id in firestore
                             owner: currentUser.uid,
                             wheel_circumference : 4,
                             reverse_gearing_mode : false,
