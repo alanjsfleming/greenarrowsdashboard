@@ -18,6 +18,12 @@ const app = initializeApp({
 })
 
 
+// Wrap initialization of analytics in analytics.isSupported check
+// to ensure it doesn't break your app in browsers that don't support it.
+if (isSupported()) {
+    const analytics = getAnalytics(app)
+    logEvent(analytics, 'notification_received')
+}
 
 export const analytics = getAnalytics(app)
 export const auth = getAuth(app)

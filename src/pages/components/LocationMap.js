@@ -2,7 +2,7 @@ import React, {useState,useEffect} from "react"
 import { Map, Marker } from "pigeon-maps"
 import { Link } from "react-router-dom"
 import { map } from "jquery"
-import ContentLocked from "./ContentLocked"
+import ContentLocked from "../../layouts/ContentLocked"
 
 export default function LocationMap(props) {
     // -2.1351633
@@ -43,7 +43,7 @@ export default function LocationMap(props) {
     }
 
     const renderMarker = (car) => {
-        if (!car.location) {return null}
+        if (!car.location) {return null} // if car has no location data, don't render a marker
 
         return <Marker width={50} anchor={car.location} color="green" />
 

@@ -1,7 +1,6 @@
 import React from 'react'
-import GALogo from '../../images/greenarrowslogocropped.png';
 import {Link} from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuth } from '../contexts/AuthContext'
 import Emoji from './Emoji';
 
 

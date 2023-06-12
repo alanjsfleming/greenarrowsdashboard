@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import MenuBar from './components/Navbar'
-import Basic from './components/pricingoffers/Basic'
-import Free from './components/pricingoffers/Free'
-import Pro from './components/pricingoffers/Pro'
+import MenuBar from '../layouts/Navbar'
+
 import { Link } from 'react-router-dom'
 
 export default function UpgradePlan() {
 
-    const [urlParams, setUrlParams] = useState(window.location.href.split('?')[1])
+    const urlParams = window.location.href.split('?')[1]
     const [currentPlan, setCurrentPlan] = useState('Free')
     const [fromApp, setFromApp] = useState(false)
     const [billingPeriod,setBillingPeriod] = useState('yr')
     const [monthlyStatus,setMonthlyStatus] = useState('btn-outline-secondary')
     const [yearlyStatus,setYearlyStatus] = useState('btn-primary')
-    const [pricing,setPricing] = useState({
+    const pricing = {
         free: {
             monthly:0,
             yearly:0
@@ -26,7 +24,7 @@ export default function UpgradePlan() {
             monthly:15,
             yearly:150
         },
-        })
+        }
 
 
     function handleSetToMonth() {

@@ -3,7 +3,7 @@ import {Link}  from "react-router-dom"
 import CarSummary from './components/CarSummary'
 import RacePanel from './components/RacePanel'
 import { useAuth } from '../contexts/AuthContext'
-import MenuBar from './components/MenuBar'
+import MenuBar from '../layouts/MenuBar'
 import LapSummary from './components/LapSummary'
 import { useRace } from '../contexts/RaceContext'
 import { doc, getDoc,collection,query,where,getDocs, orderBy } from "firebase/firestore";
@@ -12,6 +12,7 @@ import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
 import { rtdb } from '../firebase'
 import { ref, onValue,push,off } from "firebase/database";
+import DataLastReceived from '../layouts/DataLastReceived'
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -25,9 +26,7 @@ import { ref, onValue,push,off } from "firebase/database";
 
 export default function HomePage() {
   // Send a page view event to Firebase Analytics
-  useEffect(() => {
-    logEvent(analytics,'summary_page_view')
-  })
+
 
 
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
@@ -35,6 +34,7 @@ export default function HomePage() {
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState()
   const [errorFetching, setErrorFetching] = useState(0)
+  const [dataLastReceived,setDataLastReceived] = useState("2023-06-10T14:37:47.074Z")
   const [fetchURL,setFetchURL] = useState()
   const { currentUser } = useAuth()
 
@@ -190,6 +190,7 @@ export default function HomePage() {
     .then((data)=> { 
       setErrorFetching(0)
       newTelemetry([data.with[0].content])
+      // Make the last data received time state = to the timestamp onn the data packet
      }
     )
     .catch(e =>{
@@ -370,9 +371,11 @@ useEffect(() => {
       </ul>
       </div>
     </div>}
+    
     <div className="d-flex homepage-dash flex-column">
+      <DataLastReceived time={dataLastReceived}/>
       {settings ? settings.cars.map((car,index) => (
-      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry}/>)) : <p>No cars...</p>}
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings}/>)) : <p>No cars...</p>}
       <br></br>
       <div className="card-dash car-summary border rounded-3" id="raceTimer">
       <div className="card-header">

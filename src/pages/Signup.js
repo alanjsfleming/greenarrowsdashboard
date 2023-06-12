@@ -1,18 +1,15 @@
 import React, { useRef, useState,useEffect} from 'react'
-import Footer from './components/Footer'
-import MenuBar from './components/Navbar'
+import Footer from '../layouts/Footer'
+import MenuBar from '../layouts/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
-import Emoji from './components/Emoji'
+import Emoji from '../layouts/Emoji'
 
 export default function Signup() {
     // Send a page view event to Firebase Analytics
-    useEffect(() => {
-      logEvent(analytics,'signup_page_view')
-    })
 
   
     const emailRef = useRef()

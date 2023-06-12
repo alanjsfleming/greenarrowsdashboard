@@ -2,6 +2,7 @@ import React, { useContext,useState,useEffect } from 'react'
 import { db } from '../firebase'
 
 
+//I DONT THINK THIS FILE IS USED ANYWHERE IN THE PROJECT!
 const RaceContext = React.createContext()
 
 const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'

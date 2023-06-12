@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from 'react'
-import Emoji from './components/Emoji'
+import Emoji from '../layouts/Emoji'
 
 export default function Loading() {
 

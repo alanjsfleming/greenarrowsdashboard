@@ -1,6 +1,6 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import MenuBar from './components/MenuBar'
+import MenuBar from '../layouts/MenuBar'
 import { doc,updateDoc,addDoc, deleteDoc} from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
@@ -13,9 +13,6 @@ import { rtdb } from '../firebase'
 // change this all to be a modal?
 export default function Configure() {
     // Send a page view event to Firebase Analytics
-    useEffect(() => {
-        logEvent(analytics,'settings_page_view')
-    })
 
     const { currentUser,updatedisplayname } = useAuth()
     const configureFormRef = useRef()
@@ -36,7 +33,7 @@ export default function Configure() {
         const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
         if (storedSettings) {newSettings(storedSettings)};
      
-      },[]) 
+    },[]) 
 
 
       // save settings to local storage and firebase on settings change
@@ -413,17 +410,11 @@ export default function Configure() {
   return (
     <>
     <MenuBar />
-
+    
     <div class="d-flex flex-column justify-content-between text-center mb-5 configure-dash">
-        
         <div class="text-center mx-1 btn-group" role="group" aria-label="Settings Tabs">
             <button value="0" class={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
-            
-        
             <button value="1" class={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab} >Cars</button>
-        
-        
-            
             <button value="2" class={"btn btn-secondary col-3 "+determineActive(2)} onClick={changeTab}>Data</button>
             <button value="3" class={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
         </div>
@@ -464,9 +455,9 @@ export default function Configure() {
 
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
 
-            <div hidden class="border-top mt-2">
+            <div class="border-top mt-2">
                 <h3 class="mt-2">Billing</h3>
-                <button class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</button>
+                <button class="btn btn-outline-dark btn-block mb-2" type="button">Manage Billing Here</button>
                 <Link to={"/upgrade-plan?fromApp=true&currentPlan="+settings.role} class="btn btn-outline-dark btn-block mb-2">Upgrade Plan</Link>
             </div>
 
@@ -639,6 +630,19 @@ export default function Configure() {
     </>
   )
 }
+
+
+// Okay...
+// I believe the best way to have the dynamic refs is use npm i use-dynamic-refs
+// And then use on each div created by the map, ref={setRef(car.car_number)} ??
+// Then that will give me the ref for the whole div, i will have to then get 
+// each individual input by using ref.current.querySelector('input') or something like that??
+// Then i can use that to get the value of each input and then update the car object
+// import useDynamicRefs from 'use-dynamic-refs';
+// const [setRef, getRef] = useDynamicRefs();
+// https://medium.com/@fitzmuzenda/create-refs-dynamically-in-react-ea2a4567b88
+
+
 
 /*
   <div hidden>

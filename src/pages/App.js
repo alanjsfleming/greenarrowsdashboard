@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import "../App.css"
-import MenuBar from './components/MenuBar'
+import MenuBar from '../layouts/MenuBar'
 import Loading from './Loading';
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics';
@@ -16,9 +16,7 @@ import { logEvent } from 'firebase/analytics';
 
 function App() {
   // Send a page view event to Firebase Analytics
-  useEffect(() => {
-    logEvent(analytics,'details_page_view')
-  })
+
 
 
   // State variables

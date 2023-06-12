@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom'
-import ContentLocked from './ContentLocked'
+import ContentLocked from '../../layouts/ContentLocked'
 
 export default function LapSummary(props) {
 
@@ -29,9 +29,10 @@ export default function LapSummary(props) {
     // change this to use props.runningData
     useEffect(() => {
         try{
-        (props.runningData) && setRunningData(props.runningData)
-        setCurrentLapNum(calculateCurrentLapNum());
-        getCurrentLapData();
+            setRunningData(props.runningData)
+            setCurrentLapNum(calculateCurrentLapNum());
+            getCurrentLapData();
+            calculateAllLapData(filterSeparateLaps())
         } catch (error) {
             console.log(error);
         }

@@ -1,7 +1,8 @@
 import React from 'react'
 import TelemetryCard from './TelemetryCard';
-import LocationMap from './LocationMap';
+import { estimateGear,calculateBatteryPercent,calculateMotorEfficiency } from '../../features/TelemetryCalculations';
 
+/*
 // Estimate gear, based on GA1. 59.44 is wheel diameter so this wont work for other cars. Change that.
 // Is it diameter or circumference????
 // Change This function to return the gear number from the telemetry data if reverse gear mode is not selected.
@@ -36,7 +37,7 @@ function calculateMotorEfficiency(Vt,A,T) {
   const output = Math.round(efficiency*100)
   return output
 }
-
+*/
 // Enter your own equation
 //https://mycurvefit.com/
 // Excel can get equation of line, go back to Motor experiments and enter
@@ -61,13 +62,6 @@ export default function Telemetry({telemetry,settings}) {
         <TelemetryCard title="Estimated Gear:" data={estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].large_gear_teeth)} units="th Gear" kind="gauge"/>
       </div> 
 
-
-
-    
- 
-    
-
-      
       <div class="grid-item border rounded-3">
         <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.cars[0].battery_capacity)} units="%" kind="gauge"/>
       </div>

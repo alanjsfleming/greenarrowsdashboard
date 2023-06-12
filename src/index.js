@@ -18,6 +18,7 @@ import Loading from './pages/Loading';
 import {analytics} from './firebase'
 import { logEvent } from 'firebase/analytics'
 import UpgradePlan from './pages/UpgradePlan';
+import AnalyticsComponent from './features/AnalyticsComponent';
 
 function sendToAnalytics({id,name,value}){
   logEvent(analytics,'event',{
@@ -34,6 +35,7 @@ export default function Main() {
     <AuthProvider>
       <RaceProvider>
         <BrowserRouter basename="/">
+          <AnalyticsComponent />
           <Routes>
             <Route path="/login" element={<Login />}/>           
             <Route path="/reset-password" element={<PasswordReset />} />
