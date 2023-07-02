@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import MenuBar from '../layouts/MenuBar'
 import LapSummary from './components/LapSummary'
 import { useRace } from '../contexts/RaceContext'
-import { doc, getDoc,collection,query,where,getDocs, orderBy } from "firebase/firestore";
+import { doc, getDoc,collection,query,where,getDocs, orderBy,updateDoc } from "firebase/firestore";
 import { analytics, db } from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import LocationMap from './components/LocationMap'
@@ -232,6 +232,8 @@ function handleReset(e){
     ...prevSettings,
     raceStart: null
   }))
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {race_start_time: null}, {merge: true})
 }
 }
 
@@ -248,6 +250,9 @@ function handleStart(e){
     ...prevSettings,
     raceStart: currentTime
   }))
+
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {race_start_time: currentTime}, {merge: true})
 }
 
 
@@ -373,7 +378,7 @@ useEffect(() => {
     </div>}
     
     <div className="d-flex homepage-dash flex-column">
-      <DataLastReceived time={dataLastReceived}/>
+      
       {settings ? settings.cars.map((car,index) => (
       <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings}/>)) : <p>No cars...</p>}
       <br></br>
@@ -385,7 +390,7 @@ useEffect(() => {
           <progress className="progress" min="0" max={raceLength} value={raceTimeValue} ></progress>
           <div className="btn-group w-100 mt-2">
               <button disabled={raceStart} onClick={handleStart} className="btn btn-primary btn-block ">Start</button>
-              <button onClick={handleReset} onBlur={handleUnfocusReset} className={"btn btn-block "+resetButton} >Reset</button>
+              <button disabled={!raceStart} onClick={handleReset} onBlur={handleUnfocusReset} className={"btn btn-block "+resetButton} >Reset</button>
               <Link to="/configure?2" className="btn btn-primary btn-block">Setup</Link>
           </div>
       </div>
@@ -413,6 +418,8 @@ useEffect(() => {
   )
 }
 
+
+// <DataLastReceived time={dataLastReceived}/>
 // 
 // <RacePanel />
 // {settings.raceLength}

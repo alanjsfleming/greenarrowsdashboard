@@ -70,7 +70,7 @@ export default function UserSetup() {
         </div>
         <div class="form-floating mb-2">
           <input type="text" class="form-control" id="floatingDweetURL" placeholder="https://dweet.io/get/latest/dweet/for/xxxxxxx" ref={dweetURLRef} required/>
-          <label for="floatingDweetURL">Dweet URL</label>
+          <label for="floatingDweetURL">Dweet Thing Name</label>
         </div>
         <div class="form-floating mb-2">
           <input type="text" class="form-control" id="floatingCarName" placeholder="Car Name" ref={carNameRef} required/>

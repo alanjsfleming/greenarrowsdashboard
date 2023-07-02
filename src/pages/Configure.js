@@ -4,16 +4,13 @@ import MenuBar from '../layouts/MenuBar'
 import { doc,updateDoc,addDoc, deleteDoc} from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../firebase'
-import { analytics } from '../firebase'
-import { logEvent } from 'firebase/analytics'
 import { where, getDocs,query,collection } from 'firebase/firestore'
 import {ref,remove} from "firebase/database"
 import { rtdb } from '../firebase'
+import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 
-// change this all to be a modal?
+
 export default function Configure() {
-    // Send a page view event to Firebase Analytics
-
     const { currentUser,updatedisplayname } = useAuth()
     const configureFormRef = useRef()
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1])
@@ -21,9 +18,10 @@ export default function Configure() {
     const [error,setError] = useState()
     const [success,setSuccess] = useState()
     const [carDropdownShow,setCarDropdownShow] = useState(false)
-
+    const [getRef,setRef] = useDynamicRefs()
     const [carBeingDeleted,setCarBeingDeleted] = useState()
 
+    // The user's settings are stored in the settings object at this ref
     const userDocRef = doc(db,"users", currentUser.uid)
 
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
@@ -36,14 +34,15 @@ export default function Configure() {
     },[]) 
 
 
-      // save settings to local storage and firebase on settings change
+    // save settings to local storage and firebase on settings change
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+        // if settings not empty -> save to firebase?
         // call function to save settings to firebase
         // not doing that here because it will save settings every time page loading???
     },[settings])
 
-    // determine if a tab should hide depending on current tab selected
+    // This will determine if a tab should be shown or not depending on the current tab selected
     function determineHide(tab) {
         if (tab === parseInt(currentTab)) {
             return false
@@ -52,7 +51,7 @@ export default function Configure() {
         }
     }
 
-    // determine if a tab button should be active depending on current tab selected
+    // This will determine if a tab should be active for the class name depending on the current tab selected
     function determineActive(tab) {
         if (tab === parseInt(currentTab)) {
             return "active"
@@ -61,7 +60,7 @@ export default function Configure() {
         }
     }
 
-    // change tab when button clicked
+    // When a tab is clicked, it will switch the view to only show that one.
     function changeTab(e) {
         setCarDropdownShow(false)
         if (e.target.value) {
@@ -69,7 +68,7 @@ export default function Configure() {
         } else {
             setCurrentTab(e.target.parentElement.getAttribute("data-value"))
         }
-        console.log(settings) 
+        console.log(settings,getRef(1)) 
     }
 
 
@@ -203,7 +202,6 @@ export default function Configure() {
           
             // If the query returns a document, get the document id
             if (querySnapshot.size >0) {
-                console.log(querySnapshot.docs[0].id)
                 const carDocumentId = querySnapshot.docs[0].id
                 // Update the car document in firebase
                 updateDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
@@ -570,7 +568,7 @@ export default function Configure() {
 
 
         {settings.cars ? settings.cars.map((car,index)=>(
-        <div class="tab mx-1" hidden={determineHide(index+4)}>
+        <div class="tab mx-1" ref={setRef(car.car_number)} hidden={determineHide(index+4)}>
             <div class="card w-100 m-auto">
                 <div class="card-header">
                     <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
