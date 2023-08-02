@@ -405,6 +405,10 @@ export default function Configure() {
         }
     }
 */
+
+// <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
+
+
   return (
     <>
     <MenuBar />
@@ -494,17 +498,8 @@ export default function Configure() {
         
 
             <br></br>
-            <button disabled type="button" onClick={addNewCar} class="btn btn-primary btn-block">Add car</button>
-
+            
         </div>
-
-        <div hidden>
-            <p> Note to self: This div will map for all cars so user can select more detailed stuff</p>
-        </div>
-
-
-
-
 
         <div class="tab mx-1" hidden={determineHide(2)}>
             <h3>Race</h3>

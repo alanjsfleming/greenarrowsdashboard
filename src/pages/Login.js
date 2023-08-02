@@ -26,7 +26,21 @@ export default function Login() {
             navigate('/')
         } catch (e) {
             console.log(e)
-            setError('Failed to login')
+            switch (e.code) {
+              case 'auth/user-not-found':
+                setError('User not found')
+                break;
+              case 'auth/wrong-password':
+                setError('Incorrect password')
+                break;
+              case 'auth/too-many-requests':
+                setError('Too many requests. Try again later.')
+                break;
+              default:
+                setError('Could not login')
+              break;
+
+        }
         }
         setLoading(false)
         }
@@ -49,11 +63,11 @@ export default function Login() {
         </div>
 
             
-        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Login</button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>Login</button>
             
         <div  class="mt-2">
           <Link to="/reset-password">Forgot password?</Link>
-          <p>Dont have an account? <Link to="/register">Try for free!</Link></p>
+          <p>Dont have an account? <Link to="/signup">Try for free!</Link></p>
         </div>
       </form>
     </div>

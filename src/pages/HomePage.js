@@ -38,8 +38,6 @@ export default function HomePage() {
   const [fetchURL,setFetchURL] = useState()
   const { currentUser } = useAuth()
 
-  const { resetrace,startTime,startrace } = useRace()
-
   const [resetButton,setResetButton] = useState('btn-primary')
   const [raceStart,setRaceStart] = useState()
   const [raceLength,setRaceLength] = useState(90)
@@ -93,6 +91,7 @@ export default function HomePage() {
     const carQuery = query(carsRef, where("owner","==",currentUser.uid), orderBy("car_number"))
     const querySnapshot = getDocs(carQuery).then((querySnapshot) => {
       let carArray = []
+      console.log(querySnapshot)
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // write this to settings in settings.cars object as an array
@@ -243,7 +242,6 @@ setResetButton('btn-primary')
 }
 
 function handleStart(e){
-  startrace()
   // Writes the start time to local settings
   const currentTime=Date.now()
   newSettings(prevSettings=>({

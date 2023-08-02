@@ -11,8 +11,8 @@ export default function MenuBar() {
   return (
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-    <nav class="navbar sticky-top" id="topOfPage">
-        <a class="navbar-brand menuBar py-1 my-2" href="https://dashowl.co.uk">
+    <nav className="navbar sticky-top" id="topOfPage">
+        <a className="navbar-brand menuBar py-1 my-2" href="https://dashowl.co.uk">
             <Emoji symbol="🦉" label="owl" />DashOwl</a>
         
     </nav>

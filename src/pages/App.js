@@ -3,13 +3,15 @@ import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from '../layouts/MenuBar'
 import Loading from './Loading';
-import {analytics} from '../firebase'
-import { logEvent } from 'firebase/analytics';
 
-/*import { useState,useEffect } from 'react';*/
+
 
 // This should work dynamically for whatever car is selected.
-// Timer should carry across as it assumes racing at the same time. 
+// /details/:carID
+// This will be a page that shows the details of the car selected when :carID's owner is the current user
+
+
+
 
 
 

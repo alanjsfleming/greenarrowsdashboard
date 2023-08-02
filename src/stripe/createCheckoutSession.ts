@@ -1,9 +1,11 @@
 import { db } from "../firebase";
 import getStripe from "./initialiseStripe";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 export async function createCheckoutSession(uid: string) {
 
     // Create a new checkout session in the subcollection inside this users document
+   
     const checkoutSessionRef = await db
         .collection("users")
         .doc(uid)

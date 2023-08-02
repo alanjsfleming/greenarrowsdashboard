@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
-import MenuBar from '../layouts/MenuBar'
+import Navbar from '../layouts/Navbar'
 import Footer from '../layouts/Footer'
 
 export default function NoPage() {
@@ -11,7 +11,7 @@ export default function NoPage() {
 
   return (
     <>
-    <MenuBar />
+    <Navbar />
     <div className="text-center py-5 my-5 container">
       <hr></hr>
       <h1 className="mt-5">404</h1>

@@ -8,6 +8,8 @@ import Emoji from './Emoji';
 //<img src={GALogo} height="25" alt="logo" id="navBarLogo" class="d-inline-block align-middle"></img>
 //🦉
 
+// Need to set displayName when user signs up
+
 export default function MenuBar(settings) {
 
   const { currentUser } = useAuth()
@@ -22,7 +24,7 @@ export default function MenuBar(settings) {
           {currentUser.displayName}</p></Link>
         <div className="nav-link-container" id="myTopnav">
           
-        <Link to="/configure?0" className="icon"><i className="fa fa-bars"></i></Link>
+        <Link to="/configure?0" className="icon"><i className="fa fa-gears" style={{fontSize:"21px"}}></i></Link>
         </div>
     </nav>
     </>

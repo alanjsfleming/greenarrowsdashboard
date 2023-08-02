@@ -15,8 +15,7 @@ export function useRace() {
 
 export function RaceProvider({ children }) {
     const [startTime,setStartTime] = useState()
-    const [settings,setSettings] = useState()
-
+   
     
     
     

@@ -5,9 +5,15 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db,analytics } from '../firebase'
-import { logEvent } from 'firebase/analytics'
+import { db } from '../firebase'
 import Emoji from '../layouts/Emoji'
+import { collection } from 'firebase/firestore'
+import { getDocs } from 'firebase/firestore'
+import { limit } from 'firebase/firestore'
+
+
+import { query, where, orderBy } from 'firebase/firestore'
+
 // has to submit team name, dweet url, car name to firebase
 // has to update the display name to the team name
 
@@ -19,6 +25,8 @@ export default function UserSetup() {
     const carNameRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
+    const carsRef = collection(db, "cars")
+    
 
     
     const { currentUser,updatedisplayname } = useAuth()
@@ -29,57 +37,71 @@ export default function UserSetup() {
         e.preventDefault()
         try {
           const userDocRef = doc(db, "users", currentUser.uid)
+          const carQuery = query(carsRef, where("owner","==",currentUser.uid), orderBy("car_number"),limit(1))
+          
           setError('')
           setLoading(true)
           await updatedisplayname(teamNameRef.current.value)
           await updateDoc(userDocRef, {
             "team_name":teamNameRef.current.value,
-            "appearance_theme":"light",
-            "track_length":"500",
-            "race_length":"90",
-            "race_start_time":null
-
           })
+
+          // Need to query the cars collection to find the car doc, this is probably not the best way to do it.
+          const querySnapshot = await getDocs(carQuery).then((querySnapshot) => {
+            // console log the data of snapshot
+            querySnapshot.forEach((d) => {
+      
+              const carDocRef = doc(db, "cars", d.id)
+               updateDoc(carDocRef, {
+                "car_name":carNameRef.current.value,
+                "dweet_name":dweetURLRef.current.value,
+              }).then(() => {
+                navigate('/')
+              }
+              )
+              
+            })
+          })
+          
+          
         } catch (e) {
-            console.log(e)
+      
             setError('Could not complete sign-up.')
-            console.log(error)
+       
             setLoading(false)
-            return 'Could not complete sign-up.'
         }
-        setLoading(false)
-        console.log('we are navigating')
-        navigate('/')
+      
+        
         }
 
         //<img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
   return (
     <>
     <MenuBar />
-    <div class="form-signin m-auto text-center my-5">
-      <form class="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}>
-        <div class="my-2">
+    <div className="form-signin m-auto text-center my-5">
+      <form className="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}>
+        <div className="my-2">
         <Emoji symbol="🦉" label="owl" />
         </div>
         <h1 class="h3 mb-3 fw-normal my-1">Set up your first car</h1>
 
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
-        <div class="form-floating">
-          <input type="text" class="form-control mb-2" id="floatingName" placeholder="Team Name" ref={teamNameRef} required/>
-          <label for="floatingName">Team Name</label>
+        <div className="form-floating">
+          <input type="text" className="form-control mb-2" id="floatingName" placeholder="Team Name" ref={teamNameRef} required/>
+          <label htmlFor="floatingName">Team Name</label>
         </div>
-        <div class="form-floating mb-2">
-          <input type="text" class="form-control" id="floatingDweetURL" placeholder="https://dweet.io/get/latest/dweet/for/xxxxxxx" ref={dweetURLRef} required/>
-          <label for="floatingDweetURL">Dweet Thing Name</label>
+        <div className="form-floating mb-2">
+          <input type="text" className="form-control" id="floatingDweetURL" placeholder="https://dweet.io/get/latest/dweet/for/xxxxxxx" ref={dweetURLRef} required/>
+          <label htmlFor="floatingDweetURL">Dweet Thing Name</label>
         </div>
-        <div class="form-floating mb-2">
-          <input type="text" class="form-control" id="floatingCarName" placeholder="Car Name" ref={carNameRef} required/>
-          <label for="floatingCarName">Car Name</label>
+        <div className="form-floating mb-2">
+          <input type="text" className="form-control" id="floatingCarName" placeholder="Car Name" ref={carNameRef} required/>
+          <label htmlFor="floatingCarName">Car Name</label>
         </div>
             
-        <button class="w-100 btn  btn-lg btn-primary" type="submit" disabled={loading}>Submit</button>
+        <button className="w-100 btn  btn-lg btn-primary" type="submit" disabled={loading}>Submit</button>
             
-        <div  class="mt-2">
+        <div  className="mt-2">
           <Link to="/">Skip</Link>
         </div>
       </form>

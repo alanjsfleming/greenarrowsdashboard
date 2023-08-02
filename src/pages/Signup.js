@@ -8,6 +8,7 @@ import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import Emoji from '../layouts/Emoji'
 
+
 export default function Signup() {
     // Send a page view event to Firebase Analytics
 
@@ -17,8 +18,37 @@ export default function Signup() {
     const passwordConfirmRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { signup }  = useAuth()
+    const { signup,login }  = useAuth()
     const navigate = useNavigate()
+
+    function resolveAfterRegistering(email,password) {
+      return new Promise(async (resolve,reject) => {
+        try{
+          await signup(email,password);
+          await login(email,password);
+          resolve('resolved')
+        } catch (e) {
+          // Fire base error codes
+          switch (e.code) {
+            case 'auth/email-already-in-use':
+              setError('Email already in use')
+              break;
+            case 'auth/invalid-email':
+              setError('Invalid email')
+              break;
+            case 'auth/weak-password':
+              setError('Password must be at least 6 characters')
+            break;
+            default:
+              setError('Could not create user')
+            break;
+          }
+        }
+        reject('rejected')
+      })
+    }
+
+
 
     const handleSubmit = async(e)=> {
         e.preventDefault()
@@ -29,13 +59,18 @@ export default function Signup() {
       
             setError('')
             setLoading(true)
-            await signup(emailRef.current.value,passwordRef.current.value).then(navigate('/'))
+            const registered = await resolveAfterRegistering(emailRef.current.value,passwordRef.current.value)
+            registered == 'resolved' && navigate('/user-setup')
+
         } catch (e) {
-            console.log(e)
-            setError('Could not create user')
+            
         }
         setLoading(false)
         }
+        
+      
+    
+      
 
 
   return (
@@ -47,7 +82,7 @@ export default function Signup() {
           <Emoji symbol="🦉" label="owl" />
           <h5>DashOwl</h5>
         </div>
-        <h1 class="h3 mb-3 fw-normal">Register Free Account</h1>
+        <h1 class="h3 mb-3 fw-normal">Create Account</h1>
         
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         <div class="form-floating">
@@ -63,7 +98,7 @@ export default function Signup() {
           <label for="floatingPassword">Confirm Password</label>
         </div>
             
-        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Register</button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>Sign Up</button>
             
         <div  class="mt-2">
           <p>Already have an account? <Link to="/login">Login</Link></p>
