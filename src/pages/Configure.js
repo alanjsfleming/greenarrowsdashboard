@@ -8,6 +8,7 @@ import { where, getDocs,query,collection } from 'firebase/firestore'
 import {ref,remove} from "firebase/database"
 import { rtdb } from '../firebase'
 import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
+import { setDoc } from 'firebase/firestore'
 
 
 export default function Configure() {
@@ -68,7 +69,7 @@ export default function Configure() {
         } else {
             setCurrentTab(e.target.parentElement.getAttribute("data-value"))
         }
-        console.log(settings,getRef(1)) 
+        console.log(settings,getRef(1).current.elements) 
     }
 
 
@@ -78,10 +79,10 @@ export default function Configure() {
     function handleReverseGearingMode(e) {
         const carNumber = e.target.value
         const carsCopy = [...settings.cars]
-        if (carsCopy[carNumber].reverseGearingMode) {
-            carsCopy[carNumber].reverseGearingMode = false
+        if (carsCopy[carNumber].reverse_gearing_mode) {
+            carsCopy[carNumber].reverse_gearing_mode = false
         } else {
-            carsCopy[carNumber].reverseGearingMode = true
+            carsCopy[carNumber].reverse_gearing_mode = true
         }
         newSettings(prevSettings=>({...prevSettings,cars:carsCopy}))
     }
@@ -104,44 +105,56 @@ export default function Configure() {
 
     function saveSettingsToSettings(e) {
         console.log(settings)
+        // Account Settings
         const teamName = configureFormRef.current.elements.teamName.value ? configureFormRef.current.elements.teamName.value : settings.teamName
-        const carName = configureFormRef.current.elements.carName.value ? configureFormRef.current.elements.carName.value : settings.carName
-        const dweetUrl = configureFormRef.current.elements.dweetUrl.value ? configureFormRef.current.elements.dweetUrl.value : settings.dweetUrl
-        const ampHours = configureFormRef.current.elements.ampHours.value ? configureFormRef.current.elements.ampHours.value : settings.ampHours
-        const teethGear = configureFormRef.current.elements.teethGear.value ? configureFormRef.current.elements.teethGear.value : settings.teethGear
         const raceLength = configureFormRef.current.elements.raceLength.value ? configureFormRef.current.elements.raceLength.value : settings.raceLength
         const trackLength = configureFormRef.current.elements.trackLength.value ? configureFormRef.current.elements.trackLength.value : settings.trackLength
         const theme = configureFormRef.current.elements.theme.value ? configureFormRef.current.elements.theme.value : settings.theme
         const manualLapMode = configureFormRef.current.elements.manualLapMode.value ? configureFormRef.current.elements.manualLapMode.value : settings.manualLapMode
+
+        // Features
         const summaryMap = configureFormRef.current.elements.summaryMap.value ? configureFormRef.current.elements.summaryMap.value : settings.summaryMap
         const lapSummaryTable = configureFormRef.current.elements.lapSummaryTable.value ? configureFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable
+
+        // Car settings Legacy
+        //const carName = configureFormRef.current.elements.carName.value ? configureFormRef.current.elements.carName.value : settings.carName
+        //const dweetUrl = configureFormRef.current.elements.dweetUrl.value ? configureFormRef.current.elements.dweetUrl.value : settings.dweetUrl
+        //const ampHours = configureFormRef.current.elements.ampHours.value ? configureFormRef.current.elements.ampHours.value : settings.ampHours
+        //const teethGear = configureFormRef.current.elements.teethGear.value ? configureFormRef.current.elements.teethGear.value : settings.teethGear
+
+        // Dynamic Car Settings
+        // Loop through all cars and use getRef(carid) to get the ref for each car, then get the value of each input
+        // and update the car object in the settings
+        const carsCopy = [...settings.cars]
+        carsCopy.forEach(car => {
+            const carRef = getRef(car.car_number)
+            car.car_name = carRef.current.elements.carName.value ? carRef.current.elements.carName.value : car.car_name
+            car.dweet_name = carRef.current.elements.dweetUrl.value ? carRef.current.elements.dweetUrl.value : car.dweet_name
+            car.battery_capacity = carRef.current.elements.ampHours.value ? carRef.current.elements.ampHours.value : car.battery_capacity
+            car.wheel_circumference = carRef.current.elements.wheelCircumference.value ? carRef.current.elements.wheelCircumference.value : car.wheel_circumference
+            car.small_gear_teeth = carRef.current.elements.smallteethGear.value ? carRef.current.elements.smallteethGear.value : car.small_gear_teeth
+            car.large_gear_teeth = carRef.current.elements.teethGear.value ? carRef.current.elements.teethGear.value : car.large_gear_teeth
+        })
+        newSettings(prevSettings => ({
+            ...prevSettings,
+            cars:carsCopy
+        }))
+
 
         console.log(settings.teamName,teamName)
         newSettings(prevSettings => ({
             ...prevSettings,
             teamName:teamName,
-            carName:carName,
-            dweetUrl:dweetUrl,
-            ampHours:ampHours,
-            teethGear:teethGear,
+            //carName:carName,
+            //dweetUrl:dweetUrl,
+            //ampHours:ampHours,
+            //teethGear:teethGear,
             raceLength:raceLength,
             trackLength:trackLength,
             theme:theme,
             manualLapMode:manualLapMode,
             summaryMap:summaryMap,
             lapSummaryTable:lapSummaryTable
-        }))
-
-        // Carname, battery capacity, large gear teeth, wheel circumference, thing name
-        const carCopyAll = [...settings.cars]
-        carCopyAll[0].car_name = carName
-        carCopyAll[0].battery_capacity = ampHours
-        carCopyAll[0].large_gear_teeth = teethGear
-        carCopyAll[0].wheel_circumference = trackLength
-        carCopyAll[0].dweet_name = dweetUrl
-        newSettings(prevSettings => ({
-            ...prevSettings,
-            cars:carCopyAll
         }))
 
         console.log(teamName,settings.teamName)
@@ -188,13 +201,15 @@ export default function Configure() {
             // Create a query to find the car document in firebase
             const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",car.car_number))
             // Build the car document to be updated in firebase
+            console.log()
             const carDoc = {    
                                 car_name:car.car_name,
                                 battery_capacity:car.battery_capacity,
                                 dweet_name:car.dweet_name,
                                 large_gear_teeth:car.large_gear_teeth,
                                 wheel_circumference:car.wheel_circumference,
-                                reverse_gearing_mode:car.reverse_gearing_mode
+                                reverse_gearing_mode:car.reverse_gearing_mode ? true : false,
+                                small_gear_teeth:car.small_gear_teeth
                         }
 
             // Get the query results
@@ -204,7 +219,7 @@ export default function Configure() {
             if (querySnapshot.size >0) {
                 const carDocumentId = querySnapshot.docs[0].id
                 // Update the car document in firebase
-                updateDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
+                setDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
             } else {
                 // If the query does not return a document (i.e. the car document does not exist)
                 // then create a new car document in firebase
@@ -251,24 +266,12 @@ export default function Configure() {
         setSuccess()
     }
 
-    // function to update a document in the cars collection in firebase
-    // document will contain all the settings for that car:
-    // - car_name
-    // - car_number
-    // - battery_capacity
-    // - dweet_name
-    // - large_gear_teeth 
-    // - owner ( current user uid )
-    // - wheel circumference
-    // - manual lap mode
-    function saveCarSettings() {
-        
-    }
     
     // function to add a new car to the cars collection in firebase
     function addNewCar() {
         // TODO
-        //if (settings.car) {
+        // Use this IF to limit the number of cars depending on the user's plan
+        //if (settings.car?.length > 0) {
          //   setError('There is currently a limit of one car per user.')
           //  return
         //}
@@ -303,6 +306,7 @@ export default function Configure() {
                 deleteDoc(doc(db,"cars",querySnapshot.docs[0].id))
                 .then(() => {
                     console.log("Document successfully deleted!");
+                    setSuccess('Car deleted successfully!')
                     // Now delete the car from the settings
                     
                     // Then I need to update all the car numbers
@@ -317,7 +321,8 @@ export default function Configure() {
                 )
                 .catch((error) => {
                     console.error("Error removing document: ", error);
-                }
+                    setError('Failed to delete car.')
+                    }
                 )
 
             }
@@ -327,7 +332,7 @@ export default function Configure() {
     function deleteCarSettings(carNumber) {
        
         const previousCars = settings.cars
-        const newCars = previousCars.filter(car => car.car_number != carNumber)
+        const newCars = previousCars.filter(car => car.car_number !== carNumber)
 
         newSettings(prevSettings => ({
             ...prevSettings,
@@ -339,27 +344,31 @@ export default function Configure() {
         const carNumber = e.target.value
         // First, popup a confirmation dialog
         // The actual deletion happens when the user confirms it
-        console.log('delete car',carNumber)
         setCarBeingDeleted(carNumber)
     }
 
     function deleteCarConfirmed() {
-        console.log('confirm delete car')
         // delete the car from firebase
         deleteCarFirebase(carBeingDeleted)
         deleteCarSettings(carBeingDeleted)
+        // Hide the 'Are you sure' modal
         setCarBeingDeleted()
+        // Change off of the car tab
         changeTab()
     }
 
     function deleteCarCancelled() {
-        console.log('cancel delete car')
+        // Hide the 'Are you sure' modal
         setCarBeingDeleted()
     }
   
 
     function tempFuncResetRunData() {
-        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
+        // This is a temporary function to reset the running data in firebase
+        // The teams/user/car id is hardcoded in here but change this to be dynamic, maybe a dropdown to choose which one to clear?
+        // Right now since one car only is allowed it is car[0].id
+        // VCq7rqiEK4qbGd7qZ4C0 is GA1
+        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
         remove(rtCarRef).then(()=>{
             console.log("deleted")
         })
@@ -560,10 +569,10 @@ export default function Configure() {
 
 
 
-
+        </form>
 
         {settings.cars ? settings.cars.map((car,index)=>(
-        <div class="tab mx-1" ref={setRef(car.car_number)} hidden={determineHide(index+4)}>
+        <form class="tab mx-1" ref={setRef(car.car_number)} hidden={determineHide(index+4)}>
             <div class="card w-100 m-auto">
                 <div class="card-header">
                     <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
@@ -590,10 +599,10 @@ export default function Configure() {
                 </div>
 
                 <div class="form-group my-3">
-                    <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverseGearingMode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
+                    <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverse_gearing_mode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
                 </div>
-                <div hidden={car.reverseGearingMode ? false : true} >
-                <div hidden={true} class="form-group my-3">
+                <div hidden={car.reverse_gearing_mode ? false : true} >
+                <div class="form-group my-3">
                     <label for="teethGear">Teeth on small gear</label>
                     <input type="number" class="form-control" id="smallteethGear"></input>
                 </div>
@@ -604,16 +613,17 @@ export default function Configure() {
                 </div>
                 </div>
                 <br></br>
-                <small class="text-muted">Deleting a car is irreversible!</small>
-                <button disabled type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
-
+                    <div hidden={(settings.cars.length<=1)}>
+                        <small class="text-muted">Deleting a car is irreversible!</small>
+                        <button  type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
+                    </div>
                 </div>
             </div>
-        </div>)): <p>No cars...</p>}
+        </form>)): <p>No cars...</p>}
 
 
 
-        </form>
+        
     </div>
     
     
