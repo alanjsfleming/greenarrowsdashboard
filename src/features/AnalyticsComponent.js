@@ -10,7 +10,10 @@ import { analytics } from '../firebase';
 export default function AnalyticsComponent() {
 
   const logCurrentPage = () => {
-    logEvent(analytics, 'screen_view', { screen_name: window.location.pathname, page_title: document.title });
+    logEvent(analytics, 'screen_view', { 
+      screen_name: window.location.pathname, 
+      page_title: document.title 
+    });
   }
 
   const location = useLocation();

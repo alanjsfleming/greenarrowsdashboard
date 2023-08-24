@@ -9,6 +9,7 @@ import {ref,remove} from "firebase/database"
 import { rtdb } from '../firebase'
 import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 import { setDoc } from 'firebase/firestore'
+import EatSettingsForm from '../hooks/EatSettingsForm'
 
 
 export default function Configure() {
@@ -31,16 +32,12 @@ export default function Configure() {
     useEffect(() => {
         const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
         if (storedSettings) {newSettings(storedSettings)};
-     
     },[]) 
 
 
-    // save settings to local storage and firebase on settings change
+    // save settings to local storage when settings updated
     useEffect(() => {
-        localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-        // if settings not empty -> save to firebase?
-        // call function to save settings to firebase
-        // not doing that here because it will save settings every time page loading???
+        localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings));
     },[settings])
 
     // This will determine if a tab should be shown or not depending on the current tab selected
@@ -90,10 +87,11 @@ export default function Configure() {
     // save update settings with form data when save button clicked
     const handleSaveSettings = (e) => {
         try {
-            saveSettingsToSettings(e)
-            saveSettingsToFirebase()
-            .catch((e)=>{console.log(e)})
-            
+            const carFormRefs = settings.cars.map(car=>{return getRef(car.car_number)})
+            const settingsObject = EatSettingsForm(configureFormRef,carFormRefs,settings)
+            newSettings(settingsObject)
+            saveSettingsToFirebase(settingsObject)
+    
             setError()
             setSuccess('Settings saved successfully!') 
         } catch (e){
@@ -103,82 +101,23 @@ export default function Configure() {
         }
     }
 
-    function saveSettingsToSettings(e) {
-        console.log(settings)
-        // Account Settings
-        const teamName = configureFormRef.current.elements.teamName.value ? configureFormRef.current.elements.teamName.value : settings.teamName
-        const raceLength = configureFormRef.current.elements.raceLength.value ? configureFormRef.current.elements.raceLength.value : settings.raceLength
-        const trackLength = configureFormRef.current.elements.trackLength.value ? configureFormRef.current.elements.trackLength.value : settings.trackLength
-        const theme = configureFormRef.current.elements.theme.value ? configureFormRef.current.elements.theme.value : settings.theme
-        const manualLapMode = configureFormRef.current.elements.manualLapMode.value ? configureFormRef.current.elements.manualLapMode.value : settings.manualLapMode
-
-        // Features
-        const summaryMap = configureFormRef.current.elements.summaryMap.value ? configureFormRef.current.elements.summaryMap.value : settings.summaryMap
-        const lapSummaryTable = configureFormRef.current.elements.lapSummaryTable.value ? configureFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable
-
-        // Car settings Legacy
-        //const carName = configureFormRef.current.elements.carName.value ? configureFormRef.current.elements.carName.value : settings.carName
-        //const dweetUrl = configureFormRef.current.elements.dweetUrl.value ? configureFormRef.current.elements.dweetUrl.value : settings.dweetUrl
-        //const ampHours = configureFormRef.current.elements.ampHours.value ? configureFormRef.current.elements.ampHours.value : settings.ampHours
-        //const teethGear = configureFormRef.current.elements.teethGear.value ? configureFormRef.current.elements.teethGear.value : settings.teethGear
-
-        // Dynamic Car Settings
-        // Loop through all cars and use getRef(carid) to get the ref for each car, then get the value of each input
-        // and update the car object in the settings
-        const carsCopy = [...settings.cars]
-        carsCopy.forEach(car => {
-            const carRef = getRef(car.car_number)
-            car.car_name = carRef.current.elements.carName.value ? carRef.current.elements.carName.value : car.car_name
-            car.dweet_name = carRef.current.elements.dweetUrl.value ? carRef.current.elements.dweetUrl.value : car.dweet_name
-            car.battery_capacity = carRef.current.elements.ampHours.value ? carRef.current.elements.ampHours.value : car.battery_capacity
-            car.wheel_circumference = carRef.current.elements.wheelCircumference.value ? carRef.current.elements.wheelCircumference.value : car.wheel_circumference
-            car.small_gear_teeth = carRef.current.elements.smallteethGear.value ? carRef.current.elements.smallteethGear.value : car.small_gear_teeth
-            car.large_gear_teeth = carRef.current.elements.teethGear.value ? carRef.current.elements.teethGear.value : car.large_gear_teeth
-        })
-        newSettings(prevSettings => ({
-            ...prevSettings,
-            cars:carsCopy
-        }))
-
-
-        console.log(settings.teamName,teamName)
-        newSettings(prevSettings => ({
-            ...prevSettings,
-            teamName:teamName,
-            //carName:carName,
-            //dweetUrl:dweetUrl,
-            //ampHours:ampHours,
-            //teethGear:teethGear,
-            raceLength:raceLength,
-            trackLength:trackLength,
-            theme:theme,
-            manualLapMode:manualLapMode,
-            summaryMap:summaryMap,
-            lapSummaryTable:lapSummaryTable
-        }))
-
-        console.log(teamName,settings.teamName)
-        
-    }
-
     // function to save settings to firebase car document when settings saved
-    async function saveSettingsToFirebase() {
-        const userSettings = {  team_name : settings.teamName,
-                                race_length : settings.raceLength,
-                                race_start_time : settings.raceStart,
-                                track_length : settings.trackLength,
-                                appearance_theme : settings.theme,
-                                manualLapMode : settings.manualLapMode,
-                                lap_summary_table : settings.lapSummaryTable,
-                                summary_map : settings.summaryMap,
+    async function saveSettingsToFirebase(settingsObject) {
+        const userSettings = {  team_name : settingsObject.teamName,
+                                race_length : settingsObject.raceLength,
+                                race_start_time : settingsObject.raceStart,
+                                track_length : settingsObject.trackLength,
+                                manualLapMode : settingsObject.manualLapMode,
+                                lap_summary_table : settingsObject.lapSummaryTable,
+                                summary_map : settingsObject.summaryMap,
                             }
         // now get the car setting array
-        const carSettings = settings.cars
+        const carSettings = settingsObject.cars
         try {
         // update displayname
-        updatedisplayname(settings.teamName)
+        updatedisplayname(settingsObject.teamName)
         // update user document in firebase
-        updateDoc(userDocRef, userSettings, { merge: true })
+        setDoc(userDocRef, userSettings, { merge: true })
         .then(userDocRef => {
             console.log("Document successfully updated!",userDocRef);
             setSuccess('Settings saved successfully!') 
@@ -209,7 +148,6 @@ export default function Configure() {
                                 large_gear_teeth:car.large_gear_teeth,
                                 wheel_circumference:car.wheel_circumference,
                                 reverse_gearing_mode:car.reverse_gearing_mode ? true : false,
-                                small_gear_teeth:car.small_gear_teeth
                         }
 
             // Get the query results
@@ -239,26 +177,21 @@ export default function Configure() {
                     console.log("Document written with ID: ", docRef.id);
                 })
                 .catch((e)=>{
-                    console.log(e)
+                    setTimeout(()=>{
+                    setSuccess()
+                    setError("Settings failed to save to cloud.")
+                    },50)
                 })
                 }
             })
             .catch((e)=>{
-                console.log(e)
+                setTimeout(()=>{
+                    setSuccess()
+                    setError("Settings failed to save to cloud.")
+                    },50)
             })
         })
     }
-
-
-    /*
-    function handleSaveAmpHourSettings(e){
-        const ampHours = AmpHourSettingsRef.current.value
-        newSettings(prevSettings => ({
-          ...prevSettings,
-          ampHours:ampHours
-        }))
-      }
-      */
 
     // hide alerts when clicked
     function hideAlerts() {
@@ -267,7 +200,7 @@ export default function Configure() {
     }
 
     
-    // function to add a new car to the cars collection in firebase
+    // function to add a new car to the cars collection in firebase - This is not available for free users so check that
     function addNewCar() {
         // TODO
         // Use this IF to limit the number of cars depending on the user's plan
@@ -329,8 +262,8 @@ export default function Configure() {
         })
     }
 
-    function deleteCarSettings(carNumber) {
-       
+    // Delete car settings from settings object
+    function deleteCarSettings(carNumber) {       
         const previousCars = settings.cars
         const newCars = previousCars.filter(car => car.car_number !== carNumber)
 
@@ -340,6 +273,7 @@ export default function Configure() {
         }))
     }
 
+    // WHen the delete button is clicked it pops up the are you sure modal
     function handleDeleteCar(e) {
         const carNumber = e.target.value
         // First, popup a confirmation dialog
@@ -347,6 +281,7 @@ export default function Configure() {
         setCarBeingDeleted(carNumber)
     }
 
+    // When user confirms car deletion, delete the car from firebase and the settings object and close modal
     function deleteCarConfirmed() {
         // delete the car from firebase
         deleteCarFirebase(carBeingDeleted)
@@ -357,12 +292,13 @@ export default function Configure() {
         changeTab()
     }
 
+    // cancel delete car interaction
     function deleteCarCancelled() {
         // Hide the 'Are you sure' modal
         setCarBeingDeleted()
     }
-  
 
+    // This is a not so temporary function 
     function tempFuncResetRunData() {
         // This is a temporary function to reset the running data in firebase
         // The teams/user/car id is hardcoded in here but change this to be dynamic, maybe a dropdown to choose which one to clear?
@@ -466,7 +402,7 @@ export default function Configure() {
 
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
 
-            <div class="border-top mt-2">
+            <div class="border-top mt-2" hidden>
                 <h3 class="mt-2">Billing</h3>
                 <button class="btn btn-outline-dark btn-block mb-2" type="button">Manage Billing Here</button>
                 <Link to={"/upgrade-plan?fromApp=true&currentPlan="+settings.role} class="btn btn-outline-dark btn-block mb-2">Upgrade Plan</Link>
@@ -489,15 +425,14 @@ export default function Configure() {
             <h3>Cars</h3>
             {settings.cars ? settings.cars.map((car,index)=>(
             <div class="card w-100 m-auto mb-2">
-            
-                <div class="card-header" data-value={index+4} onClick={changeTab}>
-                    <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
+                <div class="card-header w-100 h-100 p-0" data-value={index+4} onClick={changeTab}>
+                    <h4 class="card-title p-2 m-0">Car {index+1}: {car.car_name}</h4>
                 </div>
 
                 <div class="card-body">
                     <div class="form-group">
                         <label for="carName">Car Name</label>
-                        <input type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
+                        <input type="text" class="form-control" disabled id="carName" placeholder={car.car_name}></input>
                     </div>
                 </div>
             </div>)
@@ -517,26 +452,29 @@ export default function Configure() {
                 <input type="number" class="form-control" id="raceLength" placeholder={settings.raceLength}></input>
             </div>
 
-            <div class="form-group my-3">
+            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
                 <label for="trackLength">Manual Track Length (m)</label>
                 <input type="number" class="form-control" id="trackLength" placeholder={settings.trackLength}></input>
             </div>
 
     
-            <div class="form-group my-3">
+            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
                 <label for="manualLapMode">Lap Increments by distance</label>
                 <select class="form-control" id="manualLapMode">
                     <option value="true">Enabled</option>
                     <option value="false">Disabled</option>
                 </select>
             </div>
-            <button class="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Data</button>
+            <button hidden={!(settings?.role==='standard' || settings?.role==='pro')} class="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Recorded Data</button>
             
+            <div class="alert alert-info py-4 mx-5">
+                <p>Lap summary tables are in last stages of development, you will find the settings here.</p>
+            </div>
         </div>
 
         <div class="tab mx-1" hidden={determineHide(3)}>
-            <h3>Appearance</h3>
-            <div class="form-group my-3">
+            <h3 hidden >Appearance</h3>
+            <div hidden class="form-group my-3">
                 <label for="theme">Theme</label>
                 <select disabled class="form-control" id="theme">
                     <option>Light</option>

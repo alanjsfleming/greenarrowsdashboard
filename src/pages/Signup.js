@@ -98,7 +98,7 @@ export default function Signup() {
           <label for="floatingPassword">Confirm Password</label>
         </div>
             
-        <button class="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>Sign Up</button>
+        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Sign Up</button>
             
         <div  class="mt-2">
           <p>Already have an account? <Link to="/login">Login</Link></p>

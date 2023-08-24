@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import CarSummaryCard from './CarSummaryCard'
 import Vis from './Vis'
+import WaitingForData from '../../layouts/WaitingForData'
 
 export default function CarSummary(props) {
 
@@ -33,7 +34,7 @@ export default function CarSummary(props) {
             <CarSummaryCard title={'Battery'} units={'%'} kind={'gauge'} data={Math.round(100-(props.telemetry[0]['AH']/28)*100)} />
             <CarSummaryCard title={'Amps'} units={'A'} kind={'gauge'} data={props.telemetry[0]['A']}/>
             
-            </> : <h3>Fetching data...</h3>
+            </> : <WaitingForData />
             }
             </div>
         

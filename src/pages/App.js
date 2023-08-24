@@ -3,6 +3,7 @@ import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from '../layouts/MenuBar'
 import Loading from './Loading';
+import WaitingForData from '../layouts/WaitingForData';
 
 
 
@@ -69,7 +70,7 @@ function App() {
     <>
 
     <MenuBar/>
-    {(telemetry[0]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <Loading />}
+    {(telemetry[0]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <div className="w-75 mx-auto mt-5"><WaitingForData /></div>}
     </>
   );
 }

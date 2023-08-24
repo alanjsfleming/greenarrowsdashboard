@@ -63,7 +63,7 @@ export default function Login() {
         </div>
 
             
-        <button class="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>Login</button>
+        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Login</button>
             
         <div  class="mt-2">
           <Link to="/reset-password">Forgot password?</Link>

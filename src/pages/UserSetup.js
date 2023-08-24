@@ -99,7 +99,7 @@ export default function UserSetup() {
           <label htmlFor="floatingCarName">Car Name</label>
         </div>
             
-        <button className="w-100 btn  btn-lg btn-primary" type="submit" disabled={loading}>Submit</button>
+        <button className="w-100 btn  btn-lg btn-dark" type="submit" disabled={loading}>Submit</button>
             
         <div  className="mt-2">
           <Link to="/">Skip</Link>

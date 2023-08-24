@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {analytics} from '../firebase'
-import { logEvent } from 'firebase/analytics'
 import Navbar from '../layouts/Navbar'
 import Footer from '../layouts/Footer'
 

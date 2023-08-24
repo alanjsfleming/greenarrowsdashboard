@@ -3,8 +3,7 @@ import Footer from '../layouts/Footer'
 import MenuBar from '../layouts/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
-import {analytics} from '../firebase'
-import { logEvent } from 'firebase/analytics'
+import Emoji from '../layouts/Emoji'
 
 export default function Signup() {
     // Send a page view event to Firebase Analytics
@@ -37,8 +36,7 @@ export default function Signup() {
     <MenuBar />
     <div class="form-signin m-auto text-center my-5">
       <form class="signin-form px-5 py-3 border shadow" onSubmit={handleSubmit}>
-        <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="72" height="57" />
-        <h1 class="h3 mb-3 fw-normal">Password Reset</h1>
+      <Emoji symbol="🦉" label="owl" /><h1 class="h3 mb-3 fw-normal">Password Reset</h1>
         
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         {success && <p className="alert alert-success alert-dismissible">{success}</p>}
@@ -47,7 +45,7 @@ export default function Signup() {
           <label for="floatingInput">Email address</label>
         </div>
             
-        <button class="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>Reset Password</button>
+        <button class="w-100 btn btn-lg btn-dark" type="submit" disabled={loading}>Reset Password</button>
             
         <div  class="mt-2">
           <Link to="/login">Login</Link>
