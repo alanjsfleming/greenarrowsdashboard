@@ -1,18 +1,16 @@
 import React, { useEffect,useState,useRef } from 'react'
 import {Link}  from "react-router-dom"
 import CarSummary from './components/CarSummary'
-import RacePanel from './components/RacePanel'
 import { useAuth } from '../contexts/AuthContext'
 import MenuBar from '../layouts/MenuBar'
 import LapSummary from './components/LapSummary'
-import { useRace } from '../contexts/RaceContext'
 import { doc, getDoc,collection,query,where,getDocs, orderBy,updateDoc } from "firebase/firestore";
-import { analytics, db } from '../firebase'
-import { logEvent } from 'firebase/analytics'
+import { db } from '../firebase'
+
 import LocationMap from './components/LocationMap'
 import { rtdb } from '../firebase'
 import { ref, onValue,push,off } from "firebase/database";
-import DataLastReceived from '../layouts/DataLastReceived'
+import PitStopPanel from './components/PitStopPanel'
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -44,6 +42,7 @@ export default function HomePage() {
 
   const [raceTime,setRaceTime] = useState()
   const [raceTimeValue,setRaceTimeValue] = useState()
+
   const [runningData,setRunningData] = useState([])
 
   const runningDataRef = useRef(runningData)
@@ -91,7 +90,7 @@ export default function HomePage() {
     const carQuery = query(carsRef, where("owner","==",currentUser.uid), orderBy("car_number"))
     const querySnapshot = getDocs(carQuery).then((querySnapshot) => {
       let carArray = []
-      console.log(querySnapshot)
+      //console.log(querySnapshot)
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         // write this to settings in settings.cars object as an array
@@ -169,6 +168,7 @@ export default function HomePage() {
 
         // If it passes the other escapes then set the client data to be the same as the database
         setRunningData(data)
+        
         console.log("Taken value from realtime database")
       }, (error) => {
         console.log("Error: " + error);
@@ -177,9 +177,9 @@ export default function HomePage() {
     } catch (e) { console.log("error setting up realtime database listener" + e)}
   },[raceStart])
   
-  useEffect(()=>{
-    console.log(runningData)
-  },[runningData])
+  //useEffect(()=>{
+    //console.log(runningData)
+  //},[runningData])
 
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
@@ -188,7 +188,9 @@ export default function HomePage() {
     .then((response)=>response.json())
     .then((data)=> { 
       setErrorFetching(0)
+   
       newTelemetry([data.with[0].content])
+    
       // Make the last data received time state = to the timestamp onn the data packet
      }
     )
@@ -219,26 +221,22 @@ export default function HomePage() {
   // Race reset
 function handleReset(e){
   if (resetButton === 'btn-primary') {
-    try {
-      
-    } catch {}
-    
-    setResetButton('btn-danger')
+    setResetButton('btn-danger') // Make it scary to confirm
 } else {
-  setResetButton('btn-primary')
+  setResetButton('btn-primary') // If its already scary then confirm it and reset
   setRaceStart(null)
   newSettings(prevSettings=>({
     ...prevSettings,
     raceStart: null
   }))
   const userRef = doc(db, "users", currentUser.uid);
-  updateDoc(userRef, {race_start_time: null}, {merge: true})
+  updateDoc(userRef, {race_start_time: null}, {merge: true}) // Save this reset to firebase also
 }
 }
 
 // when a primed reset button is clicked off of it will put the button back to its normal condition
 function handleUnfocusReset(e){
-setResetButton('btn-primary')
+  setResetButton('btn-primary')
 }
 
 function handleStart(e){
@@ -283,6 +281,10 @@ function elapsedTimeIntoString() {
 // When race is running, save each request to local storage settings.running_data array
 // function to append data packet to settings.running_data array
 function appendDataToSettings(data,car_num) {
+  if (settings?.lapSummaryTable==='Disabled') {
+    return 
+  }
+
   // this needs to be changed for when multiple cars...
   const carId = settings.cars[car_num-1].id
   const lastDataPoint = { timestamp : 0}
@@ -294,24 +296,24 @@ function appendDataToSettings(data,car_num) {
   // Check the datapoint against the previous points to see if duplicate
   
   // get last datapoint from realtime database
-  //if (settings.cars[0].running_data) {
-  if (runningData.length>1) {
+  //if (settings.cars[0].running_data) { 
+  if (runningDataRef.current.length>1) {
   //const lastDataPoint = settings.cars[0].running_data.at(-1)
-  const lastDataPoint = runningData.at(-1)
+    const lastDataPoint = runningData.at(-1)
   }
  
   // if the last datapoint is the same as the current datapoint, don't push it
   //if (settings.cars[0].running_data && (lastDataPoint.timestamp < (data.timestamp+1000))) {
   // Test here if data meets conditions to be pushed to the realtime database
-  if (runningData && (lastDataPoint.timestamp > (data.timestamp-1000))) {
-    console.log(data.timestamp)
+  if (runningDataRef.current && (lastDataPoint.timestamp > (data.timestamp-1000))) {
+    //console.log(data.timestamp)
     return
   
   } else {
     // If it passes then Push the data to the realtime database
     try {
       const latestDataPointRef = push(rtDocRef, data)
-      console.log(latestDataPointRef)
+      //console.log(latestDataPointRef)
       console.log("pushed")
     } catch(e) {console.log(e)}
     
@@ -393,13 +395,17 @@ useEffect(() => {
           </div>
       </div>
   </div>
+
+      <PitStopPanel totalPitTime={settings?.cars[0]?.totalPitTime}/>
+
       <br></br>
+   
       {(settings && settings.summaryMap==='Enabled') ? 
       <LocationMap settings={settings} locationData={
         [
           { 
-          name : (telemetry.Lat && settings) ? settings.cars[0].car_name : 'No GPS data',
-          location : (telemetry.Lat) ? [telemetry.Lat,telemetry.Lon] : [57.1189133,-2.1351633]
+          name : (telemetry[0]?.Lat) ? settings?.cars[0]?.car_name : 'No Location Data',
+          location : [telemetry[0]?.Lat,telemetry[0]?.Lon]
         } 
         ]} /> 
         : 

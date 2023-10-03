@@ -19,7 +19,7 @@ export const createUserDoc = functions.auth.user().onCreate(async (user) => {
     car_number: 1,
     // Other fields are used to store the car's properties.
     car_name: "New Car",
-    battery_capacity: 30,
+    battery_capacity: 25,
     dweet_name: null,
     large_gear_teeth: 60,
     wheel_circumference: 3,

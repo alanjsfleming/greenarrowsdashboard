@@ -10,6 +10,7 @@ import { rtdb } from '../firebase'
 import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 import { setDoc } from 'firebase/firestore'
 import EatSettingsForm from '../hooks/EatSettingsForm'
+import getSettingsObject from '../features/Settings/getSettingsObject'
 
 
 export default function Configure() {
@@ -66,7 +67,7 @@ export default function Configure() {
         } else {
             setCurrentTab(e.target.parentElement.getAttribute("data-value"))
         }
-        console.log(settings,getRef(1).current.elements) 
+        //console.log(settings,getRef(1).current.elements) 
     }
 
 
@@ -89,15 +90,16 @@ export default function Configure() {
         try {
             const carFormRefs = settings.cars.map(car=>{return getRef(car.car_number)})
             const settingsObject = EatSettingsForm(configureFormRef,carFormRefs,settings)
+            //getSettingsObject(configureFormRef,carFormRefs,settings)
             newSettings(settingsObject)
             saveSettingsToFirebase(settingsObject)
-    
+            
             setError()
             setSuccess('Settings saved successfully!') 
         } catch (e){
-            console.log(e)
+            //console.log(e)
             setSuccess()
-            setError('Failed to save settings.')
+            setError('Failed to save settings.',e)
         }
     }
 
@@ -110,6 +112,7 @@ export default function Configure() {
                                 manualLapMode : settingsObject.manualLapMode,
                                 lap_summary_table : settingsObject.lapSummaryTable,
                                 summary_map : settingsObject.summaryMap,
+                                planned_battery_usage : settingsObject.plannedBatteryUsage,
                             }
         // now get the car setting array
         const carSettings = settingsObject.cars
@@ -119,7 +122,7 @@ export default function Configure() {
         // update user document in firebase
         setDoc(userDocRef, userSettings, { merge: true })
         .then(userDocRef => {
-            console.log("Document successfully updated!",userDocRef);
+            //console.log("Document successfully updated!",userDocRef);
             setSuccess('Settings saved successfully!') 
             setError()
             
@@ -131,16 +134,15 @@ export default function Configure() {
             
         });}
         catch (e) {
-            console.log(e)
+            //console.log(e)
         }
 
          // For every car in the settings array, update the car document in firebase
         carSettings.forEach(car => {
-            console.log(car.car_number)
+            //console.log(car)
             // Create a query to find the car document in firebase
             const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",car.car_number))
-            // Build the car document to be updated in firebase
-            console.log()
+            // Build the car document to be updated in firebase, I am not using car because ?? something about not updating fields that are constant??
             const carDoc = {    
                                 car_name:car.car_name,
                                 battery_capacity:car.battery_capacity,
@@ -152,7 +154,7 @@ export default function Configure() {
 
             // Get the query results
             const carQuerySnapshot = getDocs(carQuery).then((querySnapshot)=>{
-          
+            //console.log(carDoc)
             // If the query returns a document, get the document id
             if (querySnapshot.size >0) {
                 const carDocumentId = querySnapshot.docs[0].id
@@ -174,7 +176,7 @@ export default function Configure() {
                 const carsCollectionRef = collection(db,"cars")
                 addDoc(carsCollectionRef,carDoc)
                 .then((docRef)=>{
-                    console.log("Document written with ID: ", docRef.id);
+                    //console.log("Document written with ID: ", docRef.id);
                 })
                 .catch((e)=>{
                     setTimeout(()=>{
@@ -230,15 +232,15 @@ export default function Configure() {
     // I want to only call this when a car is deleted and then save button is pressed really
     // TODO - above
     function deleteCarFirebase(carNumber) {
-        console.log(carNumber,currentUser.uid)
+        //console.log(carNumber,currentUser.uid)
         const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",parseInt(carNumber)))
                 
         const carQuerySnapshot = getDocs(carQuery).then((querySnapshot) => {
             if (querySnapshot.size>0) {
-                console.log(querySnapshot.docs[0].id)
+                //console.log(querySnapshot.docs[0].id)
                 deleteDoc(doc(db,"cars",querySnapshot.docs[0].id))
                 .then(() => {
-                    console.log("Document successfully deleted!");
+                    //console.log("Document successfully deleted!");
                     setSuccess('Car deleted successfully!')
                     // Now delete the car from the settings
                     
@@ -306,7 +308,7 @@ export default function Configure() {
         // VCq7rqiEK4qbGd7qZ4C0 is GA1
         const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
         remove(rtCarRef).then(()=>{
-            console.log("deleted")
+            //console.log("deleted")
         })
         newSettings(prevSettings=>({
           ...prevSettings,
@@ -395,17 +397,17 @@ export default function Configure() {
             <h3>Account</h3>
             <div class="form-group my-3">
                 <label for="teamName">Change Team Name</label>
-                <input type="text" class="form-control" id="teamName" placeholder={settings.teamName}></input>
+                <input type="text" class="form-control" name="teamName" id="teamName" placeholder={settings.teamName}></input>
             </div>
-
-            <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password Here</button></Link>
+            <hr></hr>
+            <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password</button></Link>
 
             <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
 
             <div class="border-top mt-2" hidden>
                 <h3 class="mt-2">Billing</h3>
-                <button class="btn btn-outline-dark btn-block mb-2" type="button">Manage Billing Here</button>
-                <Link to={"/upgrade-plan?fromApp=true&currentPlan="+settings.role} class="btn btn-outline-dark btn-block mb-2">Upgrade Plan</Link>
+                <a href="https://billing.stripe.com/p/login/3cs5kB9WG4242mkbII" class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</a>
+             
             </div>
 
             <div class="border-top mt-2">
@@ -413,7 +415,7 @@ export default function Configure() {
                 <a href="https://www.vis.dashowl.co.uk" class="btn btn-outline-dark btn-block">eChook Logfile Visualiser (Free!)</a>
                 <div hidden class="form-group my-3">
                     <label for="newsLetterEmail">Newsletter:</label>
-                    <input type="email" class="form-control text-center" id="newsLetterEmail" placeholder={currentUser.email}></input>
+                    <input type="email" class="form-control text-center" name="newsLetterEmail" id="newsLetterEmail" placeholder={currentUser.email}></input>
 
                 </div>
             </div>
@@ -449,22 +451,28 @@ export default function Configure() {
             <h3>Race</h3>
             <div class="form-group my-3">
                 <label for="raceLength">Race Length (mins)</label>
-                <input type="number" class="form-control" id="raceLength" placeholder={settings.raceLength}></input>
+                <input type="number" class="form-control" id="raceLength" name="raceLength" placeholder={settings.raceLength}></input>
             </div>
 
             <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
                 <label for="trackLength">Manual Track Length (m)</label>
-                <input type="number" class="form-control" id="trackLength" placeholder={settings.trackLength}></input>
+                <input type="number" class="form-control" id="trackLength" name="trackLength" placeholder={settings.trackLength}></input>
             </div>
 
     
             <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
                 <label for="manualLapMode">Lap Increments by distance</label>
-                <select class="form-control" id="manualLapMode">
+                <select class="form-control" name="manualLapMode" id="manualLapMode">
                     <option value="true">Enabled</option>
                     <option value="false">Disabled</option>
                 </select>
             </div>
+
+            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')} className="form-group my-3">
+                <label for="plannedBatteryUsage">Planned Battery Usage (Ah/min)</label>
+                <input type="number" class="form-control" name="plannedBatteryUsage" id="plannedBatteryUsage" placeholder={settings?.plannedBatteryUsage}></input>
+            </div>
+
             <button hidden={!(settings?.role==='standard' || settings?.role==='pro')} class="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Recorded Data</button>
             
             <div class="alert alert-info py-4 mx-5">
@@ -476,7 +484,7 @@ export default function Configure() {
             <h3 hidden >Appearance</h3>
             <div hidden class="form-group my-3">
                 <label for="theme">Theme</label>
-                <select disabled class="form-control" id="theme">
+                <select name="theme" disabled class="form-control" id="theme">
                     <option>Light</option>
                     <option>Dark</option>
                 </select>
@@ -485,7 +493,7 @@ export default function Configure() {
             <h3>Summary Page</h3>
             <div class="form-group my-3">
                 <label for="summaryMap">Location map</label>
-                <select class="form-control" id="summaryMap">
+                <select name="summaryMap" class="form-control" id="summaryMap">
                     <option>Disabled</option>
                     <option selected={settings.summaryMap==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
@@ -493,7 +501,7 @@ export default function Configure() {
 
             <div class="form-group my-3">
                 <label for="lapSummaryTable">Lap Summary Table</label>
-                <select class="form-control" id="lapSummaryTable">
+                <select name="lapSummaryTable" class="form-control" id="lapSummaryTable">
                     <option>Disabled</option>
                     <option selected={settings.lapSummaryTable==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
@@ -518,36 +526,36 @@ export default function Configure() {
                 <div class="card-body">
                 <div class="form-group">
                     <label for="carName">Car Name</label>
-                    <input type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
+                    <input name="carName" type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
                 </div>
 
                 <div class="form-group my-3">
                     <label for="dweetUrl">Dweet Thing name</label>
-                    <input type="text" class="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
+                    <input name="dweetUrl" type="text" class="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
                 </div>
 
                 <div class="form-group my-3">
                     <label for="ampHours">Battery Capacity (Amp Hours)</label>
-                    <input type="number" class="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
+                    <input name="ampHours" type="number" class="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
                 </div>
 
                 <div class="form-group my-3">
                     <label for="wheelCircumference">Wheel circumference (m)</label>
-                    <input type="number" class="form-control" id="wheelCircumference" placeholder={car.wheel_circumference}></input>
+                    <input name="wheelCircumference" type="number" class="form-control" id="wheelCircumference" placeholder={car.wheel_circumference}></input>
                 </div>
 
                 <div class="form-group my-3">
                     <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverse_gearing_mode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
                 </div>
                 <div hidden={car.reverse_gearing_mode ? false : true} >
-                <div class="form-group my-3">
+                <div class="form-group my-3" hidden>
                     <label for="teethGear">Teeth on small gear</label>
-                    <input type="number" class="form-control" id="smallteethGear"></input>
+                    <input name="smallteethGear" type="number" class="form-control" id="smallteethGear"></input>
                 </div>
 
                 <div class="form-group my-3">
                     <label for="teethGear">Teeth on large gear</label>
-                    <input type="number" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
+                    <input type="number" name="teethGear" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
                 </div>
                 </div>
                 <br></br>

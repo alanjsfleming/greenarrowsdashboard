@@ -13,12 +13,12 @@ import PrivateRoute from './PrivateRoute';
 import Configure from './pages/Configure';
 import PasswordReset from './pages/PasswordReset'
 import UserSetup from './pages/UserSetup'
-import { RaceProvider } from './contexts/RaceContext';
 import Loading from './pages/Loading';
 import {analytics} from './firebase'
 import { logEvent } from 'firebase/analytics'
-import UpgradePlan from './pages/UpgradePlan';
+
 import AnalyticsComponent from './features/AnalyticsComponent';
+import { RaceProvider } from './contexts/RaceContext';
 
 function sendToAnalytics({id,name,value}){
   logEvent(analytics,'event',{
@@ -37,12 +37,15 @@ export default function Main() {
         <BrowserRouter basename="/">
           <AnalyticsComponent />
           <Routes>
-            <Route path="/login" element={<Login />}/>           
+            <Route path="/login" element={<Login />}/>    
+            <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
+            <Route path="/signup" element={<Signup />}/>       
             <Route path="/reset-password" element={<PasswordReset />} />
+
+            
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
-            <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
-            <Route path="/signup" element={<Signup />}/>
+            
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
             <Route path="/register" element={<Signup />}/>
@@ -50,7 +53,7 @@ export default function Main() {
           <Route path="*" element={<NoPage/>}/>
           </Routes>
         </BrowserRouter>
-      </RaceProvider>
+        </RaceProvider>
     </AuthProvider>
   );
 }
@@ -68,4 +71,3 @@ root.render(
 reportWebVitals(sendToAnalytics);
 
 //  <Route path="/register" element={<Signup />}/>
-// <Route path="/upgrade-plan" element={<UpgradePlan />} />

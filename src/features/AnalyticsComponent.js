@@ -1,7 +1,7 @@
 import { logEvent } from 'firebase/analytics';
 import React from 'react'
 import { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { analytics } from '../firebase';
 
 // In future I possibly want to add a way to log Events?

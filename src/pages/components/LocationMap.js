@@ -1,7 +1,7 @@
 import React, {useState,useEffect} from "react"
 import { Map, Marker } from "pigeon-maps"
 import { Link } from "react-router-dom"
-import { map } from "jquery"
+
 import ContentLocked from "../../layouts/ContentLocked"
 
 export default function LocationMap(props) {
@@ -11,7 +11,7 @@ export default function LocationMap(props) {
     const [mapCentre, setMapCentre] = useState()
     const [mapZoom, setMapZoom] = useState(15)
     const [settings, setSettings] = useState()
-    const [allowedPermissions, setAllowedPermissions] = useState(false)
+    const [allowedPermissions, setAllowedPermissions] = useState(true)
 
 
     useEffect(() => {

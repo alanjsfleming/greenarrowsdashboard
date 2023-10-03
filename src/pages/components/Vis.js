@@ -48,7 +48,6 @@ export default function Vis(type,units,data) {
                 return <Timer  settings={props.settings}/>
                 }
             }
-            
         }
     }
 

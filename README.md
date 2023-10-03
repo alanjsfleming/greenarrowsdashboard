@@ -256,39 +256,6 @@ battery_ah -> number
     "Lon": -2.1351633
 }
 
-Chart.js
-
-D3.js
-
-
-	self.get_latest_dweet_for = function (thing, key, callback) {
-			if (isFunction(key)) {
-				callback = key;
-				key = null;
-			}
-
-			request({
-				url: createKeyedURL(DWEET_SERVER + "/get/latest/dweet/for/" + thing, key),
-				jar: true,
-				timeout: REQUEST_TIMEOUT,
-				strictSSL: STRICT_SSL
-			}, function (err, response, body) {
-				processDweetResponse(err, callback, body);
-			});
-		}
-
-		self.get_all_dweets_for = function (thing, key, callback) {
-			if (isFunction(key)) {
-				callback = key;
-				key = null;
-			}
-
-			request({
-				url: createKeyedURL(DWEET_SERVER + "/get/dweets/for/" + thing, key),
-				jar: true,
-				timeout: REQUEST_TIMEOUT,
-				strictSSL: STRICT_SSL
-			}, function (err, response, body) {
-				processDweetResponse(err, callback, body);
-			});
-		}
+## How to add a settings
+Add to the configure form,
+Add to the EatSettings function, add to the Save to Firebase function in configure

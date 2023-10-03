@@ -11,17 +11,7 @@ import WaitingForData from '../layouts/WaitingForData';
 // /details/:carID
 // This will be a page that shows the details of the car selected when :carID's owner is the current user
 
-
-
-
-
-
-
 function App() {
-  // Send a page view event to Firebase Analytics
-
-
-
   // State variables
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState([])
@@ -54,9 +44,14 @@ function App() {
     .then((response)=>response.json())
     .then((data)=> { 
      newTelemetry([data.with[0].content])
-     console.log(telemetry)
+     //console.log(telemetry)
     });
   }
+ 
+// function handleUpdateTelemetry(e) {
+//  newTelemetry(handleGetDweet(settings.cars[0].dweet_name))
+//  console.log(telemetry)
+// }
 
   useEffect(()=>{
     const interval = setInterval(handleUpdateTelemetry,1500);

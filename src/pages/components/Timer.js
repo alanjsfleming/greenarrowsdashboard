@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react'
-import { useRace } from '../../contexts/RaceContext'
 
 export default function Timer() {
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'

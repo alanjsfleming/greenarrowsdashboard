@@ -8,7 +8,6 @@ import React from 'react'
 
 export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
     // Get all user settings data, if no data is provided, use the existing setting
-    console.log(userFormRef.current.elements.teamName.value)
     let settingsObject = {
       teamName : userFormRef.current.elements.teamName?.value ? userFormRef.current.elements.teamName.value : settings.teamName,
       raceLength : userFormRef.current.elements.raceLength?.value ? userFormRef.current.elements.raceLength.value : settings.raceLength,
@@ -18,11 +17,13 @@ export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
     // Features
       summaryMap : userFormRef.current.elements.summaryMap?.value ? userFormRef.current.elements.summaryMap.value : settings.summaryMap,
       lapSummaryTable : userFormRef.current.elements.lapSummaryTable?.value ? userFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable,
+      plannedBatteryUsage : userFormRef.current.elements.plannedBatteryUsage?.value ? userFormRef.current.elements.plannedBatteryUsage.value : settings?.plannedBatteryUsage,
     }
-
+   
     // carFormRefs will be an array of carRefs that will be used to access the car data forms
     // iterate over carFormRefs to get the data from each car form
     const carsCopy = [...settings.cars]
+    console.log(carsCopy)
     carsCopy.forEach((car, index) => {
         const carFormRef = carFormRefs[index]
         car.car_name = carFormRef.current.elements.carName?.value ? carFormRef.current.elements.carName.value : car.car_name
@@ -32,9 +33,11 @@ export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
         car.small_gear_teeth = carFormRef.current.elements.smallGearTeeth?.value ? carFormRef.current.elements.smallGearTeeth.value : car.small_gear_teeth
         car.large_gear_teeth = carFormRef.current.elements.teethGear?.value ? carFormRef.current.elements.teethGear.value : car.large_gear_teeth
     })
-
+    // Add the cars back into the settings object
     settingsObject.cars = carsCopy
 
+
     // return a settings object that will be used to update the user and car data both in state and database
-  return (settingsObject)
+    
+    return (settingsObject)
 }
