@@ -20,8 +20,13 @@ export default function CarSummary(props) {
         // s = starttime
         if (s===null) {return null}
         const t = Date.now()
-        
+
         const elapsedSeconds = (t-s)/1000 // get the elapsed time in seconds
+        
+        if (props.settings?.totalPitTime) {
+            // Calculate % rundown according to plan and compensating for the pit stops
+            return Math.round (100-(elapsedSeconds) * (100/(85+props.settings?.totalPitTime/1000/60)/60))
+        }
         
         // Calculate the percentage rundown according to plan
         return Math.round(100-(elapsedSeconds) * (100/90/60)) // 100% - (elapsed seconds) * (100% / 90 minutes / 60 seconds)
@@ -46,8 +51,6 @@ export default function CarSummary(props) {
             </> : <WaitingForData />
             }
             </div>
-        
-
     </div>
   )
 }//Math.round(100-(props.telemetry[0]['AH']/28)*100)

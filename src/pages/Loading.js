@@ -7,7 +7,7 @@ export default function Loading() {
 
     function animateDots() {
         let dots = document.getElementById("dots");
-        if (dots.innerHTML.length > 3) {
+        if (dots.innerHTML?.length > 3) {
             dots.innerHTML = "";
             setDots('restart')
         }

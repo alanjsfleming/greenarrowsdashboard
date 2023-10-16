@@ -3,6 +3,7 @@ import { Map, Marker } from "pigeon-maps"
 import { Link } from "react-router-dom"
 
 import ContentLocked from "../../layouts/ContentLocked"
+import { estimateGear } from "../../features/TelemetryCalculations"
 
 export default function LocationMap(props) {
     // -2.1351633
@@ -74,6 +75,7 @@ export default function LocationMap(props) {
         <div class="card-body car-summary-vis d-flex flex-column">
             {(carLocations && allowedPermissions) ? 
             <>
+            <p>Gear: {estimateGear(props?.telemetry?.Spd*2.237,props?.telemetry?.RPM,props.settings?.cars[0]?.large_gear_teeth)}</p>
             <Map height={300} center={mapCentre} touchEvents={true} mouseEvents={true} defaultZoom={15} >
                 {carLocations.map(renderMarker)}
             </Map>

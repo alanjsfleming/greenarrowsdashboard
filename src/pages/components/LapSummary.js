@@ -9,7 +9,6 @@ export default function LapSummary(props) {
 
     const [currentLapData, setCurrentLapData] = useState()
     const [currentLapNum, setCurrentLapNum] = useState()
-    const [runningData,setRunningData] = useState([])
 
     // Determine if user is allowed to access this content
     const [allowedPermissions, setAllowedPermissions] = useState(false)    
@@ -28,11 +27,13 @@ export default function LapSummary(props) {
 
     // change this to use props.runningData
     useEffect(() => {
+        console.log("attempt")
         try{
-            setRunningData(props.runningData)
-            setCurrentLapNum(calculateCurrentLapNum());
-            getCurrentLapData();
-            calculateAllLapData(filterSeparateLaps())
+            console.log(props.runningData)
+            setCurrentLapNum(calculateCurrentLapNum(props.runningData));
+            getCurrentLapData(props.runningData);
+            calculateAllLapData(filterSeparateLaps(props.runningData))
+            console.log(props.runningData)
         } catch (error) {
             console.log(error);
         }
@@ -59,27 +60,29 @@ export default function LapSummary(props) {
     // Function filter separate laps, which finds the indexes of the first and last data point of each lap and filters into n number of laps separate arrays
     function filterSeparateLaps() {
         // For each lap, find the first and last index of the lap
+       
         let lapDataArrays = []
-        for (var i = 0; i < currentLapNum; i++) {
+        for (var i = 0; i < calculateCurrentLapNum(props.runningData); i++) {
+            console.log(lapDataArrays)
             // Automatic lap mode
             if (!props.settings.manualLapMode) {
-                const firstIndex = runningData.findIndex(data=>data.Lap===i)
-                const lastIndex = runningData.findLastIndex(data=>data.Lap===i)
+                const firstIndex = props.runningData.findIndex(data=>data.Lap===i)
+                const lastIndex = props.runningData.findLastIndex(data=>data.Lap===i)
                 // Filter the runningData array into n number of arrays, each containing the data for each lap
-                lapDataArrays.push(runningData.slice(firstIndex,lastIndex+1))
+                lapDataArrays.push(props.runningData.slice(firstIndex,lastIndex+1))
 
             // Manual Lap Mode
             } else {
                 const firstDist = i*props.settings.trackLength
                 const lastDist = (i+1)*props.settings.trackLength
                 // Filter the runningData array into n number of arrays, each containing the data for each lap
-                lapDataArrays.push(runningData.filter(function(data) {
+                lapDataArrays.push(props.runningData.filter(function(data) {
                     return data.Distance >= firstDist && data.Distance < lastDist
                     }
                 ))
             }
-            console.log(lapDataArrays)
         }
+        console.log(lapDataArrays)
         return lapDataArrays
     }
 
@@ -87,6 +90,7 @@ export default function LapSummary(props) {
     // It is trying to access undefined values in the lapDataArrays, add a check to see if the value is undefined before accessing
     function calculateAllLapData(lapDataArrays) {
         // For each lap, find the average of V1, A, and Speed
+        console.log(lapDataArrays)
         const averages = lapDataArrays.map((lapDataArray,index) => {
             console.log(lapDataArrays)
             return {
@@ -99,21 +103,26 @@ export default function LapSummary(props) {
             }
         }) 
         // Return an array of objects, each containing the average data for each lap
+        console.log(averages)
         setLapData(averages)
     }
 
-    function calculateCurrentLapNum() {
-        
+    function calculateCurrentLapNum(runningData) {
+        console.log(runningData.at(-1))
+        console.log(props.settings)
+        console.log(props.settings.manualLapMode)
+
         if (props.settings.manualLapMode) {
+            console.log("returning lap:",runningData.at(-1).Distance/props.settings.trackLength)
             return runningData.at(-1).Distance/props.settings.trackLength
-            
         } else {
+            console.log("returning lap:",runningData.at(-1).Lap)
             return runningData.at(-1).Lap
         }
     }
 
     // Function that filters out the current lap data from the lapData array
-    function getCurrentLapData(){
+    function getCurrentLapData(runningData){
         const lapTime = "00:00:12"
         
         
@@ -152,7 +161,7 @@ export default function LapSummary(props) {
                 </tr>
             </thead>
             <tbody>
-                {runningData && (<tr scope="row">
+                {props.runningData && (<tr scope="row">
                     <th scope="col">Overall</th>
                     <th scope="col">{}</th>
                     <th scope="col">{currentLapData ? currentLapData.AH : '-'}</th>
@@ -190,11 +199,12 @@ export default function LapSummary(props) {
     )
 
   return (
+    <>
     <div class="card car-summary mb-3">
         <div class="card-header text-center">
             <h3>Laps ({currentLapNum ? JSON.stringify(currentLapNum) : '-'})</h3>
             <div>
-                <p>Distance: {(runningData.length>0) ? runningData.at(-1).Distance : '-'} </p>
+                <p>Distance: {(props.runningData.length>0) ? props.runningData.at(-1).Distance : '-'} </p>
             </div>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
@@ -204,6 +214,7 @@ export default function LapSummary(props) {
             }
         </div>
     </div>
+    </>
   )
 }
 

@@ -31,7 +31,7 @@ export default function HomePage() {
   
   const [telemetry, newTelemetry] = useState([]);
   const [settings, newSettings] = useState()
-  const [errorFetching, setErrorFetching] = useState(0)
+  const [errorFetching, setErrorFetching] = useState()
   const [dataLastReceived,setDataLastReceived] = useState("2023-06-10T14:37:47.074Z")
   const [fetchURL,setFetchURL] = useState()
   const { currentUser } = useAuth()
@@ -44,6 +44,10 @@ export default function HomePage() {
   const [raceTimeValue,setRaceTimeValue] = useState()
 
   const [runningData,setRunningData] = useState([])
+
+  const [carInPit,setCarInPit] = useState(false) // state to track if the car is in the pit or not
+
+
 
   const runningDataRef = useRef(runningData)
   // settings.cars[i].running_data should be always equal to the realtime database entry for that car
@@ -82,6 +86,9 @@ export default function HomePage() {
         role:data.role,
         lapSummaryTable:data.lap_summary_table,
         summaryMap:data.summary_map,
+        manualLapMode:data.manualLapMode,
+        carInPit:data.carInPit,
+        totalPitTime:data.totalPitTime,
     }))
     
     }).catch((error) => {
@@ -129,8 +136,8 @@ export default function HomePage() {
     // When the raceStart changes, if it is not running then make sure client is not listening to realtime database, this is for bandwidth reasons
     if (!raceStart) {
       try {
-        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
-      
+        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
+        // Stop listening to database if race is not in progress
         off(rtCarRef)
       } catch(e) {
         console.log(e)
@@ -141,33 +148,32 @@ export default function HomePage() {
     try {
       
       // Change this ref to be dynamic to the car
-      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/VCq7rqiEK4qbGd7qZ4C0`)
-      const realtimeDatabaseListener = onValue(rtCarRef, (snapshot) => {
+      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
+      // start listening to database if race is in progress
+      onValue(rtCarRef, (snapshot) => {
         
         const data = []
         snapshot.forEach((childSnapshot) => {
           data.push(childSnapshot.val())
         })
-        
-
-       
+        console.log(data)
+      
+      
         // If the there is no data in the realtime database, return and do nothing
         if (data === null) {
           console.log("data is null")
           return
         }
         
-        
-
         // If the data is the same in the database as the client already has then do nothing.
         if (runningDataRef.current === data) {
           console.log("data is the same")
           return
         }
 
-
         // If it passes the other escapes then set the client data to be the same as the database
         setRunningData(data)
+        runningDataRef.current = data
         
         console.log("Taken value from realtime database")
       }, (error) => {
@@ -187,10 +193,10 @@ export default function HomePage() {
     fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
+      
+      newTelemetry([data.with[0].content])
       setErrorFetching(0)
    
-      newTelemetry([data.with[0].content])
-    
       // Make the last data received time state = to the timestamp onn the data packet
      }
     )
@@ -291,8 +297,7 @@ function appendDataToSettings(data,car_num) {
   // Store the data in firebase realtime database
   const rtDocRef = ref(rtdb, `teams/${currentUser.uid}/${carId}`)
 
-  // the 1 is the car num
-  syncCarDataWithRealtimeDatabase(1)
+  
   // Check the datapoint against the previous points to see if duplicate
   
   // get last datapoint from realtime database
@@ -302,24 +307,21 @@ function appendDataToSettings(data,car_num) {
     const lastDataPoint = runningData.at(-1)
   }
  
-  // if the last datapoint is the same as the current datapoint, don't push it
-  //if (settings.cars[0].running_data && (lastDataPoint.timestamp < (data.timestamp+1000))) {
-  // Test here if data meets conditions to be pushed to the realtime database
-  if (runningDataRef.current && (lastDataPoint.timestamp > (data.timestamp-1000))) {
-    //console.log(data.timestamp)
+  // If the data is the same as the last datapoint, do nothing
+  if (lastDataPoint.timestamp === (data.timestamp)) {
     return
-  
-  } else {
-    // If it passes then Push the data to the realtime database
+  }
+  // 
+  if (runningDataRef.current && (lastDataPoint.timestamp < (data.timestamp))) {
+    // console.log(data.timestamp)
     try {
       const latestDataPointRef = push(rtDocRef, data)
-      //console.log(latestDataPointRef)
       console.log("pushed")
     } catch(e) {console.log(e)}
-    
+  
   }
 
-
+  
  
 
   // The below is for when the data is only stored locally
@@ -340,6 +342,58 @@ function appendDataToSettings(data,car_num) {
   }
   */
 }
+/*
+function handleStart(e){
+  // Writes the start time to local settings
+  const currentTime=Date.now()
+  newSettings(prevSettings=>({
+    ...prevSettings,
+    raceStart: currentTime
+  }))
+
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {race_start_time: currentTime}, {merge: true})
+}*/
+
+function handleCarInPit() {
+  console.log("Car in pit")
+  const currentTime = Date.now()
+  newSettings(prevSettings=>({
+    ...prevSettings,
+    carInPit: currentTime
+  }))
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {carInPit: currentTime}, {merge: true})
+}
+
+function handleCarLeftPit() {
+  console.log("Car left pit")
+  const currentTime = Date.now()
+
+  const t = currentTime - settings.carInPit
+
+  const timebefore = settings.totalPitTime
+
+  newSettings(prevSettings=>({
+    ...prevSettings,
+    carInPit: null,
+    totalPitTime: timebefore + t
+  }))
+  console.log(timebefore + t)
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {carInPit: null,totalPitTime:timebefore+t}, {merge: true})
+}
+
+function resetPitTimes() {
+  newSettings(prevSettings=>({
+    ...prevSettings,
+    totalPitTime: 0,
+    carInPit:null,
+  }))
+  const userRef = doc(db, "users", currentUser.uid);
+  updateDoc(userRef, {totalPitTime: 0,carInPit:null}, {merge: true})
+}
+
 
 // Function To Extract the coordinates of each car to name and [lat,lon]
 const getCarCoordinates = (each) => {
@@ -349,6 +403,8 @@ const getCarCoordinates = (each) => {
            location: [telemetry[each.car_number-1].Lat,telemetry[each.car_number-1].Lon] }
 
 }
+
+
 
 // updates the race time every second with the elapsed time in minutes and seconds
 useEffect(() => {
@@ -396,16 +452,31 @@ useEffect(() => {
       </div>
   </div>
 
-      <PitStopPanel totalPitTime={settings?.cars[0]?.totalPitTime}/>
+    <div class="card car-summary" id="raceTimer">
+          <div class="card-header">
+              <h3 class="card-title mt-1 text-center">Pit Stop</h3>      
+          </div>
+          <div class="card-body">
+              <h3>{settings?.totalPitTime/1000}s</h3>
+              <div class="btn-group w-100 mt-2">
+                  
+                  <button onClick={handleCarInPit} class="btn btn-primary btn-block ">Car In Pit</button>
+                  
+                  <button disabled={!settings?.carInPit} onClick={handleCarLeftPit}class="btn btn-primary btn-block">Car Left Pit</button>
+                  
+                  <button onClick={resetPitTimes} className="btn btn-primary btn-block">Reset</button>
+              </div>
+          </div>
+      </div>
 
       <br></br>
    
       {(settings && settings.summaryMap==='Enabled') ? 
-      <LocationMap settings={settings} locationData={
+      <LocationMap telemetry={telemetry} settings={settings} locationData={
         [
           { 
           name : (telemetry[0]?.Lat) ? settings?.cars[0]?.car_name : 'No Location Data',
-          location : [telemetry[0]?.Lat,telemetry[0]?.Lon]
+          location : telemetry[0]?.Lat ? [telemetry[0]?.Lat,telemetry[0]?.Lon] : [50.8724,-0.7389]
         } 
         ]} /> 
         : 

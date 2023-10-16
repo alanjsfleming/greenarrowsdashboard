@@ -5,7 +5,29 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
       
+      match /checkout_sessions/{id} {
+      	allow read, write: if request.auth.uid == userId;
+      }
+      match /subscriptions/{id} {
+      	allow read: if request.auth.uid == userId
+      }
+      match /payments/{id} {
+      	allow read: if request.auth.uid == userId
+      }
     }
+    
+    match /products/{id} {
+    	allow read: if true;
+      
+      match /prices/{id} {
+      	allow read: if true;
+      }
+      match /tax_rates/{id} {
+      	allow read: if true;
+      }
+    }
+    
+    
 
     // Users can read and edit documents in the "cars" collection where "owner" field matches the user's UID
     match /cars/{carId} {
