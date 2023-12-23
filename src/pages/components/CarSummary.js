@@ -45,7 +45,7 @@ export default function CarSummary(props) {
         {(props.telemetry[0]) ? 
             <>
             <CarSummaryCard title={'V1'} units={'V'} kind={'gauge'} data={props.telemetry[0]['Vt']}/>
-            <CarSummaryCard title={'Battery'} units={'%'} kind={'gauge'} data={calculateBatteryPercent(props.telemetry[0]['AH'],props.settings?.cars[0]?.battery_capacity)} plannedRundown={calculatePlannedRundownPercentage(props.settings?.raceStart)}/>
+            <CarSummaryCard title={'Battery'} units={'%'} kind={'gauge'} data={calculateBatteryPercent(props.telemetry[0]['AH'],props.settings?.cars[0]?.battery_capacity)} plannedRundown={calculatePlannedRundownPercentage(props.settings?.race_start_time)}/>
             <CarSummaryCard title={'Amps'} units={'A'} kind={'gauge'} data={props.telemetry[0]['A']}/>
             
             </> : <WaitingForData />

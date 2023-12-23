@@ -9,15 +9,15 @@ import React from 'react'
 export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
     // Get all user settings data, if no data is provided, use the existing setting
     let settingsObject = {
-      teamName : userFormRef.current.elements.teamName?.value ? userFormRef.current.elements.teamName.value : settings.teamName,
-      raceLength : userFormRef.current.elements.raceLength?.value ? userFormRef.current.elements.raceLength.value : settings.raceLength,
-      trackLength : userFormRef.current.elements.trackLength?.value ? userFormRef.current.elements.trackLength.value : settings.trackLength,
-      manualLapMode : userFormRef.current.elements.manualLapMode?.value ? userFormRef.current.elements.manualLapMode.value : settings.manualLapMode,
-      raceStart : settings?.raceStart ? settings.raceStart : null,
+      team_name : userFormRef.current.elements.teamName?.value ? userFormRef.current.elements.teamName.value : settings.teamName,
+      race_length : userFormRef.current.elements.raceLength?.value ? userFormRef.current.elements.raceLength.value : settings.raceLength,
+      track_length : userFormRef.current.elements.trackLength?.value ? userFormRef.current.elements.trackLength.value : settings.trackLength,
+      manual_lap_mode : userFormRef.current.elements.manualLapMode?.value ? userFormRef.current.elements.manualLapMode.value : settings.manualLapMode,
+      race_start_time : settings?.raceStart ? settings.raceStart : null,
     // Features
-      summaryMap : userFormRef.current.elements.summaryMap?.value ? userFormRef.current.elements.summaryMap.value : settings.summaryMap,
-      lapSummaryTable : userFormRef.current.elements.lapSummaryTable?.value ? userFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable,
-      plannedBatteryUsage : userFormRef.current.elements.plannedBatteryUsage?.value ? userFormRef.current.elements.plannedBatteryUsage.value : settings?.plannedBatteryUsage,
+      summary_map : userFormRef.current.elements.summaryMap?.value ? userFormRef.current.elements.summaryMap.value : settings.summaryMap,
+      lap_summary_table : userFormRef.current.elements.lapSummaryTable?.value ? userFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable,
+      planned_battery_usage : userFormRef.current.elements.plannedBatteryUsage?.value ? userFormRef.current.elements.plannedBatteryUsage.value : settings?.plannedBatteryUsage,
     }
     console.log(settingsObject)
     // carFormRefs will be an array of carRefs that will be used to access the car data forms
@@ -38,8 +38,7 @@ export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
 
     const nS = {
       ...settings,
-      settingsObject,
-      carsCopy
+      settingsObject
     }
     // return a settings object that will be used to update the user and car data both in state and database
     

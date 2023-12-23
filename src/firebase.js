@@ -28,5 +28,5 @@ if (isSupported()) {
 export const analytics = getAnalytics(app)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
-export const rtdb = getDatabase(app,"https://f24telemetry-default-rtdb.europe-west1.firebasedatabase.app")
+export const rtdb = getDatabase(app,process.env.REACT_APP_FIREBASE_DATABASE_URL)
 export default app

@@ -105,36 +105,29 @@ export default function Configure() {
 
     // function to save settings to firebase car document when settings saved
     async function saveSettingsToFirebase(settingsObject) {
-        const userSettings = {  team_name : settingsObject.teamName,
-                                race_length : settingsObject.raceLength,
-                                race_start_time : settingsObject.raceStart,
-                                track_length : settingsObject.trackLength,
-                                manualLapMode : settingsObject.manualLapMode,
-                                lap_summary_table : settingsObject.lapSummaryTable,
-                                summary_map : settingsObject.summaryMap,
-                                planned_battery_usage : settingsObject.plannedBatteryUsage,
-                            }
-        // now get the car setting array
         const carSettings = settingsObject.cars
+        delete settingsObject.cars;
+        const userSettings = settingsObject
+        // now get the car setting array
         try {
-        // update displayname
-        updatedisplayname(settingsObject.teamName)
-        // update user document in firebase
-        setDoc(userDocRef, userSettings, { merge: true })
-        .then(userDocRef => {
-            //console.log("Document successfully updated!",userDocRef);
-            setSuccess('Settings saved successfully!') 
-            setError()
-            
-        })
-        .catch(error => {
-            console.error("Error adding document: ", error);
-            setSuccess()
-            setError('Failed to save settings to cloud.',error)
-            
-        });}
-        catch (e) {
-            //console.log(e)
+            // update displayname
+            updatedisplayname(settingsObject.teamName)
+            // update user document in firebase
+            setDoc(userDocRef, userSettings, { merge: true })
+            .then(userDocRef => {
+                //console.log("Document successfully updated!",userDocRef);
+                setSuccess('Settings saved successfully!') 
+                setError()
+                
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+                setSuccess()
+                setError('Failed to save settings to cloud.',error)
+                
+            })
+        }   catch (e) {
+                //console.log(e)
         }
 
          // For every car in the settings array, update the car document in firebase
