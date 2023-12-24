@@ -172,7 +172,7 @@ cars -> {
 
 ### Getting graph of data
 
-Dweet can fetch last 500 dweets. They update ~once per second so last 8 minutes.
+Dweet can fetch last 500 dweets. They update ~once per second so last 8 minutes. Need to test this!
 
 If a user opens client, it should join the saved data to the new data and then update the cloud version with this. Only one client should be writing values at a time.
 
