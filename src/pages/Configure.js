@@ -105,15 +105,15 @@ export default function Configure() {
 
     // function to save settings to firebase car document when settings saved
     async function saveSettingsToFirebase(settingsObject) {
+        // Split the cars into a new variable because they are saved in two different collections in firebase
         const carSettings = settingsObject.cars
         delete settingsObject.cars;
         const userSettings = settingsObject
-        // now get the car setting array
+        
+        // First update the user document in firebase & the team name in auth.
         try {
-            // update displayname
-            updatedisplayname(settingsObject.teamName)
-            // update user document in firebase
-            setDoc(userDocRef, userSettings, { merge: true })
+            updatedisplayname(settingsObject.teamName) // Update display name in auth
+            setDoc(userDocRef, userSettings, { merge: true }) // update user document in firebase
             .then(userDocRef => {
                 //console.log("Document successfully updated!",userDocRef);
                 setSuccess('Settings saved successfully!') 
@@ -126,63 +126,55 @@ export default function Configure() {
                 setError('Failed to save settings to cloud.',error)
                 
             })
-        }   catch (e) {
-                //console.log(e)
+        } catch(error) {
+            setSuccess()
+            setError('Failed to save settings to cloud.',error)
         }
 
-         // For every car in the settings array, update the car document in firebase
+        // Now for every car, update its car document in firebase
         carSettings.forEach(car => {
-            //console.log(car)
-            // Create a query to find the car document in firebase
+            // Find the car document in firebase
             const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",car.car_number))
-            // Build the car document to be updated in firebase, I am not using car because ?? something about not updating fields that are constant??
-            const carDoc = {    
-                                car_name:car.car_name,
-                                battery_capacity:car.battery_capacity,
-                                dweet_name:car.dweet_name,
-                                large_gear_teeth:car.large_gear_teeth,
-                                wheel_circumference:car.wheel_circumference,
-                                reverse_gearing_mode:car.reverse_gearing_mode ? true : false,
-                        }
-
+            // Build the car document to be updated in firebase, not updating the car number or owner.
+            console.log(car)
+            const carDoc =  car
             // Get the query results
             const carQuerySnapshot = getDocs(carQuery).then((querySnapshot)=>{
-            //console.log(carDoc)
             // If the query returns a document, get the document id
-            if (querySnapshot.size >0) {
-                const carDocumentId = querySnapshot.docs[0].id
-                // Update the car document in firebase
-                setDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
-            } else {
-                // If the query does not return a document (i.e. the car document does not exist)
-                // then create a new car document in firebase
-                const carDoc = {    
-                    car_name:car.car_name,
-                    car_number:car.car_number,
-                    owner:currentUser.uid,
-                    battery_capacity:car.battery_capacity,
-                    dweet_name:car.dweet_name,
-                    large_gear_teeth:car.large_gear_teeth,
-                    wheel_circumference:car.wheel_circumference,
-                    reverse_gearing_mode:car.reverse_gearing_mode
-                }
-                const carsCollectionRef = collection(db,"cars")
-                addDoc(carsCollectionRef,carDoc)
-                .then((docRef)=>{
-                    //console.log("Document written with ID: ", docRef.id);
-                })
-                .catch((e)=>{
-                    setTimeout(()=>{
-                    setSuccess()
-                    setError("Settings failed to save to cloud.")
+                if (querySnapshot.size >0) {
+                    const carDocumentId = querySnapshot.docs[0].id
+                    // Update the car document in firebase
+                    setDoc(doc(db,"cars",carDocumentId),carDoc,{merge:true})
+                } else {
+                    // If the query does not return a document (i.e. the car document does not exist)
+                    // then create a new car document in firebase
+                    const carDoc = {    
+                        car_name:car.car_name,
+                        car_number:car.car_number,
+                        owner:currentUser.uid,
+                        battery_capacity:car.battery_capacity,
+                        dweet_name:car.dweet_name,
+                        large_gear_teeth:car.large_gear_teeth,
+                        wheel_circumference:car.wheel_circumference,
+                        reverse_gearing_mode:car.reverse_gearing_mode
+                    }
+                    const carsCollectionRef = collection(db,"cars")
+                    addDoc(carsCollectionRef,carDoc)
+                    .then((docRef)=>{
+                        //console.log("Document written with ID: ", docRef.id);
+                    })
+                    .catch((e)=>{
+                        setTimeout(()=>{
+                        setSuccess()
+                        setError("Settings failed to save to cloud." + e)
                     },50)
-                })
+                    })
                 }
             })
             .catch((e)=>{
                 setTimeout(()=>{
                     setSuccess()
-                    setError("Settings failed to save to cloud.")
+                    setError("Settings failed to save to cloud." + e)
                     },50)
             })
         })
@@ -353,62 +345,62 @@ export default function Configure() {
     <>
     <MenuBar />
     
-    <div class="d-flex flex-column justify-content-between text-center mb-5 configure-dash">
-        <div class="text-center mx-1 btn-group" role="group" aria-label="Settings Tabs">
-            <button value="0" class={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
-            <button value="1" class={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab} >Cars</button>
-            <button value="2" class={"btn btn-secondary col-3 "+determineActive(2)} onClick={changeTab}>Data</button>
-            <button value="3" class={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
+    <div className="d-flex flex-column justify-content-between text-center mb-5 configure-dash">
+        <div className="text-center mx-1 btn-group" role="group" aria-label="Settings Tabs">
+            <button value="0" className={"btn btn-secondary col-3 "+determineActive(0)} onClick={changeTab}>Account</button>
+            <button value="1" className={"btn btn-secondary col-3 "+determineActive(1)} onClick={changeTab} >Cars</button>
+            <button value="2" className={"btn btn-secondary col-3 "+determineActive(2)} onClick={changeTab}>Data</button>
+            <button value="3" className={"btn btn-secondary col-3 "+determineActive(3)} onClick={changeTab}>Layout</button>
         </div>
         
-        <div class={"modal fade "+((carBeingDeleted) && " show  d-block")}>
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Delete Car</h3>
+        <div className={"modal fade "+((carBeingDeleted) && " show  d-block")}>
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3 className="modal-title">Delete Car</h3>
                             
                         </div>
-                        <div class="modal-content p-4">
-                            <h4 class="my-3">Are you sure you want to delete this car?</h4>
+                        <div className="modal-content p-4">
+                            <h4 className="my-3">Are you sure you want to delete this car?</h4>
                             <h4>This is irreversible!</h4>
-                            <button class="btn btn-danger btn-lg mt-2" onClick={deleteCarConfirmed}>Yes, Delete</button>
+                            <button className="btn btn-danger btn-lg mt-2" onClick={deleteCarConfirmed}>Yes, Delete</button>
                             <br></br>
-                            <button class="btn btn-outline-primary btn-lg" onClick={deleteCarCancelled}>No! Cancel</button>
+                            <button className="btn btn-outline-primary btn-lg" onClick={deleteCarCancelled}>No! Cancel</button>
                         </div>
                     </div>
                 </div>
         </div>
        
 
-        <h1 class="pt-2 pb-3">Settings</h1>
+        <h1 className="pt-2 pb-3">Settings</h1>
 
         {error && <p onClick={hideAlerts} className="alert alert-danger">{error}</p>}
         {success && <p onClick={hideAlerts} className="alert alert-success">{success}</p>}
 
         <form ref={configureFormRef}>
-        <div class="tab  mx-1" hidden={determineHide(0)}>
+        <div className="tab  mx-1" hidden={determineHide(0)}>
             <h3>Account</h3>
-            <div class="form-group my-3">
-                <label for="teamName">Change Team Name</label>
-                <input type="text" class="form-control" name="teamName" id="teamName" placeholder={settings.teamName}></input>
+            <div className="form-group my-3">
+                <label htmlFor="teamName">Change Team Name</label>
+                <input type="text" className="form-control" name="teamName" id="teamName" placeholder={settings.teamName}></input>
             </div>
             <hr></hr>
-            <Link to="/reset-password"><button class="btn btn-outline-dark btn-block">Reset Password</button></Link>
+            <Link to="/reset-password"><button className="btn btn-outline-dark btn-block">Reset Password</button></Link>
 
-            <Link to="/logout"><button class="btn btn-dark btn-block my-2">Logout</button></Link>
+            <Link to="/logout"><button className="btn btn-dark btn-block my-2">Logout</button></Link>
 
-            <div class="border-top mt-2" hidden>
-                <h3 class="mt-2">Billing</h3>
-                <a href="https://billing.stripe.com/p/login/3cs5kB9WG4242mkbII" class="btn btn-outline-dark btn-block mb-2">Manage Billing Here</a>
+            <div className="border-top mt-2" hidden>
+                <h3 className="mt-2">Billing</h3>
+                <a href="https://billing.stripe.com/p/login/3cs5kB9WG4242mkbII" className="btn btn-outline-dark btn-block mb-2">Manage Billing Here</a>
              
             </div>
 
-            <div class="border-top mt-2">
-                <h3 class="mt-2">DashOwl</h3>
-                <a href="https://www.vis.dashowl.co.uk" class="btn btn-outline-dark btn-block">eChook Logfile Visualiser (Free!)</a>
-                <div hidden class="form-group my-3">
-                    <label for="newsLetterEmail">Newsletter:</label>
-                    <input type="email" class="form-control text-center" name="newsLetterEmail" id="newsLetterEmail" placeholder={currentUser.email}></input>
+            <div className="border-top mt-2">
+                <h3 className="mt-2">DashOwl</h3>
+                <a href="https://www.vis.dashowl.co.uk" className="btn btn-outline-dark btn-block">eChook Logfile Visualiser (Free!)</a>
+                <div hidden className="form-group my-3">
+                    <label htmlFor="newsLetterEmail">Newsletter:</label>
+                    <input type="email" className="form-control text-center" name="newsLetterEmail" id="newsLetterEmail" placeholder={currentUser.email}></input>
 
                 </div>
             </div>
@@ -416,18 +408,18 @@ export default function Configure() {
 
         </div>
 
-        <div class="tab mx-1" hidden={determineHide(1)}>
+        <div className="tab mx-1" hidden={determineHide(1)}>
             <h3>Cars</h3>
             {settings.cars ? settings.cars.map((car,index)=>(
-            <div class="card w-100 m-auto mb-2">
-                <div class="card-header w-100 h-100 p-0" data-value={index+4} onClick={changeTab}>
-                    <h4 class="card-title p-2 m-0">Car {index+1}: {car.car_name}</h4>
+            <div className="card w-100 m-auto mb-2">
+                <div className="card-header w-100 h-100 p-0" data-value={index+4} onClick={changeTab}>
+                    <h4 className="card-title p-2 m-0">Car {index+1}: {car.car_name}</h4>
                 </div>
 
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="carName">Car Name</label>
-                        <input type="text" class="form-control" disabled id="carName" placeholder={car.car_name}></input>
+                <div className="card-body">
+                    <div className="form-group">
+                        <label htmlFor="carName">Car Name</label>
+                        <input type="text" className="form-control" disabled id="carName" placeholder={car.car_name}></input>
                     </div>
                 </div>
             </div>)
@@ -440,69 +432,69 @@ export default function Configure() {
             
         </div>
 
-        <div class="tab mx-1" hidden={determineHide(2)}>
+        <div className="tab mx-1" hidden={determineHide(2)}>
             <h3>Race</h3>
-            <div class="form-group my-3">
-                <label for="raceLength">Race Length (mins)</label>
-                <input type="number" class="form-control" id="raceLength" name="raceLength" placeholder={settings.raceLength}></input>
+            <div className="form-group my-3">
+                <label htmlFor="raceLength">Race Length (mins)</label>
+                <input type="number" className="form-control" id="raceLength" name="raceLength" placeholder={settings.raceLength}></input>
             </div>
 
-            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
-                <label for="trackLength">Manual Track Length (m)</label>
-                <input type="number" class="form-control" id="trackLength" name="trackLength" placeholder={settings.trackLength}></input>
+            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  className="form-group my-3">
+                <label htmlFor="trackLength">Manual Track Length (m)</label>
+                <input type="number" className="form-control" id="trackLength" name="trackLength" placeholder={settings.trackLength}></input>
             </div>
 
     
-            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  class="form-group my-3">
-                <label for="manualLapMode">Lap Increments by distance</label>
-                <select class="form-control" name="manualLapMode" id="manualLapMode">
+            <div hidden={!(settings?.role==='standard' || settings?.role==='pro')}  className="form-group my-3">
+                <label htmlFor="manualLapMode">Lap Increments by distance</label>
+                <select className="form-control" name="manualLapMode" id="manualLapMode">
                     <option value="true">Enabled</option>
                     <option value="false">Disabled</option>
                 </select>
             </div>
 
             <div hidden={!(settings?.role==='standard' || settings?.role==='pro')} className="form-group my-3">
-                <label for="plannedBatteryUsage">Planned Battery Usage (Ah/min)</label>
-                <input type="number" class="form-control" name="plannedBatteryUsage" id="plannedBatteryUsage" placeholder={settings?.plannedBatteryUsage}></input>
+                <label htmlFor="plannedBatteryUsage">Planned Battery Usage (Ah/min)</label>
+                <input type="number" className="form-control" name="plannedBatteryUsage" id="plannedBatteryUsage" placeholder={settings?.plannedBatteryUsage}></input>
             </div>
 
-            <button hidden={!(settings?.role==='standard' || settings?.role==='pro')} class="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Recorded Data</button>
+            <button hidden={!(settings?.role==='standard' || settings?.role==='pro')} className="btn btn-danger btn-block" type="button" onClick={tempFuncResetRunData}>Reset Recorded Data</button>
             
-            <div class="alert alert-info py-4 mx-5">
+            <div className="alert alert-info py-4 mx-5">
                 <p>Lap summary tables are in last stages of development, you will find the settings here.</p>
             </div>
         </div>
 
-        <div class="tab mx-1" hidden={determineHide(3)}>
+        <div className="tab mx-1" hidden={determineHide(3)}>
             <h3 hidden >Appearance</h3>
-            <div hidden class="form-group my-3">
-                <label for="theme">Theme</label>
-                <select name="theme" disabled class="form-control" id="theme">
+            <div hidden className="form-group my-3">
+                <label htmlFor="theme">Theme</label>
+                <select name="theme" disabled className="form-control" id="theme">
                     <option>Light</option>
                     <option>Dark</option>
                 </select>
             </div>
 
             <h3>Summary Page</h3>
-            <div class="form-group my-3">
-                <label for="summaryMap">Location map</label>
-                <select name="summaryMap" class="form-control" id="summaryMap">
+            <div className="form-group my-3">
+                <label htmlFor="summaryMap">Location map</label>
+                <select name="summaryMap" className="form-control" id="summaryMap">
                     <option>Disabled</option>
                     <option selected={settings.summaryMap==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
             </div>
 
-            <div class="form-group my-3">
-                <label for="lapSummaryTable">Lap Summary Table</label>
-                <select name="lapSummaryTable" class="form-control" id="lapSummaryTable">
+            <div className="form-group my-3">
+                <label htmlFor="lapSummaryTable">Lap Summary Table</label>
+                <select name="lapSummaryTable" className="form-control" id="lapSummaryTable">
                     <option>Disabled</option>
                     <option selected={settings.lapSummaryTable==='Enabled' ? "selected" : ""}>Enabled</option>
                 </select>
             </div>
         </div>
 
-        <div class="fixed-bottom d-flex">
-        <button onClick={handleSaveSettings} type="button" class="btn btn-primary btn-block m-1">Save</button>
+        <div className="fixed-bottom d-flex">
+        <button onClick={handleSaveSettings} type="button" className="btn btn-primary btn-block m-1">Save</button>
         </div>
 
 
@@ -511,50 +503,50 @@ export default function Configure() {
         </form>
 
         {settings.cars ? settings.cars.map((car,index)=>(
-        <form class="tab mx-1" ref={setRef(car.car_number)} hidden={determineHide(index+4)}>
-            <div class="card w-100 m-auto">
-                <div class="card-header">
-                    <h4 class="card-title">Car {index+1}: {car.car_name}</h4>
+        <form className="tab mx-1" ref={setRef(car.car_number)} hidden={determineHide(index+4)}>
+            <div className="card w-100 m-auto">
+                <div className="card-header">
+                    <h4 className="card-title">Car {index+1}: {car.car_name}</h4>
                 </div>
-                <div class="card-body">
-                <div class="form-group">
-                    <label for="carName">Car Name</label>
-                    <input name="carName" type="text" class="form-control" id="carName" placeholder={car.car_name}></input>
-                </div>
-
-                <div class="form-group my-3">
-                    <label for="dweetUrl">Dweet Thing name</label>
-                    <input name="dweetUrl" type="text" class="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
+                <div className="card-body">
+                <div className="form-group">
+                    <label htmlFor="carName">Car Name</label>
+                    <input name="carName" type="text" className="form-control" id="carName" placeholder={car.car_name}></input>
                 </div>
 
-                <div class="form-group my-3">
-                    <label for="ampHours">Battery Capacity (Amp Hours)</label>
-                    <input name="ampHours" type="number" class="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
+                <div className="form-group my-3">
+                    <label htmlFor="dweetUrl">Dweet Thing name</label>
+                    <input name="dweetUrl" type="text" className="form-control" id="dweetUrl" placeholder={car.dweet_name}></input>
                 </div>
 
-                <div class="form-group my-3">
-                    <label for="wheelCircumference">Wheel circumference (m)</label>
-                    <input name="wheelCircumference" type="number" class="form-control" id="wheelCircumference" placeholder={car.wheel_circumference}></input>
+                <div className="form-group my-3">
+                    <label htmlFor="ampHours">Battery Capacity (Amp Hours)</label>
+                    <input name="ampHours" type="number" className="form-control" id="ampHours" placeholder={car.battery_capacity}></input>
                 </div>
 
-                <div class="form-group my-3">
-                    <button type="button" value={index} onClick={handleReverseGearingMode} class="btn btn-outline-primary btn-block">{car.reverse_gearing_mode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
+                <div className="form-group my-3">
+                    <label htmlFor="wheelCircumference">Wheel circumference (m)</label>
+                    <input name="wheelCircumference" type="number" className="form-control" id="wheelCircumference" placeholder={car.wheel_circumference}></input>
+                </div>
+
+                <div className="form-group my-3">
+                    <button type="button" value={index} onClick={handleReverseGearingMode} className="btn btn-outline-primary btn-block">{car.reverse_gearing_mode ? 'Disable ' : 'Enable '}Reverse Gearing Mode</button>
                 </div>
                 <div hidden={car.reverse_gearing_mode ? false : true} >
-                <div class="form-group my-3" hidden>
-                    <label for="teethGear">Teeth on small gear</label>
-                    <input name="smallteethGear" type="number" class="form-control" id="smallteethGear"></input>
+                <div className="form-group my-3" hidden>
+                    <label htmlFor="teethGear">Teeth on small gear</label>
+                    <input name="smallteethGear" type="number" className="form-control" id="smallteethGear"></input>
                 </div>
 
-                <div class="form-group my-3">
-                    <label for="teethGear">Teeth on large gear</label>
-                    <input type="number" name="teethGear" class="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
+                <div className="form-group my-3">
+                    <label htmlFor="teethGear">Teeth on large gear</label>
+                    <input type="number" name="teethGear" className="form-control" id="teethGear" placeholder={car.large_gear_teeth}></input>
                 </div>
                 </div>
                 <br></br>
                     <div hidden={(settings.cars.length<=1)}>
-                        <small class="text-muted">Deleting a car is irreversible!</small>
-                        <button  type="button" class="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
+                        <small className="text-muted">Deleting a car is irreversible!</small>
+                        <button  type="button" className="btn btn-outline-danger btn-block" value={car.car_number} onClick={handleDeleteCar}>Delete Car</button> 
                     </div>
                 </div>
             </div>
