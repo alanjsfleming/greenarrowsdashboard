@@ -1,11 +1,9 @@
-import React, { useRef, useState,useEffect} from 'react'
+import React, { useRef, useState } from 'react'
 import Footer from '../layouts/Footer'
 import MenuBar from '../layouts/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import {analytics} from '../firebase'
-import { logEvent } from 'firebase/analytics'
 import Emoji from '../layouts/Emoji'
 
 
@@ -60,7 +58,7 @@ export default function Signup() {
             setError('')
             setLoading(true)
             const registered = await resolveAfterRegistering(emailRef.current.value,passwordRef.current.value)
-            registered == 'resolved' && navigate('/user-setup')
+            registered === 'resolved' && navigate('/user-setup')
 
         } catch (e) {
             

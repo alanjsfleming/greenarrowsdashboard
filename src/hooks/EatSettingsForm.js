@@ -18,6 +18,7 @@ export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
       summary_map : userFormRef.current.elements.summaryMap?.value ? userFormRef.current.elements.summaryMap.value : settings.summaryMap,
       lap_summary_table : userFormRef.current.elements.lapSummaryTable?.value ? userFormRef.current.elements.lapSummaryTable.value : settings.lapSummaryTable,
       planned_battery_usage : userFormRef.current.elements.plannedBatteryUsage?.value ? userFormRef.current.elements.plannedBatteryUsage.value : settings?.plannedBatteryUsage,
+      cars: [] // cars will be added later
     }
     console.log(settingsObject)
     // carFormRefs will be an array of carRefs that will be used to access the car data forms
@@ -35,11 +36,9 @@ export default function EatSettingsForm(userFormRef,carFormRefs,settings) {
     })
     // Add the cars back into the settings object
     settingsObject.cars = carsCopy
+    console.log(settingsObject)
 
-    const nS = {
-      ...settings,
-      settingsObject
-    }
+    const nS = settingsObject
     // return a settings object that will be used to update the user and car data both in state and database
     
     return (nS)

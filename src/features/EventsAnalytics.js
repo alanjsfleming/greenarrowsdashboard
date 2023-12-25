@@ -17,13 +17,17 @@ export function logPasswordReset() {
     logEvent(analytics, "password_reset");
 }
 
-// start race 
-export function logStartRace() {
-    logEvent(analytics,'start_race')
+// Start race 
+export function logStartRace(team_name,battery_capacity,race_length){
+    logEvent(analytics,'start_race',{
+        battery_capacity: battery_capacity,
+        race_length: race_length,
+        team_name: team_name
+    })
 }
 
 
-// reset race
+// Reset race
 export function logResetRace() {
     logEvent(analytics,'reset_race')
 }

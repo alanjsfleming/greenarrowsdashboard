@@ -11,6 +11,7 @@ import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 import { setDoc } from 'firebase/firestore'
 import EatSettingsForm from '../hooks/EatSettingsForm'
 import getSettingsObject from '../features/Settings/getSettingsObject'
+import ObjectUndefinedToNull from '../utils/ObjectUndefinedToNull.js'
 
 
 export default function Configure() {
@@ -91,6 +92,7 @@ export default function Configure() {
             const carFormRefs = settings.cars.map(car=>{return getRef(car.car_number)})
             const settingsObject = EatSettingsForm(configureFormRef,carFormRefs,settings)
             //getSettingsObject(configureFormRef,carFormRefs,settings)
+            console.log(settingsObject)
             newSettings(settingsObject)
             saveSettingsToFirebase(settingsObject)
             
@@ -137,7 +139,7 @@ export default function Configure() {
             const carQuery = query(collection(db,"cars"),where("owner","==",currentUser.uid),where("car_number","==",car.car_number))
             // Build the car document to be updated in firebase, not updating the car number or owner.
             console.log(car)
-            const carDoc =  car
+            const carDoc = ObjectUndefinedToNull(car);
             // Get the query results
             const carQuerySnapshot = getDocs(carQuery).then((querySnapshot)=>{
             // If the query returns a document, get the document id
