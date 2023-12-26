@@ -10,7 +10,6 @@ import { rtdb } from '../firebase'
 import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 import { setDoc } from 'firebase/firestore'
 import EatSettingsForm from '../hooks/EatSettingsForm'
-import getSettingsObject from '../features/Settings/getSettingsObject'
 import ObjectUndefinedToNull from '../utils/ObjectUndefinedToNull.js'
 
 
