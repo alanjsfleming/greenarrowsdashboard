@@ -90,8 +90,12 @@ export default function Configure() {
     const handleSaveSettings = (e) => {
         try {
             const carFormRefs = settings.cars.map(car=>{return getRef(car.car_number)})
-            const settingsObject = EatSettingsForm(configureFormRef,carFormRefs,settings)
+            const [userSettings,carsSettings] = EatSettingsForm(configureFormRef,carFormRefs,settings)
             //getSettingsObject(configureFormRef,carFormRefs,settings)
+            const settingsObject = {
+                ...userSettings,
+                cars:carsSettings
+            }
             console.log(settingsObject)
             newSettings(settingsObject)
             saveSettingsToFirebase(settingsObject)
@@ -566,53 +570,3 @@ export default function Configure() {
     </>
   )
 }
-
-
-// Okay...
-// I believe the best way to have the dynamic refs is use npm i use-dynamic-refs
-// And then use on each div created by the map, ref={setRef(car.car_number)} ??
-// Then that will give me the ref for the whole div, i will have to then get 
-// each individual input by using ref.current.querySelector('input') or something like that??
-// Then i can use that to get the value of each input and then update the car object
-// import useDynamicRefs from 'use-dynamic-refs';
-// const [setRef, getRef] = useDynamicRefs();
-// https://medium.com/@fitzmuzenda/create-refs-dynamically-in-react-ea2a4567b88
-
-
-
-/*
-  <div hidden>
-    <div id="account">
-        <h3>Account</h3>
-        <ul>
-            <li>Change team name</li>
-            <li>Reset password</li>
-            <li>Overview settings</li>
-        </ul>
-    </div>
-
-    <div id="cars">
-        <h3>Cars</h3>
-        <ul>
-            <li>Update Dweet URL</li>
-        </ul>
-        <p>Add new</p>
-    </div>
-
-    <div id="data">
-        <h3>Data</h3>
-        <ul>
-            <li>List of data. For each: name, unit, upper, lower, vis type, category</li>
-        </ul>
-
-    </div>
-
-
-    <div id="appearance">
-        <h3>Appearance</h3>
-        <ul>
-            <li>Reorder</li>
-        </ul>
-    </div>
-    </div>
-*/

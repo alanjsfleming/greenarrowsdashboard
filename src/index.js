@@ -45,6 +45,8 @@ export default function Main() {
             
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
+
+            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
             
             <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
