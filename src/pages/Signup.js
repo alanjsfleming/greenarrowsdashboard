@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import Footer from '../layouts/Footer'
 import MenuBar from '../layouts/Navbar'
 import { useAuth } from '../contexts/AuthContext'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Emoji from '../layouts/Emoji'
 import GoogleButton from 'react-google-button'
@@ -18,7 +18,7 @@ export default function Signup() {
     const passwordConfirmRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { signup,login,googleSignIn }  = useAuth()
+    const { signup,login,googleSignIn,currentUser }  = useAuth()
     const navigate = useNavigate()
 
     function resolveAfterRegistering(email,password) {
@@ -53,8 +53,6 @@ export default function Signup() {
       registered === 'resolved' && navigate('/user-setup')
     }
 
-
-
     const handleSubmit = async(e)=> {
         e.preventDefault()
         if (passwordRef.current.value !==passwordConfirmRef.current.value) {
@@ -88,7 +86,7 @@ export default function Signup() {
           <h5>DashOwl</h5>
         </div>
         <h1 class="h3 mb-3 fw-normal">Create Account</h1>
-        
+        {currentUser && <Navigate to="/user-setup" />}
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         <GoogleButton style={{width:"100%"}} onClick={handleGoogleSignIn} />
         <div className="my-2 text-muted">

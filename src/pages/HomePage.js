@@ -452,7 +452,7 @@ useEffect(() => {
       </div>
   </div>
 
-    <div class="card car-summary" id="raceTimer">
+    <div class="card car-summary" id="raceTimer" hidden>
           <div class="card-header">
               <h3 class="card-title mt-1 text-center">Pit Stop</h3>      
           </div>

@@ -2,11 +2,13 @@ import React, { useRef, useState,useEffect} from 'react'
 import Footer from '../layouts/Footer'
 import MenuBar from '../layouts/Navbar'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate, Link} from 'react-router-dom'
+import { useNavigate, Link, Navigate} from 'react-router-dom'
 import Emoji from '../layouts/Emoji'
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
 import GoogleButton from 'react-google-button'
+
+
 
 export default function Login() {
     // Send a page view event to Firebase Analytics
@@ -15,7 +17,7 @@ export default function Login() {
     const passwordRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { login,googleSignIn }  = useAuth()
+    const { login,googleSignIn,currentUser }  = useAuth()
     const navigate = useNavigate()
 
     const handleSubmit = async(e)=> {
@@ -40,14 +42,17 @@ export default function Login() {
               default:
                 setError('Could not login')
               break;
-
         }
         }
         setLoading(false)
         }
 
     const handleGoogleSignIn = async(e)=> {
-      googleSignIn()
+      try {
+        googleSignIn()
+      } catch (e) {
+        setError('Could not sign in with Google')
+      }
     }
 
   return (
@@ -58,6 +63,7 @@ export default function Login() {
         <Emoji symbol="🦉" label="owl" />
         <h1 class="h3 my-3 fw-normal">Welcome back!</h1>
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
+        {currentUser && <Navigate to="/" />}
         <GoogleButton style={{width:"100%"}} onClick={handleGoogleSignIn} />
         <div className="my-2 text-muted">
           <small>or</small>
