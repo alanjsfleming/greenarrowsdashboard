@@ -7,8 +7,7 @@ import {
     signInWithRedirect, 
     GoogleAuthProvider,
     signOut, 
-    updateProfile, 
-    signInWithPopup} from 'firebase/auth'
+    updateProfile, } from 'firebase/auth'
 
 
 const AuthContext = React.createContext()
@@ -27,7 +26,7 @@ export function AuthProvider({ children }) {
 
     function googleSignIn() {
         const provider = new GoogleAuthProvider();
-        return signInWithPopup(auth,provider)
+        return signInWithRedirect(auth,provider)
     }
 
     function login(email,password) {
