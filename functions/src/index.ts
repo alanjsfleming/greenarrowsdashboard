@@ -5,13 +5,6 @@ admin.initializeApp();
 
 export const createUserDoc = functions.auth.user().onCreate(async (user) => {
   const uid = user.uid;
-  const userDoc = {
-    team_name: "New Team",
-    track_length: "2500",
-    race_length: "90",
-    appearance_theme: "Light",
-    race_start_time: null,
-  };
   const carTemplate = {
     // The owner field is used to identify which user owns the car.
     owner: uid,
@@ -25,8 +18,17 @@ export const createUserDoc = functions.auth.user().onCreate(async (user) => {
     wheel_circumference: 3,
   };
   // Create the user document and the initial car document.
+  const carDocRef = await admin.firestore().collection("cars").doc()
+  await carDocRef.set(carTemplate);
+  const carDocId = carDocRef.id;
+  const userDoc = {
+    team_name: "New Team",
+    track_length: "2500",
+    race_length: "90",
+    race_start_time: null,
+    cars:[carDocId], // Add the car document id to the user document.
+  };
   await admin.firestore().collection("users").doc(uid).set(userDoc);
-  await admin.firestore().collection("cars").doc().set(carTemplate);
 });
 
 export const deleteUserData = functions.auth.user().onDelete(async (user) => {
