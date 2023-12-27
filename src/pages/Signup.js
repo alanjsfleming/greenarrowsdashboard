@@ -5,6 +5,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Emoji from '../layouts/Emoji'
+import GoogleButton from 'react-google-button'
+
 
 
 export default function Signup() {
@@ -16,7 +18,7 @@ export default function Signup() {
     const passwordConfirmRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { signup,login }  = useAuth()
+    const { signup,login,googleSignIn }  = useAuth()
     const navigate = useNavigate()
 
     function resolveAfterRegistering(email,password) {
@@ -44,6 +46,11 @@ export default function Signup() {
         }
         reject('rejected')
       })
+    }
+
+    const handleGoogleSignIn = async(e)=> {
+      const registered = await googleSignIn()
+      registered === 'resolved' && navigate('/user-setup')
     }
 
 
@@ -83,6 +90,11 @@ export default function Signup() {
         <h1 class="h3 mb-3 fw-normal">Create Account</h1>
         
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
+        <GoogleButton style={{width:"100%"}} onClick={handleGoogleSignIn} />
+        <div className="my-2 text-muted">
+          <small>or</small>
+        </div>
+        
         <div class="form-floating">
           <input type="email" class="form-control mb-2" id="floatingEmail" placeholder="name@example.com" ref={emailRef} required/>
           <label for="floatingInput">Email address</label>

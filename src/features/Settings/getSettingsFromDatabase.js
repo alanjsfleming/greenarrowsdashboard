@@ -20,7 +20,6 @@ async function getCarSettingsFromDatabase(uid) {
     let carSettings = [];
     carQuerySnapshot.forEach((doc) => {
         let carData = doc.data();
-        carData.id = doc.id;
         carSettings.push(doc.data());
     });
 }

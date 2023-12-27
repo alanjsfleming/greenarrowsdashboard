@@ -6,6 +6,7 @@ import { useNavigate, Link} from 'react-router-dom'
 import Emoji from '../layouts/Emoji'
 import {analytics} from '../firebase'
 import { logEvent } from 'firebase/analytics'
+import GoogleButton from 'react-google-button'
 
 export default function Login() {
     // Send a page view event to Firebase Analytics
@@ -14,7 +15,7 @@ export default function Login() {
     const passwordRef = useRef()
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
-    const { login,currentUser }  = useAuth()
+    const { login,googleSignIn }  = useAuth()
     const navigate = useNavigate()
 
     const handleSubmit = async(e)=> {
@@ -45,6 +46,10 @@ export default function Login() {
         setLoading(false)
         }
 
+    const handleGoogleSignIn = async(e)=> {
+      googleSignIn()
+    }
+
   return (
     <>
     <MenuBar />
@@ -53,6 +58,10 @@ export default function Login() {
         <Emoji symbol="🦉" label="owl" />
         <h1 class="h3 my-3 fw-normal">Welcome back!</h1>
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
+        <GoogleButton style={{width:"100%"}} onClick={handleGoogleSignIn} />
+        <div className="my-2 text-muted">
+          <small>or</small>
+        </div>
         <div class="form-floating">
           <input type="email" class="form-control mb-2" id="floatingInput" placeholder="name@example.com" ref={emailRef} required/>
           <label for="floatingInput">Email address</label>
