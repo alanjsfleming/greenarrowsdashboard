@@ -61,7 +61,7 @@ export default function Telemetry({telemetry,settings}) {
       </div>
 
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Estimated Gear:" data={settings?.cars[0]?.reverse_gearing_mode ? estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].large_gear_teeth) : telemetry?.Gear} units="th Gear" kind="gauge"/>
+        <TelemetryCard title="Estimated Gear:" data={settings?.cars[0]?.reverse_gearing_mode ? estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].axle_gear_teeth) : telemetry?.Gear} units="th Gear" kind="gauge"/>
       </div> 
 
       <div class="grid-item border rounded-3">

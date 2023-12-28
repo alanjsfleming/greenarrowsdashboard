@@ -1,16 +1,14 @@
-export function estimateGear(Spd,RPM,bG) {
+export function estimateGear(Spd,RPM,axle_gear_teeth) {
     // Spd : Speed from the Telemetry
     // RPM : RPM from the Telemetry
     // bG :  Number of teeth on the large gear
-    console.log(Spd,RPM,bG)
-
-    if (!bG) {
+    if (!axle_gear_teeth) {
         return NaN // If the large gear is not set to anything, return NaN so it throws an error in the UI
     }
 
     let wheelRPM = Spd / (59.44 * 60 / 63360 ); // Calculate the wheel RPM, 59.44 is the wheel diameter I believe!
     let gearRatio = RPM / wheelRPM; // Calculate the gear ratio
-    let numTeethMotor = bG / gearRatio; // Number of teeth on the Driver Gear can be calculated from the gear ratio and the number of teeth on the large gear (driven)
+    let numTeethMotor = axle_gear_teeth / gearRatio; // Number of teeth on the Driver Gear can be calculated from the gear ratio and the number of teeth on the large gear (driven)
 
     // 0.5 is an offset to make the gear number more accurate, possibly add a setting for this?
     // Im not sure why it is 21 but this gives the correct value for the green arrows car
