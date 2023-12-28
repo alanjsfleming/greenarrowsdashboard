@@ -36,7 +36,6 @@ export default function CarSummary(props) {
     <div class="card car-summary mt-4">
         <Link class="summary-link" to="/details">
         <div class="card-header">
-          
             <h3>{props.name}</h3>
             <small>Click here for more data</small>
         </div>
