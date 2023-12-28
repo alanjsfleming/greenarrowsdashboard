@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext'
-import { db } from '../firebase'
-import { doc } from 'firebase/firestore'
-import { remove } from 'firebase/database';
 import MenuBar from '../layouts/MenuBar';
+import { Link } from 'react-router-dom';
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from '../firebase';
+import { ref, remove } from "firebase/database";
+import { rtdb } from '../firebase';
+import { postSettingsToDatabase } from '../features/Settings/postSettingsToDatabase';
+
 
 export default function Settings() {
 
@@ -63,6 +67,22 @@ export default function Settings() {
       setSuccess('')
     }
 
+    useEffect(() => {
+      console.log(formSettings)
+    },[formSettings])
+
+    const handleAccountChange = (e) => {
+      const { name, value } = e.target;
+      setFormSettings({...formSettings,[name]:value})
+    }
+
+    const handleCarChange = (index,e) => {
+      const { name, value } = e.target;
+      const newCars = [...formSettings.cars];
+      newCars[index][name] = value;
+      setFormSettings({...formSettings,cars:newCars})
+    }
+
     // Relook at this
     function resetRunningData() {
       const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
@@ -80,7 +100,18 @@ export default function Settings() {
       }
     }
     
-    
+    const handleSaveSettings = async (e) => {
+      hideAlerts();
+      // Save formSettings
+      try {
+        postSettingsToDatabase(currentUser.uid,formSettings)
+        setSettings(formSettings)
+        localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY,JSON.stringify(formSettings))
+        setSuccess('Settings saved')
+      } catch (e) {
+        setError('Could not save settings')
+      }
+    }
 
 
   return (
@@ -228,7 +259,7 @@ export default function Settings() {
                   className="form-control"
                   name="car_name"
                   value={car.car_name}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Car Name"
                   />
               </div>
@@ -240,7 +271,7 @@ export default function Settings() {
                   className="form-control"
                   name="dweet_name"
                   value={car.dweet_name}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Dweet Thing Name"
                   />
               </div>
@@ -252,7 +283,7 @@ export default function Settings() {
                   className="form-control"
                   name="battery_capacity"
                   value={car.battery_capacity}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Battery Capacity"
                   />
               </div>
@@ -263,7 +294,7 @@ export default function Settings() {
                   className="form-control"
                   name="reverse_gearing_mode"
                   value={car.reverse_gearing_mode}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                 >
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -277,7 +308,7 @@ export default function Settings() {
                   className="form-control"
                   name="motor_gear_teeth"
                   value={car.motor_gear_teeth}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Motor Gear Teeth"
                 />
               </div>
@@ -289,33 +320,35 @@ export default function Settings() {
                   className="form-control"
                   name="axle_gear_teeth"
                   value={car.axle_gear_teeth}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Axle Gear Teeth"
                 />
               </div>
 
               <div className="form-group my-3">
                 <label htmlFor="gear_number_offset">Gear Number Offset</label>
+                <br></br>
                 <small>You can adjust this if your gear number is showing consistently off.</small>
                 <input
                   type="number"
                   className="form-control"
                   name="gear_number_offset"
                   value={car.gear_number_offset}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Gear Number Offset"
                 />
               </div>
 
               <div className="form-group my-3">
                 <label htmlFor="battery_offset">Battery Offset</label>
+                <br></br>
                 <small>You can adjust this if you accidently reset the Amp Hours used during the race.</small>
                 <input
                   type="number"
                   className="form-control"
                   name="battery_offset"
                   value={car.battery_offset}
-                  onChange={handleCarChange}
+                  onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Battery Offset"
                 />
               </div>

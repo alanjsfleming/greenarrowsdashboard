@@ -1,10 +1,20 @@
 import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { getDocs, addDoc, collection, query, where } from "firebase/firestore";
 
 export async function postSettingsToDatabase(uid, data) {
     try {
         const docRef = doc(db, "users", uid);
         // Wait for the document to be set
+        const newCars = [...data.cars];
+        delete data.cars;
+
+        // Save user settings
         await setDoc(docRef, data, { merge: true });
+        // Save cars
+        for (let car of newCars) {
+            await postSingleCarToDatabase(uid,car);
+        }
         return true; // Indicate success
     } catch (e) {
         // Log the error and rethrow or handle it as needed

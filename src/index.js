@@ -10,12 +10,13 @@ import Logout from './pages/Logout';
 import Signup from './pages/Signup';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './PrivateRoute';
-import Configure from './pages/Configure';
+import Configure from './pages/DEPConfigure';
 import PasswordReset from './pages/PasswordReset'
 import UserSetup from './pages/UserSetup'
 import Loading from './pages/Loading';
 import {analytics} from './firebase'
 import { logEvent } from 'firebase/analytics'
+import Settings from './pages/Settings';
 
 import AnalyticsComponent from './features/AnalyticsComponent';
 import { RaceProvider } from './contexts/RaceContext';
@@ -46,8 +47,8 @@ export default function Main() {
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
 
-            
-            <Route path="/configure" element={<PrivateRoute><Configure /></PrivateRoute>} />
+            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+            <Route path="/configure" element={<PrivateRoute><Settings /></PrivateRoute>} />
             <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
             <Route path="/register" element={<Signup />}/>
             <Route path="/loading" element={<Loading />} />

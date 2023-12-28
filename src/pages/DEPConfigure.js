@@ -1,15 +1,15 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import MenuBar from '../layouts/MenuBar'
+import MenuBar from '../layouts/MenuBar.js'
 import { doc,updateDoc,addDoc, deleteDoc} from 'firebase/firestore'
-import { useAuth } from '../contexts/AuthContext'
-import { db } from '../firebase'
+import { useAuth } from '../contexts/AuthContext.js'
+import { db } from '../firebase.js'
 import { where, getDocs,query,collection } from 'firebase/firestore'
 import {ref,remove} from "firebase/database"
-import { rtdb } from '../firebase'
+import { rtdb } from '../firebase.js'
 import useDynamicRefs from '../hooks/useDynamicRefs.tsx'
 import { setDoc } from 'firebase/firestore'
-import EatSettingsForm from '../hooks/EatSettingsForm'
+import EatSettingsForm from '../hooks/EatSettingsForm.js'
 import ObjectUndefinedToNull from '../utils/ObjectUndefinedToNull.js'
 
 
