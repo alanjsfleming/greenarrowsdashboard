@@ -41,7 +41,6 @@ export default function CarSummary(props) {
         </div>
         </Link>
         <div class="card-body car-summary-vis">
-            {}
             {(props?.telemetry[0]) ? 
             <>
                 <CarSummaryCard title={'V1'} units={'V'} kind={'gauge'} data={props.telemetry[0]['Vt']}/>
@@ -51,9 +50,7 @@ export default function CarSummary(props) {
             : 
             (props?.settings?.dweet_name) ?
             <WaitingForData /> : <Link to={`/configure?${4+props.index}`} className="btn btn-warning btn-block">Set Dweet Thing Name Here</Link>
-    
             }
-            
         </div>
     </div>
   )

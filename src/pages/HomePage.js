@@ -11,6 +11,7 @@ import LocationMap from './components/LocationMap'
 import { rtdb } from '../firebase'
 import { ref, onValue,push,off } from "firebase/database";
 import PitStopPanel from './components/PitStopPanel'
+import DataLastReceived from '../layouts/DataLastReceived'
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -434,7 +435,7 @@ useEffect(() => {
     </div>}
     
     <div className="d-flex homepage-dash flex-column">
-      
+      <DataLastReceived time={dataLastReceived}/>
       {settings?.cars ? settings.cars.map((car,index) => (
       <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings} index={index}/>)) : <p>No cars...</p>}
       <br></br>

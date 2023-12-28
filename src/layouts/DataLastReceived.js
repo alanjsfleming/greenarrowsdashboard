@@ -9,7 +9,7 @@ export default function DataLastReceived({time}) {
     // dataLastReceived-lightblue
 
     const [color,setColor] = useState("dataLastReceived-red")
-    const [iconColor,setIconColor] = useState('#AD343E')
+    const [iconColor,setIconColor] = useState(["#DC3544","danger"])
     const [elapsedTime,setElapsedTime] = useState('over 30')
 
     useEffect(() => {
@@ -17,13 +17,13 @@ export default function DataLastReceived({time}) {
         const temporaryElapsed = Math.round((Date.now()-Date.parse(time))/1000)
         if ( temporaryElapsed< 10000) {
             setElapsedTime(temporaryElapsed)
-            setColor("lightblue")
+            setColor(["#2ca2b8","info"])
         } else if (temporaryElapsed < 30000) {
             setElapsedTime(temporaryElapsed)
-            setColor("yellow")
+            setColor(["#fcc108","warning"])
         } else {
             setElapsedTime('over 30')
-            setColor("#AD343E")
+            setColor(["#DC3544","danger"])
         }} , 1000)
     }, [time])
 
@@ -31,10 +31,10 @@ export default function DataLastReceived({time}) {
 
     
   return (
-    <div className={"w-50 m-auto px-1 d-flex justify-content-around "+color}>
+    <div className={"w-75 m-auto px-1 d-flex justify-content-around border rounded "+color[0]+" "+"border-"+color[1]}>
         <div>
-            <i class="fa fa-cloud-download" style={{color:color}}></i> 
-            <small> Latest data {elapsedTime}s ago</small>
+            <i class="fa fa-cloud-download" style={{color:color[0]}}></i> 
+            <small style={{color:color[0]}}> Latest data {elapsedTime}s ago</small>
         </div>
     </div>
   )

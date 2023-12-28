@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from '../layouts/MenuBar'
-import Loading from './Loading';
+
 import WaitingForData from '../layouts/WaitingForData';
+import { Link } from 'react-router-dom';
 
 
 
@@ -65,7 +66,19 @@ function App() {
     <>
 
     <MenuBar/>
-    {(telemetry[0]) ? <Dashboard telemetry={telemetry} settings={settings}/> : <div className="w-75 mx-auto mt-5"><WaitingForData /></div>}
+    {(telemetry[0]) ? 
+    <Dashboard telemetry={telemetry} settings={settings}/> 
+    :
+    (settings?.dweet_name) ?
+      <div className="w-75 mx-auto mt-5">
+        <WaitingForData />
+      </div>
+    : 
+    <div className="w-75 mx-auto mt-5">
+      <Link to={`/configure?${4}`} className="btn btn-warning btn-block">Set Dweet Thing Name Here</Link>
+    </div>
+    }
+  
     </>
   );
 }
