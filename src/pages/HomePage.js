@@ -436,7 +436,7 @@ useEffect(() => {
     <div className="d-flex homepage-dash flex-column">
       
       {settings?.cars ? settings.cars.map((car,index) => (
-      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings}/>)) : <p>No cars...</p>}
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings} index={index}/>)) : <p>No cars...</p>}
       <br></br>
       <div className="card-dash car-summary border rounded-3" id="raceTimer">
       <div className="card-header">
