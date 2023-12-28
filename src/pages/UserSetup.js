@@ -81,9 +81,10 @@ export default function UserSetup() {
     <div className="form-signin m-auto text-center my-5">
       <form className="signin-form px-5 py-3 rounded-3 shadow" onSubmit={handleSubmit}>
         <div className="my-2">
-        <Emoji symbol="🦉" label="owl" />
+          <Emoji symbol="🦉" label="owl" />
         </div>
-        <h1 class="h3 mb-3 fw-normal my-1">Set up your first car</h1>
+        {currentUser?.displayName && <p className="h3 fw-normal">Hi {currentUser.displayName}!</p>}
+        <h1 class="h3 mb-3 fw-normal my-1 mb-4">Let's set up your first car!</h1>
 
         {error && <p className="alert alert-danger alert-dismissible">{error}</p>}
         <div className="form-floating">
@@ -99,7 +100,7 @@ export default function UserSetup() {
           <label htmlFor="floatingCarName">Car Name</label>
         </div>
             
-        <button className="w-100 btn  btn-lg btn-dark" type="submit" disabled={loading}>Submit</button>
+        <button className="w-100 btn  btn-block mt-2 btn-primary" type="submit" disabled={loading}>Submit</button>
             
         <div  className="mt-2">
           <Link to="/">Skip</Link>
