@@ -2,6 +2,8 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { getDocs, addDoc, collection, query, where } from "firebase/firestore";
 
+
+
 export async function postSettingsToDatabase(uid, data) {
     try {
         const docRef = doc(db, "users", uid);
@@ -13,30 +15,32 @@ export async function postSettingsToDatabase(uid, data) {
         await setDoc(docRef, data, { merge: true });
         // Save cars
         for (let car of newCars) {
-            await postSingleCarToDatabase(uid,car);
+            const newCar = JSON.parse(JSON.stringify(car));
+            console.log(car, newCar)
+            await postSingleCarToDatabase(uid,newCar);
         }
         return true; // Indicate success
     } catch (e) {
         // Log the error and rethrow or handle it as needed
-        console.error('Error posting settings to database:', e);
         throw new Error('Failed to post settings: ' + e.message);
     }
 }
 
 async function postSingleCarToDatabase(uid,car) {
     try {
+        console.log(car)
         const carQuery = query(collection(db,"cars"),where("owner","==",uid),where("car_number","==",car.car_number));
         const carQuerySnapshot = await getDocs(carQuery);
         if (carQuerySnapshot.size > 0) {
             // Update existing car
-            let carDoc = carQuerySnapshot.docs[0];
+            let carDoc = doc(db,"cars",carQuerySnapshot.docs[0].id);
             await setDoc(carDoc,car,{merge:true});
         } else {
             // Create new car
+            console.log("no car found, creating new car")
             await addDoc(collection(db,"cars"),car);
         }
     } catch (e) {
-        console.error('Error posting car to database:', e);
         throw new Error('Failed to post car: ' + e.message);
     }
 }

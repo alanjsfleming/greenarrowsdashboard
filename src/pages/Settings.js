@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext'
 import MenuBar from '../layouts/MenuBar';
 import { Link } from 'react-router-dom';
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from '../firebase';
-import { ref, remove } from "firebase/database";
+import { ref, remove, set } from "firebase/database";
 import { rtdb } from '../firebase';
 import { postSettingsToDatabase } from '../features/Settings/postSettingsToDatabase';
 
@@ -12,8 +10,7 @@ import { postSettingsToDatabase } from '../features/Settings/postSettingsToDatab
 export default function Settings() {
 
     // Firebase
-    const { currentUser } = useAuth()
-    const userDocRef = doc(db,"users",currentUser.uid);
+    const { currentUser, updatedisplayname } = useAuth()
 
     // Local storage key
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
@@ -104,11 +101,16 @@ export default function Settings() {
       hideAlerts();
       // Save formSettings
       try {
-        postSettingsToDatabase(currentUser.uid,formSettings)
+        await postSettingsToDatabase(currentUser.uid,formSettings)
+        await updatedisplayname(formSettings.team_name)
         setSettings(formSettings)
+        console.log(formSettings,settings)
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY,JSON.stringify(formSettings))
         setSuccess('Settings saved')
+        setError('')
       } catch (e) {
+        console.log(e)
+        setSuccess('')
         setError('Could not save settings')
       }
     }
@@ -128,6 +130,10 @@ export default function Settings() {
 
       <h1 className="pt-2 pb-3">Settings</h1>
 
+
+      {error && <p onClick={hideAlerts} className="alert alert-danger">{error}</p>}
+      {success && <p onClick={hideAlerts} className="alert alert-success">{success}</p>}
+
       <form>
 
         <div className="tab mx-1" hidden={determineHide(0)}>
@@ -138,7 +144,7 @@ export default function Settings() {
               type="text"
               className="form-control"
               name="team_name"
-              value={formSettings.team_name}
+              value={formSettings?.team_name || ''}
               onChange={handleAccountChange}
               placeholder="Team Name"
               />
@@ -159,7 +165,7 @@ export default function Settings() {
 
         <div className="tab mx-1" hidden={determineHide(1)}>
           <h3>Cars</h3>
-          {settings.cars ? settings.cars.map((car,index)=>(
+          {settings?.cars ? settings.cars.map((car,index)=>(
             <div className="card w-100 m-auto mb-2">
               <div className="card-header w-100 h-100 p-0" data-value={index+4} onClick={changeTab}>
                 <h4 className="card-title p-2 m-0">{car.car_name}</h4>
@@ -176,7 +182,7 @@ export default function Settings() {
               type="number"
               className="form-control"
               name="race_length"
-              value={formSettings.team_name}
+              value={formSettings?.race_length || 90}
               onChange={handleAccountChange}
               placeholder="90" 
             />
@@ -188,7 +194,7 @@ export default function Settings() {
               type="number"
               className="form-control"
               name="track_length"
-              value={formSettings.track_length}
+              value={formSettings?.track_length || 2500}
               onChange={handleAccountChange}
               placeholder="2500"
             />
@@ -199,7 +205,7 @@ export default function Settings() {
             <select 
               className="form-control"
               name="manual_lap_mode"
-              value={formSettings.manual_lap_mode}
+              value={formSettings?.manual_lap_mode || 'false'}
               onChange={handleAccountChange}
             >
               <option value="true">Yes</option>
@@ -217,7 +223,7 @@ export default function Settings() {
             <select 
               className="form-control"
               name="summary_map"
-              value={formSettings.summary_map}
+              value={formSettings?.summary_map || 'true'}
               onChange={handleAccountChange}
             >
               <option value="true">Yes</option>
@@ -230,7 +236,7 @@ export default function Settings() {
             <select 
               className="form-control"
               name="lap_summary_table"
-              value={formSettings.lap_summary_table}
+              value={formSettings?.lap_summary_table || 'false'}
               onChange={handleAccountChange}
             >
               <option value="true">Yes</option>
@@ -245,11 +251,11 @@ export default function Settings() {
       </form>
 
       <form>
-      {formSettings.cars ? formSettings.cars.map((car,index)=>(
+      {formSettings?.cars ? formSettings.cars.map((car,index)=>(
         <div key={index} className="tab mx-1" hidden={determineHide(index+4)}>
           <div className="card w-100 m-auto">
             <div className="card-header">
-              <h4 className="card-title">Car: {car.car_name}</h4>
+              <h4 className="card-title">Car: {car?.car_name || 'My Car'}</h4>
             </div>
             <div className="card-body">
               <div className="form-group my-3">
@@ -258,7 +264,7 @@ export default function Settings() {
                   type="text"
                   className="form-control"
                   name="car_name"
-                  value={car.car_name}
+                  value={car?.car_name || 'My Car'}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Car Name"
                   />
@@ -270,7 +276,7 @@ export default function Settings() {
                   type="text"
                   className="form-control"
                   name="dweet_name"
-                  value={car.dweet_name}
+                  value={car?.dweet_name || ''}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Dweet Thing Name"
                   />
@@ -282,7 +288,7 @@ export default function Settings() {
                   type="number"
                   className="form-control"
                   name="battery_capacity"
-                  value={car.battery_capacity}
+                  value={car?.battery_capacity || 25}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Battery Capacity"
                   />
@@ -293,7 +299,7 @@ export default function Settings() {
                 <select 
                   className="form-control"
                   name="reverse_gearing_mode"
-                  value={car.reverse_gearing_mode}
+                  value={car?.reverse_gearing_mode || 'false'}
                   onChange={(e)=>handleCarChange(index,e)}
                 >
                   <option value="true">Yes</option>
@@ -307,7 +313,7 @@ export default function Settings() {
                   type="number"
                   className="form-control"
                   name="motor_gear_teeth"
-                  value={car.motor_gear_teeth}
+                  value={car?.motor_gear_teeth || 20}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Motor Gear Teeth"
                 />
@@ -319,7 +325,7 @@ export default function Settings() {
                   type="number"
                   className="form-control"
                   name="axle_gear_teeth"
-                  value={car.axle_gear_teeth}
+                  value={car?.axle_gear_teeth || 60}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Axle Gear Teeth"
                 />
@@ -333,7 +339,7 @@ export default function Settings() {
                   type="number"
                   className="form-control"
                   name="gear_number_offset"
-                  value={car.gear_number_offset}
+                  value={car?.gear_number_offset || 0}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Gear Number Offset"
                 />
@@ -347,7 +353,7 @@ export default function Settings() {
                   type="number"
                   className="form-control"
                   name="battery_offset"
-                  value={car.battery_offset}
+                  value={car?.battery_offset || 0}
                   onChange={(e)=>handleCarChange(index,e)}
                   placeholder="Battery Offset"
                 />
