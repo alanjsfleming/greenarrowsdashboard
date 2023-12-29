@@ -435,7 +435,7 @@ useEffect(() => {
     </div>}
     
     <div className="d-flex homepage-dash flex-column">
-      <DataLastReceived time={dataLastReceived}/>
+      {settings?.dweet_name && <DataLastReceived time={dataLastReceived}/>}
       {settings?.cars ? settings.cars.map((car,index) => (
       <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings} index={index}/>)) : <p>No cars...</p>}
       <br></br>

@@ -26,6 +26,8 @@ export default function Settings() {
 
     const [error,setError] = useState('')
     const [success,setSuccess] = useState('')
+    const [loading,setLoading] = useState(false)
+
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1] || '0')
     const [carDropdownShown,setCarDropdownShown] = useState(false)
 
@@ -99,6 +101,7 @@ export default function Settings() {
     
     const handleSaveSettings = async (e) => {
       hideAlerts();
+      setLoading(true)
       // Save formSettings
       try {
         await postSettingsToDatabase(currentUser.uid,formSettings)
@@ -106,12 +109,14 @@ export default function Settings() {
         setSettings(formSettings)
         console.log(formSettings,settings)
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY,JSON.stringify(formSettings))
+        setLoading(false)
         setSuccess('Settings saved')
         setError('')
       } catch (e) {
         console.log(e)
         setSuccess('')
         setError('Could not save settings')
+        setLoading(false)
       }
     }
 
@@ -246,7 +251,15 @@ export default function Settings() {
         </div>
 
         <div className="fixed-bottom">
-          <button onClick={handleSaveSettings} className="btn btn-primary btn-block" type="button" >Save</button>
+          <button onClick={handleSaveSettings} className="btn btn-primary btn-block" type="button" >
+            {loading ? 
+            <div class="spinner-border text-light spinner-border-sm" role="status">
+              <span class="sr-only">Loading...</span>
+            </div> 
+            : 
+            "Save"
+            }
+          </button>
         </div>
       </form>
 
