@@ -6,13 +6,14 @@ import { getDocs, addDoc, collection, query, where } from "firebase/firestore";
 
 export async function postSettingsToDatabase(uid, data) {
     try {
+        const newData = { ...data };
         const docRef = doc(db, "users", uid);
         // Wait for the document to be set
-        const newCars = [...data.cars];
-        delete data.cars;
+        const newCars = [...newData.cars];
+        delete newData.cars;
 
         // Save user settings
-        await setDoc(docRef, data, { merge: true });
+        await setDoc(docRef, newData, { merge: true });
         // Save cars
         for (let car of newCars) {
             const newCar = JSON.parse(JSON.stringify(car));

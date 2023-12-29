@@ -66,10 +66,6 @@ export default function Settings() {
       setSuccess('')
     }
 
-    useEffect(() => {
-      console.log(formSettings)
-    },[formSettings])
-
     const handleAccountChange = (e) => {
       const { name, value } = e.target;
       setFormSettings({...formSettings,[name]:value})
@@ -98,6 +94,12 @@ export default function Settings() {
         setError('Could not reset running data')
       }
     }
+
+    useEffect(() => {
+      console.log('Form settings changed')
+      console.log(formSettings)
+    }
+    ,[formSettings])
     
     const handleSaveSettings = async (e) => {
       hideAlerts();
@@ -106,8 +108,7 @@ export default function Settings() {
       try {
         await postSettingsToDatabase(currentUser.uid,formSettings)
         await updatedisplayname(formSettings.team_name)
-        setSettings(formSettings)
-        console.log(formSettings,settings)
+        console.log("SAVING THIS",formSettings)  
         localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY,JSON.stringify(formSettings))
         setLoading(false)
         setSuccess('Settings saved')

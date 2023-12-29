@@ -77,20 +77,7 @@ export default function HomePage() {
     const carsRef = collection(db,"cars")
     const docSnap = getDoc(docRef).then((doc) => {
       const data = doc.data()
-      newSettings(prevSettings => ({
-        ...prevSettings,
-        teamName:data.team_name,
-        raceLength:data.race_length,
-        trackLength:data.track_length,
-        theme:data.appearance_theme,
-        raceStart:data.race_start_time,
-        role:data.role,
-        lapSummaryTable:data.lap_summary_table,
-        summaryMap:data.summary_map,
-        manualLapMode:data.manualLapMode,
-        carInPit:data.carInPit,
-        totalPitTime:data.totalPitTime,
-    }))
+      newSettings(doc.data())
     
     }).catch((error) => {
       console.log("Error getting user document:", error);
@@ -122,8 +109,8 @@ export default function HomePage() {
   useEffect(()=>{
     localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
     try {
-    setRaceStart(settings.raceStart)
-    setRaceLength(settings.raceLength)
+    setRaceStart(settings.race_start_time)
+    setRaceLength(settings.race_length)
     // COME BACK TO THIS
     // Need to load correct car telemetry
     setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
@@ -261,8 +248,8 @@ function handleStart(e){
 
 function timeSinceStart() {
   const currentTime=Date.now()
-  if (settings.raceStart) {
-    const elapsedTime=currentTime-settings.raceStart
+  if (settings.race_start_time) {
+    const elapsedTime=currentTime-settings.race_start_time
     return elapsedTime
   } else {
     return null
@@ -288,7 +275,7 @@ function elapsedTimeIntoString() {
 // When race is running, save each request to local storage settings.running_data array
 // function to append data packet to settings.running_data array
 function appendDataToSettings(data,car_num) {
-  if (settings?.lapSummaryTable==='Disabled') {
+  if (!settings?.lapSummaryTable) {
     return 
   }
 
@@ -371,9 +358,9 @@ function handleCarLeftPit() {
   console.log("Car left pit")
   const currentTime = Date.now()
 
-  const t = currentTime - settings.carInPit
+  const t = currentTime - settings.car_in_pit
 
-  const timebefore = settings.totalPitTime
+  const timebefore = settings.total_pit_time
 
   newSettings(prevSettings=>({
     ...prevSettings,
@@ -472,7 +459,7 @@ useEffect(() => {
 
       <br></br>
    
-      {(settings && settings.summaryMap==='Enabled') ? 
+      {(settings && settings.summary_map) ? 
       <LocationMap telemetry={telemetry} settings={settings} locationData={
         [
           { 
@@ -483,7 +470,7 @@ useEffect(() => {
         : 
         <></>}
 
-      {(settings && settings.lapSummaryTable==='Enabled') ? 
+      {(settings && settings.lap_summary_table) ? 
       <LapSummary settings={settings} runningData={runningData}/> 
       : 
       <></> }

@@ -52,7 +52,7 @@ export default function LapSummary(props) {
         try{
             calculateAllLapData(filterSeparateLaps());
         } catch (error) {
-            console.log(error);
+            
         }
     },[currentLapNum])
 

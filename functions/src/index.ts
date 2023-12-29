@@ -6,16 +6,19 @@ admin.initializeApp();
 export const createUserDoc = functions.auth.user().onCreate(async (user) => {
   const uid = user.uid;
   const carTemplate = {
-    // The owner field is used to identify which user owns the car.
     owner: uid,
-    // Car number is from the point of view of the user, so it starts at 1.
     car_number: 1,
-    // Other fields are used to store the car's properties.
     car_name: "New Car",
-    battery_capacity: 25,
     dweet_name: null,
-    large_gear_teeth: 60,
-    wheel_circumference: 3,
+    // Battery
+    battery_capacity: 25,
+    battery_offset:0,
+    // Gearing
+    gear_number_offset:0,
+    axle_gear_teeth: 60,
+    motor_gear_teeth:20,
+    reverse_gearing_mode:true,
+
   };
   // Create the user document and the initial car document.
   const carDocRef = await admin.firestore().collection("cars").doc()
@@ -26,6 +29,10 @@ export const createUserDoc = functions.auth.user().onCreate(async (user) => {
     track_length: "2500",
     race_length: "90",
     race_start_time: null,
+    lap_summary_table:false,
+    summary_map:true,
+    manual_lap_mode:false,
+
     cars:[carDocId], // Add the car document id to the user document.
   };
   await admin.firestore().collection("users").doc(uid).set(userDoc);

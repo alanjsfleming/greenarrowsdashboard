@@ -43,19 +43,19 @@ export default function LocationMap(props) {
         return [latCentre,longCentre]
     }
 
-    const renderMarker = (car) => {
+    const renderMarker = (car,index) => {
         if (!car.location) {return null} // if car has no location data, don't render a marker
 
-        return <Marker width={50} anchor={car.location} color="green" />
+        return <Marker key={index} width={50} anchor={car.location} color="green" />
 
     }
 
     //  if (carLocations.length === 1) return <Marker width={50} anchor={carLocations[0]} color="green"/>
        
 
-    const renderCarLegend = (car) => {
+    const renderCarLegend = (car,index) => {
         if (!carLocations) {return null}
-        return <p class="btn btn-outline-primary btn-block">{car.name}</p>
+        return <p key={index} class="btn btn-outline-primary btn-block">{car.name}</p>
     }
     
     // I want car buttons to center map on car and have colours
@@ -66,6 +66,9 @@ export default function LocationMap(props) {
         
     },[props.locationData])
 
+    if (!props.telemetry) {
+        return (<></>)
+    }
 
   return (
     <div class="card car-summary mb-4">
@@ -75,7 +78,7 @@ export default function LocationMap(props) {
         <div class="card-body car-summary-vis d-flex flex-column">
             {(carLocations && allowedPermissions) ? 
             <>
-            <p>Gear: {estimateGear(props?.telemetry?.Spd*2.237,props?.telemetry?.RPM,props.settings?.cars[0]?.large_gear_teeth)}</p>
+            <p>Gear: {estimateGear(props?.telemetry?.Spd*2.237,props?.telemetry?.RPM,props.settings.cars[0].axle_gear_teeth)}</p>
             <Map height={300} center={mapCentre} touchEvents={true} mouseEvents={true} defaultZoom={15} >
                 {carLocations.map(renderMarker)}
             </Map>
