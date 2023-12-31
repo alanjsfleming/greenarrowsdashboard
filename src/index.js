@@ -42,7 +42,6 @@ export default function Main() {
             <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
             <Route path="/signup" element={<Signup />}/>       
             <Route path="/reset-password" element={<PasswordReset />} />
-
             
             <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
             <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>

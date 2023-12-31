@@ -134,12 +134,10 @@ export default function HomePage() {
     }
     // Otherwise, if it is on then subscribe and update client state with realtime database value for the users car
     try {
-      
       // Change this ref to be dynamic to the car
       const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
       // start listening to database if race is in progress
       onValue(rtCarRef, (snapshot) => {
-        
         const data = []
         snapshot.forEach((childSnapshot) => {
           data.push(childSnapshot.val())
