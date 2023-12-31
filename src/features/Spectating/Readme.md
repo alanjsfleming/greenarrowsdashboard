@@ -14,5 +14,9 @@ with the car ids they will be able to get ONLY the dweet_name and owner field ON
 
 They will also be able to get the realtimedatabase ref only if the spectator field is set to true!
 
-They will then be able to 
+They will then be able to subscribe to the realtime database and watch. Or not if thats turned off.
+
+THEY WONT BE ABLE TO SET SPECTATOR TO TRUE IF THEY HAVENT PAID. THEY WONT BE ABLE TO 
+
+
 
