@@ -18,5 +18,3 @@ They will then be able to subscribe to the realtime database and watch. Or not i
 
 THEY WONT BE ABLE TO SET SPECTATOR TO TRUE IF THEY HAVENT PAID. THEY WONT BE ABLE TO 
 
-
-
