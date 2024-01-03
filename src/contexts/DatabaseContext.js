@@ -19,6 +19,10 @@ export function DatabaseProvider({ children }) {
     const [carsData,setCarsData] = useState()
 
     useEffect(()=> {
+        // If not logged in then jsut return
+        if (!currentUser) {
+            return
+        }
         // Subscribe to the user document
         const userDocRef = doc(db, "users", currentUser.uid);
         const unsubscribeUser = onSnapshot(userDocRef,userSnapshot => {
