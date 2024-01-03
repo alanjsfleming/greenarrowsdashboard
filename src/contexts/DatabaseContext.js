@@ -30,7 +30,6 @@ export function DatabaseProvider({ children }) {
             if (userSnapshot.exists()) {
                 setUserSettings(userSnapshot.data())
             } else {
-                console.log("No such document!");
                 setUserSettings(null);
             }
         })
