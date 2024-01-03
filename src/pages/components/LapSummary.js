@@ -1,26 +1,33 @@
 import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import ContentLocked from '../../layouts/ContentLocked'
+import { getMembershipStatus } from '../../stripe/getMembershipStatus.ts'
+import { useAuth } from '../../contexts/AuthContext'
+import app from '../../firebase'
 
 export default function LapSummary(props) {
 
     const [lapData, setLapData] = useState([])
+
+    const { currentUser } = useAuth()
+
     const [manualLengthMode, setManualLengthMode] = useState(true)
 
     const [currentLapData, setCurrentLapData] = useState()
     const [currentLapNum, setCurrentLapNum] = useState()
 
     // Determine if user is allowed to access this content
-    const [allowedPermissions, setAllowedPermissions] = useState(false)    
-    useEffect(() => {
-        try {
-            if (props.settings.role === 'pro' || props.settings.role === 'standard') {
-                setAllowedPermissions(true)
-            }
-        } catch(error) {
-            console.log(error)
-        }
-    },[props.settings])
+    const [isMember, setIsMember] = useState(false)    
+    
+    useEffect(()=>{
+        const checkMember = async () => {
+          const newMembershipStatus = currentUser
+            ? await getMembershipStatus(app)
+            : false;
+            setIsMember(newMembershipStatus);
+        };
+        checkMember();
+    },[app,currentUser?.uid])
 
     // VCq7rqiEK4qbGd7qZ4C0 GA1 
 
@@ -208,7 +215,7 @@ export default function LapSummary(props) {
             </div>
         </div>
         <div class="card-body car-summary-vis d-flex flex-column">
-            {allowedPermissions ? <LapComponent />
+            {isMember ? <LapComponent />
             : 
             <ContentLocked />
             }

@@ -30,7 +30,7 @@ export default function HomePage() {
 
   const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
   
-  const [telemetry, newTelemetry] = useState([]);
+  const [telemetry, newTelemetry] = useState(false);
   const [settings, newSettings] = useState()
   const [errorFetching, setErrorFetching] = useState()
   const [dataLastReceived,setDataLastReceived] = useState("2023-06-10T14:37:47.074Z")
@@ -457,7 +457,7 @@ useEffect(() => {
 
       <br></br>
    
-      {(settings && settings.summary_map) ? 
+      {((telemetry) && settings?.summary_map === "true") ? 
       <LocationMap telemetry={telemetry} settings={settings} locationData={
         [
           { 
@@ -468,7 +468,7 @@ useEffect(() => {
         : 
         <></>}
 
-      {(settings && settings.lap_summary_table) ? 
+      {(settings?.lap_summary_table === "true") ? 
       <LapSummary settings={settings} runningData={runningData}/> 
       : 
       <></> }

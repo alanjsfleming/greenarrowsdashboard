@@ -66,7 +66,7 @@ export default function LocationMap(props) {
         
     },[props.locationData])
 
-    if (!props.telemetry) {
+    if (!props?.telemetry) {
         return (<></>)
     }
 
@@ -78,7 +78,7 @@ export default function LocationMap(props) {
         <div class="card-body car-summary-vis d-flex flex-column">
             {(carLocations && allowedPermissions) ? 
             <>
-            <p>Gear: {estimateGear(props?.telemetry?.Spd*2.237,props?.telemetry?.RPM,props.settings.cars[0].axle_gear_teeth)}</p>
+            <p>Gear: {estimateGear(props.telemetry?.Spd*2.237,props.telemetry?.RPM,props.settings?.cars[0]?.axle_gear_teeth)}</p>
             <Map height={300} center={mapCentre} touchEvents={true} mouseEvents={true} defaultZoom={15} >
                 {carLocations.map(renderMarker)}
             </Map>
@@ -92,7 +92,7 @@ export default function LocationMap(props) {
             <Link to="/configure?3" class="btn btn-outline-secondary btn-block">Disable Map</Link>
             </div> 
             : 
-            <ContentLocked role={props.settings.role}/>
+            <ContentLocked role={props?.settings.role}/>
             )
             }
 

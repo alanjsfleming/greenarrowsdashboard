@@ -9,3 +9,8 @@ Create checkout session creates a checkout session with the stripe api, when it 
 
 When stripe checkout is complete it redirects to the success page and attaches the purchased role to the user account under stripeRole
 
+Tutorial
+
+might need 
+
+npm install react-firebase-hooks

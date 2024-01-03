@@ -3,14 +3,23 @@ import { useAuth } from '../contexts/AuthContext'
 import MenuBar from '../layouts/MenuBar';
 import { Link } from 'react-router-dom';
 import { ref, remove, set } from "firebase/database";
-import { rtdb } from '../firebase';
+import app, { rtdb } from '../firebase';
 import { postSettingsToDatabase } from '../features/Settings/postSettingsToDatabase';
+import { getCheckoutUrl, getPortalUrl } from '../stripe/stripePayment.ts';
+import { useNavigate } from 'react-router-dom';
+import { getMembershipStatus } from '../stripe/getMembershipStatus.ts';
 
 
 export default function Settings() {
 
     // Firebase
     const { currentUser, updatedisplayname } = useAuth()
+
+    // Membership
+    const [isMember, setIsMember] = useState(false);
+
+    // Navigate
+    const navigate = useNavigate()  
 
     // Local storage key
     const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
@@ -26,7 +35,9 @@ export default function Settings() {
 
     const [error,setError] = useState('')
     const [success,setSuccess] = useState('')
+
     const [loading,setLoading] = useState(false)
+    const [billingLoading,setBillingLoading] = useState(false)
 
     const [currentTab,setCurrentTab] = useState(window.location.href.split('?')[1] || '0')
     const [carDropdownShown,setCarDropdownShown] = useState(false)
@@ -121,6 +132,35 @@ export default function Settings() {
       }
     }
 
+    const handleUpgradeToMember = async () => {
+      setBillingLoading(true);
+      const priceId = "price_1OUEJ9DW8WPlqGXzTSo4jAK0";
+      const checkoutUrl = await getCheckoutUrl(app,priceId);
+
+      // Navigate doesnt work here so use 
+      // navigate(checkoutUrl); 
+
+      // Navigate to checkout url 
+      window.location.href = checkoutUrl;
+
+    }
+
+    const handleManageBilling = async () => {
+      setBillingLoading(true);
+      const portalUrl = await getPortalUrl(app);
+      window.location.href = portalUrl;
+    }
+
+    useEffect(()=>{
+      const checkMember = async () => {
+        const newMembershipStatus = currentUser
+          ? await getMembershipStatus(app)
+          : false;
+          setIsMember(newMembershipStatus);
+      };
+      checkMember();
+    },[app,currentUser?.uid])
+
 
   return (
     <>
@@ -155,6 +195,29 @@ export default function Settings() {
               placeholder="Team Name"
               />
           </div>
+
+          <hr></hr>
+
+          <button hidden={isMember} onClick={handleUpgradeToMember} className="btn btn-primary btn-block" type="button" >
+            {billingLoading ? 
+            <div className="spinner-border text-light spinner-border-sm" role="status">
+              <span className="sr-only">Loading...</span>
+            </div> 
+            : 
+            "Upgrade"
+            }
+          </button>
+
+          <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-primary btn-block" type="button" >
+            {billingLoading ? 
+            <div className="spinner-border text-light spinner-border-sm" role="status">
+              <span className="sr-only">Loading...</span>
+            </div> 
+            : 
+            "Manage Billing"
+            }
+          </button>
+
           <hr></hr>
           <Link to="/reset-password" className="btn btn-outline-dark btn-block">
             Reset Password

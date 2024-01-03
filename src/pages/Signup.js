@@ -22,6 +22,16 @@ export default function Signup() {
     const navigate = useNavigate()
 
     function resolveAfterRegistering(email,password) {
+      if (!email && !password) return new Promise(async (resolve,reject) => {
+        try {
+          await googleSignIn()
+          resolve('resolved')
+        } catch (e) {
+          setError('Could not create user')
+          reject('rejected')
+        }
+      })
+      
       return new Promise(async (resolve,reject) => {
         try{
           await signup(email,password);
@@ -48,8 +58,11 @@ export default function Signup() {
       })
     }
 
+    // Need to make a new resolve after registeing. here for google 
+    
+
     const handleGoogleSignIn = async(e)=> {
-      const registered = await googleSignIn()
+      const registered = await resolveAfterRegistering()
       registered === 'resolved' && navigate('/user-setup')
     }
 
