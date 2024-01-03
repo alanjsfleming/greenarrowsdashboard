@@ -15,8 +15,9 @@ export function DatabaseProvider({ children }) {
     const { currentUser } = useAuth()
 
     // Settings Data
-    const [userData,setUserData] = useState()
-    const [carsData,setCarsData] = useState()
+    const [userSettings,setUserSettings] = useState()
+    const [carsSettings,setCarsSettings] = useState()
+    const [elapsedRaceTime,setElapsedRaceTime] = useState(0)
 
     useEffect(()=> {
         // If not logged in then jsut return
@@ -27,20 +28,21 @@ export function DatabaseProvider({ children }) {
         const userDocRef = doc(db, "users", currentUser.uid);
         const unsubscribeUser = onSnapshot(userDocRef,userSnapshot => {
             if (userSnapshot.exists()) {
-                setUserData(userSnapshot.data())
+                setUserSettings(userSnapshot.data())
             } else {
                 console.log("No such document!");
-                setUserData(null);
+                setUserSettings(null);
             }
         })
         // Subscribe to the user's cars 
         const carsQuery = query(collection(db, "cars"), where("owner", "==", currentUser.uid));
         const unsubscribeCars = onSnapshot(carsQuery, carsSnapshot => {
-            const newCarsData = carsSnapshot.docs.map(doc => ({
+            const newCarsSettings = carsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }))
-            setCarsData(newCarsData)
+            setCarsSettings(newCarsSettings)
+            console.log(newCarsSettings)
         });
         return () => {
             unsubscribeUser();
@@ -49,9 +51,20 @@ export function DatabaseProvider({ children }) {
     }
     ,[currentUser])
 
+    useEffect(()=> {
+        let interval;
+        if (userSettings?.race_start_time) {
+            interval = setInterval(() => {
+                setElapsedRaceTime(Date.now() - userSettings.race_start_time)    
+            }, 1000); // Update every second
+        }
+        return ()=> clearInterval(interval) // Clear interval on component unmount
+    },[userSettings?.race_start_time])
+
     const value = {
-        userData,
-        carsData,
+        userSettings,
+        carsSettings,
+        elapsedRaceTime,
     }
 
     return (

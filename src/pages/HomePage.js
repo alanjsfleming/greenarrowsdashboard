@@ -12,6 +12,8 @@ import { rtdb } from '../firebase'
 import { ref, onValue,push,off } from "firebase/database";
 import PitStopPanel from './components/PitStopPanel'
 import DataLastReceived from '../layouts/DataLastReceived'
+import { useDatabase } from '../contexts/DatabaseContext'
+import elapsedTimeIntoString from '../utils/TimeFunctions'
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -24,22 +26,22 @@ import DataLastReceived from '../layouts/DataLastReceived'
 
 
 export default function HomePage() {
-  // Send a page view event to Firebase Analytics
-
-
-
-  const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
-  
-  const [telemetry, newTelemetry] = useState(false);
-  const [settings, newSettings] = useState()
+  // UI State
   const [errorFetching, setErrorFetching] = useState()
-  const [dataLastReceived,setDataLastReceived] = useState("2023-06-10T14:37:47.074Z")
-  const [fetchURL,setFetchURL] = useState()
-  const { currentUser } = useAuth()
-
   const [resetButton,setResetButton] = useState('btn-primary')
-  const [raceStart,setRaceStart] = useState()
-  const [raceLength,setRaceLength] = useState(90)
+
+
+  // Providers
+  const { currentUser } = useAuth()
+  const { userSettings, carsSettings, elapsedRaceTime } = useDatabase()
+
+  // Database References
+  const userRef = doc(db, "users", currentUser.uid);
+
+
+  const [telemetry, newTelemetry] = useState(false);
+  
+  const runningDataRef = useRef()
 
   const [raceTime,setRaceTime] = useState()
   const [raceTimeValue,setRaceTimeValue] = useState()
@@ -47,84 +49,14 @@ export default function HomePage() {
   const [runningData,setRunningData] = useState([])
 
   const [carInPit,setCarInPit] = useState(false) // state to track if the car is in the pit or not
-
-
-
-  const runningDataRef = useRef(runningData)
-  // settings.cars[i].running_data should be always equal to the realtime database entry for that car
-  // function to set the settings state to the realtime database entry for that car
-  function syncCarDataWithRealtimeDatabase() {
-    //car_num = car_num - 1
-    //const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[car_num].id}`)
-    
-  }
-
-  useEffect(() => {
   
-    try {
-    loadSettingsFromFirebase()
-    const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
-    if (storedSettings) {
-      newSettings(storedSettings)
-      
-    };  
-    } catch (e) {console.log(e)}
-    
-  },[])
- 
-  function loadSettingsFromFirebase() {
-    const docRef = doc(db, "users", currentUser.uid);
-    const carsRef = collection(db,"cars")
-    const docSnap = getDoc(docRef).then((doc) => {
-      const data = doc.data()
-      newSettings(doc.data())
-    
-    }).catch((error) => {
-      console.log("Error getting user document:", error);
-    });
-    const carQuery = query(carsRef, where("owner","==",currentUser.uid), orderBy("car_number"))
-    const querySnapshot = getDocs(carQuery).then((querySnapshot) => {
-      let carArray = []
-      //console.log(querySnapshot)
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        // write this to settings in settings.cars object as an array
-        const carDataSnapshot = doc.data()
-        carDataSnapshot.id = doc.id
-        carArray.push(carDataSnapshot)
-      }) 
-      newSettings(prevSettings => ({
-        ...prevSettings,
-        cars:carArray,
-    })) 
-    }).catch((error) => {
-      console.log("Error getting cars documents:", error);
-    });
-  }
-
-  // save settings to local storage on settings change
   
-
-  // set state start time on component load
-  useEffect(()=>{
-    localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-    try {
-    setRaceStart(settings.race_start_time)
-    setRaceLength(settings.race_length)
-    // COME BACK TO THIS
-    // Need to load correct car telemetry
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
-    } catch {
-      console.log('raceStart not set')
-    }
-    
-  },[settings])
-  
+  /*
   useEffect(()=>{
     // When the raceStart changes, if it is not running then make sure client is not listening to realtime database, this is for bandwidth reasons
     if (!raceStart) {
       try {
-        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
+        const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${carSettings[0].id}`)
         // Stop listening to database if race is not in progress
         off(rtCarRef)
       } catch(e) {
@@ -135,7 +67,7 @@ export default function HomePage() {
     // Otherwise, if it is on then subscribe and update client state with realtime database value for the users car
     try {
       // Change this ref to be dynamic to the car
-      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${settings.cars[0].id}`)
+      const rtCarRef = ref(rtdb,`teams/${currentUser.uid}/${carSettings[0].id}`)
       // start listening to database if race is in progress
       onValue(rtCarRef, (snapshot) => {
         const data = []
@@ -169,13 +101,15 @@ export default function HomePage() {
     } catch (e) { console.log("error setting up realtime database listener" + e)}
   },[raceStart])
   
+  
   //useEffect(()=>{
     //console.log(runningData)
   //},[runningData])
+  
 
   // Fetch from the dweet every 1.5s
   function handleUpdateTelemetry(e) {
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
+    setFetchURL('https://dweet.io/get/latest/dweet/for/'+carSettings[0].dweet_name)
     fetch(fetchURL)
     .then((response)=>response.json())
     .then((data)=> { 
@@ -211,18 +145,14 @@ export default function HomePage() {
   },[fetchURL])
 
   // Race reset
+  */
 function handleReset(e){
   if (resetButton === 'btn-primary') {
     setResetButton('btn-danger') // Make it scary to confirm
-} else {
-  setResetButton('btn-primary') // If its already scary then confirm it and reset
-  setRaceStart(null)
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    raceStart: null
-  }))
-  const userRef = doc(db, "users", currentUser.uid);
-  updateDoc(userRef, {race_start_time: null}, {merge: true}) // Save this reset to firebase also
+  } else {
+    setResetButton('btn-primary') // If its already scary then confirm it and reset
+    const userRef = doc(db, "users", currentUser.uid);
+    updateDoc(userRef, {race_start_time: null}, {merge: true}) // Save this reset to firebase also
 }
 }
 
@@ -234,20 +164,14 @@ function handleUnfocusReset(e){
 function handleStart(e){
   // Writes the start time to local settings
   const currentTime=Date.now()
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    raceStart: currentTime
-  }))
-
-  const userRef = doc(db, "users", currentUser.uid);
   updateDoc(userRef, {race_start_time: currentTime}, {merge: true})
 }
 
-
+/*
 function timeSinceStart() {
   const currentTime=Date.now()
-  if (settings.race_start_time) {
-    const elapsedTime=currentTime-settings.race_start_time
+  if (userSettings.race_start_time) {
+    const elapsedTime=currentTime-userSettings.race_start_time
     return elapsedTime
   } else {
     return null
@@ -273,12 +197,12 @@ function elapsedTimeIntoString() {
 // When race is running, save each request to local storage settings.running_data array
 // function to append data packet to settings.running_data array
 function appendDataToSettings(data,car_num) {
-  if (!settings?.lapSummaryTable) {
+  if (!userSettings?.lap_summary_table) {
     return 
   }
 
   // this needs to be changed for when multiple cars...
-  const carId = settings.cars[car_num-1].id
+  const carId = carSettings[car_num-1].id
   const lastDataPoint = { timestamp : 0}
   // Store the data in firebase realtime database
   const rtDocRef = ref(rtdb, `teams/${currentUser.uid}/${carId}`)
@@ -306,48 +230,11 @@ function appendDataToSettings(data,car_num) {
     } catch(e) {console.log(e)}
   
   }
-
-  
- 
-
-  // The below is for when the data is only stored locally
-  /*
-  console.log(data)
-  // if settings.running_data is undefined, create it
-  if (!settings.hasOwnProperty('running_data')) {
-    newSettings(prevSettings=>({
-      ...prevSettings,
-      running_data: [data]
-      }))
-  } else {
-    // if settings.running_data is defined, append the data to it
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    running_data: [...prevSettings.running_data, data]
-  }))
-  }
-  */
 }
-/*
-function handleStart(e){
-  // Writes the start time to local settings
-  const currentTime=Date.now()
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    raceStart: currentTime
-  }))
-
-  const userRef = doc(db, "users", currentUser.uid);
-  updateDoc(userRef, {race_start_time: currentTime}, {merge: true})
-}*/
 
 function handleCarInPit() {
   console.log("Car in pit")
   const currentTime = Date.now()
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    carInPit: currentTime
-  }))
   const userRef = doc(db, "users", currentUser.uid);
   updateDoc(userRef, {carInPit: currentTime}, {merge: true})
 }
@@ -356,26 +243,15 @@ function handleCarLeftPit() {
   console.log("Car left pit")
   const currentTime = Date.now()
 
-  const t = currentTime - settings.car_in_pit
+  const t = currentTime - userSettings?.car_in_pit
 
-  const timebefore = settings.total_pit_time
+  const timebefore = userSettings?.total_pit_time
 
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    carInPit: null,
-    totalPitTime: timebefore + t
-  }))
-  console.log(timebefore + t)
   const userRef = doc(db, "users", currentUser.uid);
   updateDoc(userRef, {carInPit: null,totalPitTime:timebefore+t}, {merge: true})
 }
 
 function resetPitTimes() {
-  newSettings(prevSettings=>({
-    ...prevSettings,
-    totalPitTime: 0,
-    carInPit:null,
-  }))
   const userRef = doc(db, "users", currentUser.uid);
   updateDoc(userRef, {totalPitTime: 0,carInPit:null}, {merge: true})
 }
@@ -402,12 +278,13 @@ useEffect(() => {
 },[raceStart]);
 
   
-
+*/
   return (
     <>
       
     <MenuBar />
     <h2 className="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
+    <button onClick={()=>{console.log(carsSettings)}}>log settings</button>
     {errorFetching>8 && 
     <div className="alert alert-warning mx-2 d-flex flex-column homepage-dash ">
       <p className="text-center">Unable to fetch data from car.</p>
@@ -420,30 +297,29 @@ useEffect(() => {
     </div>}
     
     <div className="d-flex homepage-dash flex-column">
-      {settings?.dweet_name && <DataLastReceived time={dataLastReceived}/>}
-      {settings?.cars ? settings.cars.map((car,index) => (
-      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} settings={settings} index={index}/>)) : <p>No cars...</p>}
+      {carsSettings ? carsSettings.map((car,index) => (
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} index={index}/>)) : <p>No cars...</p>}
       <br></br>
       <div className="card-dash car-summary border rounded-3" id="raceTimer">
-      <div className="card-header">
-          <h3 className="card-title mt-1 text-center">Race {raceTime}</h3>
-      </div>
-      <div className="card-body">
-          <progress className="progress" min="0" max={raceLength} value={raceTimeValue} ></progress>
+        <div className="card-header">
+            <h3 className="card-title mt-1 text-center">Race {userSettings?.race_start_time && elapsedTimeIntoString(elapsedRaceTime)}</h3>
+        </div>
+        <div className="card-body">
+          <progress className="progress" min="0" max={userSettings?.race_length} value={userSettings?.race_start_time ? (elapsedRaceTime)/1000/60 : 0} ></progress>
           <div className="btn-group w-100 mt-2">
-              <button disabled={raceStart} onClick={handleStart} className="btn btn-primary btn-block ">Start</button>
-              <button disabled={!raceStart} onClick={handleReset} onBlur={handleUnfocusReset} className={"btn btn-block "+resetButton} >Reset</button>
-              <Link to="/configure?2" className="btn btn-primary btn-block">Setup</Link>
+            <button disabled={userSettings?.race_start_time} onClick={handleStart} className="btn btn-primary btn-block ">Start</button>
+            <button disabled={!userSettings?.race_start_time} onClick={handleReset} onBlur={handleUnfocusReset} className={"btn btn-block "+resetButton} >Reset</button>
+            <Link to="/configure?2" className="btn btn-primary btn-block">Setup</Link>
           </div>
-      </div>
-  </div>
-
+        </div>
+    </div>
+      {/*
     <div class="card car-summary" id="raceTimer" hidden>
           <div class="card-header">
               <h3 class="card-title mt-1 text-center">Pit Stop</h3>      
           </div>
           <div class="card-body">
-              <h3>{settings?.totalPitTime/1000}s</h3>
+              <h3>{userSettings?.totalPitTime/1000}s</h3>
               <div class="btn-group w-100 mt-2">
                   
                   <button onClick={handleCarInPit} class="btn btn-primary btn-block ">Car In Pit</button>
@@ -453,28 +329,26 @@ useEffect(() => {
                   <button onClick={resetPitTimes} className="btn btn-primary btn-block">Reset</button>
               </div>
           </div>
-      </div>
+      </div>*/}
 
       <br></br>
    
-      {((telemetry) && settings?.summary_map === "true") ? 
-      <LocationMap telemetry={telemetry} settings={settings} locationData={
+      {((telemetry) && userSettings?.summary_map === "true") ? 
+      <LocationMap telemetry={telemetry} locationData={
         [
           { 
-          name : (telemetry[0]?.Lat) ? settings?.cars[0]?.car_name : 'No Location Data',
+          name : (telemetry[0]?.Lat) ? carsSettings[0]?.car_name : 'No Location Data',
           location : telemetry[0]?.Lat ? [telemetry[0]?.Lat,telemetry[0]?.Lon] : [50.8724,-0.7389]
         } 
         ]} /> 
         : 
         <></>}
 
-      {(settings?.lap_summary_table === "true") ? 
-      <LapSummary settings={settings} runningData={runningData}/> 
+      {(userSettings?.lap_summary_table === "true") ? 
+      <LapSummary runningData={runningData}/> 
       : 
       <></> }
-    </div>
-   
-    
+      </div>
     </>
   )
 }
@@ -488,6 +362,9 @@ useEffect(() => {
 
 // make setup button go to settings page in the race data section
 /*
+
+
+{userSettings?.dweet_name && <DataLastReceived time={dataLastReceived}/>}
 return (
   <div class="card car-summary" id="raceTimer">
       <div class="card-header">

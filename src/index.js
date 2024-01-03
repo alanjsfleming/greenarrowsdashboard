@@ -20,6 +20,7 @@ import Settings from './pages/Settings';
 
 import AnalyticsComponent from './features/AnalyticsComponent';
 import { RaceProvider } from './contexts/RaceContext';
+import { DatabaseProvider } from './contexts/DatabaseContext';
 
 function sendToAnalytics({id,name,value}){
   logEvent(analytics,'event',{
@@ -35,26 +36,28 @@ export default function Main() {
   return (
     <AuthProvider>
       <RaceProvider>
-        <BrowserRouter basename="/">
-          <AnalyticsComponent />
-          <Routes>
-            <Route path="/login" element={<Login />}/>    
-            <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
-            <Route path="/signup" element={<Signup />}/>       
-            <Route path="/reset-password" element={<PasswordReset />} />
-            
-            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
-            <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
+        <DatabaseProvider>
+          <BrowserRouter basename="/">
+            <AnalyticsComponent />
+            <Routes>
+              <Route path="/login" element={<Login />}/>    
+              <Route path="/logout" element={<PrivateRoute><Logout /></PrivateRoute>}/>
+              <Route path="/signup" element={<Signup />}/>       
+              <Route path="/reset-password" element={<PasswordReset />} />
+              
+              <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>}/>
+              <Route path="/details" element={<PrivateRoute><App /></PrivateRoute>}/>
 
-            <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
-            <Route path="/configure" element={<PrivateRoute><Settings /></PrivateRoute>} />
-            <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
-            <Route path="/register" element={<Signup />}/>
-            <Route path="/loading" element={<Loading />} />
-          <Route path="*" element={<NoPage/>}/>
-          </Routes>
-        </BrowserRouter>
-        </RaceProvider>
+              <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+              <Route path="/configure" element={<PrivateRoute><Settings /></PrivateRoute>} />
+              <Route path="/user-setup" element={<PrivateRoute> <UserSetup /> </PrivateRoute>} />
+              <Route path="/register" element={<Signup />}/>
+              <Route path="/loading" element={<Loading />} />
+            <Route path="*" element={<NoPage/>}/>
+            </Routes>
+          </BrowserRouter>
+        </DatabaseProvider>
+      </RaceProvider>
     </AuthProvider>
   );
 }
