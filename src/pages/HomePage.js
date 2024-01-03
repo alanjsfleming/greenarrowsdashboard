@@ -151,7 +151,6 @@ function handleReset(e){
     setResetButton('btn-danger') // Make it scary to confirm
   } else {
     setResetButton('btn-primary') // If its already scary then confirm it and reset
-    const userRef = doc(db, "users", currentUser.uid);
     updateDoc(userRef, {race_start_time: null}, {merge: true}) // Save this reset to firebase also
 }
 }
@@ -284,7 +283,6 @@ useEffect(() => {
       
     <MenuBar />
     <h2 className="home-page-card--title py-3">{currentUser.displayName} Dashboard</h2>
-    <button onClick={()=>{console.log(carsSettings)}}>log settings</button>
     {errorFetching>8 && 
     <div className="alert alert-warning mx-2 d-flex flex-column homepage-dash ">
       <p className="text-center">Unable to fetch data from car.</p>

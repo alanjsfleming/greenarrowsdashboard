@@ -19,7 +19,7 @@ import { logEvent } from 'firebase/analytics'
 import Settings from './pages/Settings';
 
 import AnalyticsComponent from './features/AnalyticsComponent';
-import { RaceProvider } from './contexts/RaceContext';
+
 import { DatabaseProvider } from './contexts/DatabaseContext';
 
 function sendToAnalytics({id,name,value}){
@@ -35,7 +35,6 @@ function sendToAnalytics({id,name,value}){
 export default function Main() {
   return (
     <AuthProvider>
-      <RaceProvider>
         <DatabaseProvider>
           <BrowserRouter basename="/">
             <AnalyticsComponent />
@@ -57,7 +56,6 @@ export default function Main() {
             </Routes>
           </BrowserRouter>
         </DatabaseProvider>
-      </RaceProvider>
     </AuthProvider>
   );
 }
