@@ -13,10 +13,7 @@ import { getMembershipStatus } from '../stripe/getMembershipStatus.ts';
 export default function Settings() {
 
     // Firebase
-    const { currentUser, updatedisplayname } = useAuth()
-
-    // Membership
-    const [isMember, setIsMember] = useState(false);
+    const { currentUser, updatedisplayname, isMember } = useAuth()
 
     // Navigate
     const navigate = useNavigate()  
@@ -150,17 +147,6 @@ export default function Settings() {
       const portalUrl = await getPortalUrl(app);
       window.location.href = portalUrl;
     }
-
-    useEffect(()=>{
-      const checkMember = async () => {
-        const newMembershipStatus = currentUser
-          ? await getMembershipStatus(app)
-          : false;
-          setIsMember(newMembershipStatus);
-      };
-      checkMember();
-    },[app,currentUser?.uid])
-
 
   return (
     <>

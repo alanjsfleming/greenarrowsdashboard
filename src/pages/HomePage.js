@@ -135,7 +135,6 @@ export default function HomePage() {
       data.timestamp=Date.now()
       appendDataToSettings(data,1)
     }
-    
   },[telemetry])
 
   // This allows the telemetry to be fetched dynamically as it takes time for the url to be taken from local storage
@@ -296,7 +295,13 @@ useEffect(() => {
     
     <div className="d-flex homepage-dash flex-column">
       {carsSettings ? carsSettings.map((car,index) => (
-      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} index={index}/>)) : <p>No cars...</p>}
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} index={index}/>))
+    :
+    
+    <div className="spinner-border text-primary m-auto" role="status">
+      <span className="visually-hidden">Loading Cars...</span>
+    </div>
+      }
       <br></br>
       <div className="card-dash car-summary border rounded-3" id="raceTimer">
         <div className="card-header">
