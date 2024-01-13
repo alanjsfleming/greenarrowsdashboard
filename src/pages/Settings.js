@@ -194,7 +194,7 @@ export default function Settings() {
             }
           </button>
 
-          <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-primary btn-block" type="button" >
+          <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-dark btn-block" type="button" >
             {billingLoading ? 
             <div className="spinner-border text-light spinner-border-sm" role="status">
               <span className="sr-only">Loading...</span>
