@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read and edit documents in the "users" collection with matching document ID
+    // Users can read and edit documents in the "users" collection with document ID matching their user ID
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
     }
@@ -23,7 +23,6 @@ service cloud.firestore {
         allow read: if request.auth.uid == uid;
       }
     }
-
     match /products/{id} {
       allow read: if true;
 
