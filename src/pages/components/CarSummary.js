@@ -33,11 +33,11 @@ export default function CarSummary(props) {
     }   
 
   return (
-    <div class="card car-summary mt-4">
+    <div class="card car-summary mt-4  placeholder-glow">
         <Link class="summary-link" to="/details">
         <div class="card-header">
-            <h3>{props.name}</h3>
-            <small>Click here for more data</small>
+            <h3 className="">{props.name}</h3>
+            <small className="">Click here for more data</small>
         </div>
         </Link>
         <div class="card-body car-summary-vis">

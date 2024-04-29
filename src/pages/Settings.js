@@ -13,10 +13,7 @@ import { getMembershipStatus } from '../stripe/getMembershipStatus.ts';
 export default function Settings() {
 
     // Firebase
-    const { currentUser, updatedisplayname } = useAuth()
-
-    // Membership
-    const [isMember, setIsMember] = useState(false);
+    const { currentUser, updatedisplayname, isMember } = useAuth()
 
     // Navigate
     const navigate = useNavigate()  
@@ -151,17 +148,6 @@ export default function Settings() {
       window.location.href = portalUrl;
     }
 
-    useEffect(()=>{
-      const checkMember = async () => {
-        const newMembershipStatus = currentUser
-          ? await getMembershipStatus(app)
-          : false;
-          setIsMember(newMembershipStatus);
-      };
-      checkMember();
-    },[app,currentUser?.uid])
-
-
   return (
     <>
     <MenuBar />
@@ -208,7 +194,7 @@ export default function Settings() {
             }
           </button>
 
-          <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-primary btn-block" type="button" >
+          <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-dark btn-block" type="button" >
             {billingLoading ? 
             <div className="spinner-border text-light spinner-border-sm" role="status">
               <span className="sr-only">Loading...</span>
