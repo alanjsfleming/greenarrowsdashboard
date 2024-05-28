@@ -33,6 +33,7 @@ export function TelemetryProvider({children}) {
                 const newTelemetry = data.with[0].content
                 if (newTelemetry !== latestTelemetry) {
                     setTelemetry(telemetry)
+                    console.log(telemetry)
                 }
             }
         }

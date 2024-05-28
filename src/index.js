@@ -21,6 +21,7 @@ import Settings from './pages/Settings';
 import AnalyticsComponent from './features/AnalyticsComponent';
 
 import { DatabaseProvider } from './contexts/DatabaseContext';
+import { TelemetryProvider } from './contexts/TelemetryContext';
 
 function sendToAnalytics({id,name,value}){
   logEvent(analytics,'event',{
@@ -36,6 +37,7 @@ export default function Main() {
   return (
     <AuthProvider>
         <DatabaseProvider>
+          <TelemetryProvider>
           <BrowserRouter basename="/">
             <AnalyticsComponent />
             <Routes>
@@ -55,6 +57,7 @@ export default function Main() {
             <Route path="*" element={<NoPage/>}/>
             </Routes>
           </BrowserRouter>
+          </TelemetryProvider>
         </DatabaseProvider>
     </AuthProvider>
   );
