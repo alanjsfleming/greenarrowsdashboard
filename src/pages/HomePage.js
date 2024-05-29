@@ -14,6 +14,7 @@ import PitStopPanel from './components/PitStopPanel'
 import DataLastReceived from '../layouts/DataLastReceived'
 import { useDatabase } from '../contexts/DatabaseContext'
 import elapsedTimeIntoString from '../utils/TimeFunctions'
+import { useTelemetry } from '../contexts/TelemetryContext'
 
 // need to pass the car running data array to where it is consumed
 // teams/teamid/carid
@@ -34,14 +35,19 @@ export default function HomePage() {
   // Providers
   const { currentUser } = useAuth()
   const { userSettings, carsSettings, elapsedRaceTime } = useDatabase()
+  const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
+
+  useEffect(() => {
+    const settings = {...userSettings,cars:carsSettings}
+    localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
+  },[userSettings,carsSettings])
 
   // Database References
   const userRef = doc(db, "users", currentUser.uid);
 
 
-  const [telemetry, newTelemetry] = useState(false);
+  const { telemetry } = useTelemetry()
   
-  const runningDataRef = useRef()
 
   const [raceTime,setRaceTime] = useState()
   const [raceTimeValue,setRaceTimeValue] = useState()
@@ -295,7 +301,8 @@ useEffect(() => {
     
     <div className="d-flex homepage-dash flex-column">
       {carsSettings ? carsSettings.map((car,index) => (
-      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} index={index}/>))
+        
+      <CarSummary name={'Car '+(index+1)+': '+car.car_name} telemetry={telemetry} index={index} car_settings={carsSettings[index]} settings={userSettings}/>))
     :
     
     <div className="spinner-border text-primary m-auto" role="status">

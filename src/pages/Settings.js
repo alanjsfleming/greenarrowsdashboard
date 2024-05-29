@@ -182,9 +182,10 @@ export default function Settings() {
               />
           </div>
 
-          <hr></hr>
+          {/*{(settings.role != 'pro') &&
+          <><hr></hr>
 
-          <button hidden={isMember} onClick={handleUpgradeToMember} className="btn btn-primary btn-block" type="button" >
+           <button hidden={isMember} onClick={handleUpgradeToMember} className="btn btn-primary btn-block" type="button" >
             {billingLoading ? 
             <div className="spinner-border text-light spinner-border-sm" role="status">
               <span className="sr-only">Loading...</span>
@@ -192,7 +193,7 @@ export default function Settings() {
             : 
             "Upgrade"
             }
-          </button>
+          </button></>}*/}
 
           <button hidden={!isMember} onClick={handleManageBilling} className="btn btn-dark btn-block" type="button" >
             {billingLoading ? 
@@ -411,7 +412,7 @@ export default function Settings() {
               <div className="form-group my-3">
                 <label htmlFor="battery_offset">Battery Offset</label>
                 <br></br>
-                <small>You can adjust this if you accidently reset the Amp Hours used during the race.</small>
+                <small>You can adjust this if you accidentally reset the Amp Hours used during the race.</small>
                 <input
                   type="number"
                   className="form-control"

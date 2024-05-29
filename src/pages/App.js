@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Dashboard from './components/Dashboard';
 import "../App.css"
 import MenuBar from '../layouts/MenuBar'
+import Telemetry from "./components/Telemetry"
 
 import WaitingForData from '../layouts/WaitingForData';
 import { Link } from 'react-router-dom';
+import { useTelemetry } from '../contexts/TelemetryContext';
+import { useDatabase } from '../contexts/DatabaseContext';
 
 
 
@@ -14,60 +16,30 @@ import { Link } from 'react-router-dom';
 
 function App() {
   // State variables
-  const [telemetry, newTelemetry] = useState([]);
-  const [settings, newSettings] = useState([])
+  const { telemetry } = useTelemetry()
+  
+  
   const [fetchURL,setFetchURL] = useState()
 
-  const LOCAL_STORAGE_SETTINGS_KEY='dashboardApp.settings'
-  // Load saved settings from browser storage
-  useEffect(() => {
-    const storedSettings = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY));
-    if (storedSettings) {newSettings(storedSettings)};
-  },[]) 
-  // TODO - rewrite to load settings from firebase when 
+  const { userSettings, carsSettings, elapsedRaceTime } = useDatabase()
 
-  // When settings change, add them to local storage
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings))
-    try {
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
-    } catch (error) {
-      console.log(error)
-    }
-  },[settings])
-  // TODO - rewrite to save to firebase so user can have same settings wherever they login
+  const [settings, newSettings] = useState()
 
-  
-  // Fetch from the dweet every 1.5s
-  function handleUpdateTelemetry(e) {
-    setFetchURL('https://dweet.io/get/latest/dweet/for/'+settings.cars[0].dweet_name)
-    fetch(fetchURL)
-    .then((response)=>response.json())
-    .then((data)=> { 
-     newTelemetry([data.with[0].content])
-     //console.log(telemetry)
-    });
-  }
- 
 // function handleUpdateTelemetry(e) {
 //  newTelemetry(handleGetDweet(settings.cars[0].dweet_name))
 //  console.log(telemetry)
 // }
 
-  useEffect(()=>{
-    const interval = setInterval(handleUpdateTelemetry,1500);
-    return () => clearInterval(interval);
-  })
 
-
+  
   // Page Starts here
 
   return (
     <>
 
     <MenuBar/>
-    {(telemetry[0]) ? 
-    <Dashboard telemetry={telemetry} settings={settings}/> 
+    {(telemetry && userSettings && carsSettings[0]) ? 
+    <Telemetry telemetry={telemetry} settings={userSettings} carsSettings={carsSettings[0]}/>
     :
     (settings?.dweet_name) ?
       <div className="w-75 mx-auto mt-5">

@@ -27,8 +27,6 @@ export default function UserSetup() {
     const [loading,setLoading] = useState(false)
     const carsRef = collection(db, "cars")
     
-
-    
     const { currentUser,updatedisplayname } = useAuth()
 
     const navigate = useNavigate()

@@ -16,6 +16,8 @@ export default function CarSummary(props) {
         })
     }
 
+    //console.log(props)
+
     function calculatePlannedRundownPercentage(s) {
         // s = starttime
         if (s===null) {return null}
@@ -41,14 +43,14 @@ export default function CarSummary(props) {
         </div>
         </Link>
         <div class="card-body car-summary-vis">
-            {(props?.telemetry[0]) ? 
+            {(props?.telemetry.content) ? 
             <>
-                <CarSummaryCard title={'V1'} units={'V'} kind={'gauge'} data={props.telemetry[0]['Vt']}/>
-                <CarSummaryCard title={'Battery'} units={'%'} kind={'gauge'} data={calculateBatteryPercent(props.telemetry[0]['AH'],props.settings?.cars[0]?.battery_capacity)} plannedRundown={calculatePlannedRundownPercentage(props.settings?.race_start_time)}/>
-                <CarSummaryCard title={'Amps'} units={'A'} kind={'gauge'} data={props.telemetry[0]['A']}/>
+                <CarSummaryCard title={'V1'} units={'V'} kind={'gauge'} data={props.telemetry.content['Vt']}/>
+                <CarSummaryCard title={'Battery'} units={'%'} kind={'gauge'} data={calculateBatteryPercent(props.telemetry.content['AH'],props.car_settings.battery_capacity)} plannedRundown={calculatePlannedRundownPercentage(props.settings?.race_start_time)}/>
+                <CarSummaryCard title={'Amps'} units={'A'} kind={'gauge'} data={props.telemetry.content['A']}/>
             </> 
             : 
-            (props?.settings?.dweet_name) ?
+            (props?.car_settings?.dweet_name) ?
             <WaitingForData /> : <Link to={`/configure?${4+props.index}`} className="btn btn-warning btn-block">Set Dweet Thing Name Here</Link>
             }
         </div>

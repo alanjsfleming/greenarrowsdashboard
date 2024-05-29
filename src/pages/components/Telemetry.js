@@ -48,9 +48,9 @@ function calculateMotorEfficiency(Vt,A,T) {
 //
 //
 // Make this populate with only as many as I want, render all of them but have hidden class?
-export default function Telemetry({telemetry,settings}) {
-
-
+export default function Telemetry({telemetry,settings,carsSettings}) {
+  
+  console.log(telemetry)
   return (
     <>
     <div class="grid-items telemetry">
@@ -61,66 +61,66 @@ export default function Telemetry({telemetry,settings}) {
       </div>
 
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Estimated Gear:" data={settings?.cars[0]?.reverse_gearing_mode ? estimateGear((telemetry.Spd*2.237),telemetry.RPM,settings.cars[0].axle_gear_teeth) : telemetry?.Gear} units="th Gear" kind="gauge"/>
-      </div> 
+        <TelemetryCard title="Estimated Gear:" data={carsSettings[0]?.reverse_gearing_mode ? estimateGear((telemetry?.content?.Spd*2.237),telemetry?.content?.RPM,carsSettings[0]?.axle_gear_teeth) : telemetry.content?.Gear} units="th Gear" kind="gauge"/>
+      </div>
 
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry.AH,settings.cars[0].battery_capacity)} units="%" kind="gauge"/>
+        <TelemetryCard title="Battery:" data={calculateBatteryPercent(telemetry?.content?.AH,carsSettings?.battery_capacity)} units="%" kind="gauge"/>
       </div>
       
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Vt:" data={telemetry.Vt} units="V" kind="gauge"/>
+        <TelemetryCard title="Vt:" data={telemetry?.content?.Vt} units="V" kind="gauge"/>
       </div>
 
       <div class="grid-item border rounded-3" hidden>
-        <TelemetryCard title="Amp Hours per Lap:" data={telemetry.AH/telemetry.lap} units="Ah/Lap" kind="gauge"/>
+        <TelemetryCard title="Amp Hours per Lap:" data={telemetry?.content?.AH/telemetry?.content?.lap} units="Ah/Lap" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3" hidden>
-        <TelemetryCard title="Motor Efficiency:" data={calculateMotorEfficiency(telemetry.Vt,telemetry.A,telemetry.Tmp1)} units="%" kind="gauge"/>
+        <TelemetryCard title="Motor Efficiency:" data={calculateMotorEfficiency(telemetry?.content?.Vt,telemetry?.content?.A,telemetry?.content?.Tmp1)} units="%" kind="gauge"/>
       </div>
      
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="V1" data={telemetry.V1} units="V" kind="gauge"/>
+        <TelemetryCard title="V1" data={telemetry?.content?.V1} units="V" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="V2:" data={telemetry.Vt-telemetry.V1} units="V" kind="gauge"/>
+        <TelemetryCard title="V2:" data={telemetry?.content?.Vt-telemetry?.content?.V1} units="V" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="A:" data={telemetry.A} units="A" kind="gauge"/>
+        <TelemetryCard title="A:" data={telemetry?.content?.A} units="A" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Motor RPM:" data={telemetry.RPM} kind="gauge"/>
+        <TelemetryCard title="Motor RPM:" data={telemetry?.content?.RPM} kind="gauge"/>
       </div>
 
-      {telemetry?.Spd &&
+      {telemetry?.content?.Spd &&
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Speed:" data={(telemetry.Spd*2.237).toFixed(1)} units="mph" kind="gauge"/>
+        <TelemetryCard title="Speed:" data={(telemetry?.content?.Spd*2.237).toFixed(1)} units="mph" kind="gauge"/>
       </div>}
 
 
-      {telemetry?.Thrtl &&
+      {telemetry?.content?.Thrtl &&
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Throttle:" data={telemetry.Thrtl} units="%" kind="gauge"/>
+        <TelemetryCard title="Throttle:" data={telemetry?.content?.Thrtl} units="%" kind="gauge"/>
       </div>}
 
 
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Amp Hours used:" data={telemetry.AH} units="Ah" kind="gauge"/>
+        <TelemetryCard title="Amp Hours used:" data={telemetry?.content?.AH} units="Ah" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Laps:" data={telemetry.Lap} units="" kind="gauge"/>
+        <TelemetryCard title="Laps:" data={telemetry?.content?.Lap} units="" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Motor Temperature:" data={telemetry.Tmp1} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Motor Temperature:" data={telemetry?.content?.Tmp1} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Battery Temperature:" data={telemetry.Tmp2} units="&deg;C" kind="gauge"/>
+        <TelemetryCard title="Battery Temperature:" data={telemetry?.content?.Tmp2} units="&deg;C" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3">
-        <TelemetryCard title="Brake:" data={telemetry.Brk} units="" kind="gauge"/>
+        <TelemetryCard title="Brake:" data={telemetry?.content?.Brk} units="" kind="gauge"/>
       </div>
       <div class="grid-item border rounded-3 mb-1">
-        <TelemetryCard title="Distance:" data={telemetry.Distance} units="" kind="gauge"/>
+        <TelemetryCard title="Distance:" data={telemetry?.content?.Distance} units="" kind="gauge"/>
       </div>
     </div>
    

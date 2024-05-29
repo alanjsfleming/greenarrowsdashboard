@@ -7,6 +7,7 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 export const getMembershipStatus = async (app: FirebaseApp) => {
     const auth = getAuth(app);
     const userId = auth.currentUser?.uid;
+    
     if (!userId) {
         throw new Error("User not logged in");
     }
