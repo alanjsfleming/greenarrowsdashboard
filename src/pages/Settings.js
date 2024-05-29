@@ -287,7 +287,7 @@ export default function Settings() {
             </select>
           </div>
 
-          <div className="form-group my-3">
+          {isMember && <div className="form-group my-3">
             <label htmlFor="lap_summary_table">Lap Summary Table</label>
             <select 
               className="form-control"
@@ -298,7 +298,7 @@ export default function Settings() {
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-          </div>
+          </div>}
         </div>
 
         <div className="fixed-bottom">
